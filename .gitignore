@@ -1,0 +1,6 @@
+# CaTDD generated content (re-created by scripts/updateCaTDD4Copilot.sh)
+.catdd/*
+!.catdd/CaTDD_INSTALL.md
+
+# Generated Copilot prompt wrappers from CaTDD slash commands
+.github/prompts/UT_*.prompt.md
