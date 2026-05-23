@@ -6,3 +6,7 @@
 - Used to `PlayKata` with:
   - `CaTDD`: [Comment-alive Test-Driven Development](https://github.com/EnigmaWU/MyCaTDD)
   - `Skills`: [MyCodeAgentSkills](https://github.com/EnigmaWU/MyCodeAgentSkills)
+
+## Include
+
+- Imported IOC interface headers are under `Include/IOC` (source: [MyIOC_inTDD_withGHC/Include](https://github.com/EnigmaWU/MyIOC_inTDD_withGHC/tree/main/Include)).
