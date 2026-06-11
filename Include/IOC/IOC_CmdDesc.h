@@ -1,0 +1,318 @@
+#include "IOC_CmdID.h"
+#include "IOC_MsgDesc.h"
+#include "IOC_Types.h"
+
+#ifndef __IOC_TYPES_CMDDESC_H__
+#define __IOC_TYPES_CMDDESC_H__
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * @brief Command execution status enumeration
+ */
+typedef enum {
+    IOC_CMD_STATUS_INVALID = 0,      // Invalid status
+    IOC_CMD_STATUS_INITIALIZED = 1,  // Command is initialized
+                                     // after initVar, before execCMD
+    IOC_CMD_STATUS_PENDING = 2,      // Command is waiting to be processed
+                                     // after execCMD, before CbExecCmd_F or waitCMD or TIMEOUT
+    IOC_CMD_STATUS_PROCESSING = 3,   // Command is being processed
+                                     // after CbExecCmd_F is called, before return
+                                     // after waitCMD is called success, before ackCMD
+    IOC_CMD_STATUS_SUCCESS = 4,      // Command executed successfully
+                                     // JUST before CbExecCmd_F return, or ackCMD is called
+    IOC_CMD_STATUS_FAILED = 5,       // Command execution failed
+                                     // SAME WITH SUCCESS
+    IOC_CMD_STATUS_TIMEOUT = 6,      // Command execution timeout
+                                     // before CbExecCmd_F is called or waitCMD TIMEOUT is reached
+    // after CbExecCmd_F is calling, while executing too long to return and trigger TIMEOUT
+    // after waitCMD is called, while executing too long to call ackCMD to trigger TIMEOUT
+    // TODO: IOC_CMD_STATUS_CANCELED = 7,    // Command was canceled
+} IOC_CmdStatus_E;
+
+/**
+ * @brief Command payload structure for carrying command parameters and results
+ *     IF EmbDataSize > 0, then EmbData[] is used to store the command data.
+ *     IF EmbDataSize == 0, then pData is used to store the command data in heap memory.
+ *     EmbData[] is used for small data payloads to avoid heap allocation.
+ *     pData is used for larger data payloads that exceed the size of EmbData[].
+ */
+typedef struct {
+    void *pData;          // Pointer to command data
+    ULONG_T PtrDataSize;  // Size of command data in bytes
+    ULONG_T PtrDataLen;   // Actual length of the data in bytes
+
+    ULONG_T EmdDataSize;  // TODO: rename to EmbDataLen
+                          // Actual length of the data in bytes
+    ULONG_T EmdData[8];
+} IOC_CmdPayload_T, *IOC_CmdPayload_pT;
+
+/**
+ * @brief Command description structure
+ *        Contains all information about a command including its ID, parameters, and results
+ */
+typedef struct {
+    // MsgCommon - inherited from IOC_MsgDesc_T
+    IOC_MsgDesc_T MsgDesc;
+
+    // CmdSpecific
+    IOC_CmdID_T CmdID;       // Command identifier
+    IOC_CmdStatus_E Status;  // Current execution status
+    IOC_Result_T Result;     // Execution result code
+
+    // Command payload for parameters and results
+    IOC_CmdPayload_T InPayload;   // Input parameters payload
+    IOC_CmdPayload_T OutPayload;  // Output results payload
+
+    // Execution context
+    ULONG_T TimeoutMs;   // Command timeout in milliseconds (0 = no timeout)
+                         // IOC tell CmdExecutor, you MUST execute current CmdID in TimeoutMs
+    void *pExecContext;  // Execution context data (optional)
+
+    // TODO(@W): +More..., such as priority, retry count, etc.
+} IOC_CmdDesc_T, *IOC_CmdDesc_pT;
+
+// Initialization macros and functions for command description
+#define IOC_CMDDESC_DECLARE_VAR(VarName) IOC_CmdDesc_T VarName = IOC_CMDDESC_INIT_VALUE
+
+#define IOC_CMDDESC_INIT_VALUE                                                                          \
+    {                                                                                                   \
+        .MsgDesc = {0}, .CmdID = 0, .Status = IOC_CMD_STATUS_INITIALIZED, .Result = IOC_RESULT_SUCCESS, \
+        .InPayload = {0}, .OutPayload = {0}, .TimeoutMs = 0, .pExecContext = NULL                       \
+    }
+
+// Inline initialization function for command description
+static inline void IOC_CmdDesc_initVar(IOC_CmdDesc_pT pCmdDesc) {
+    if (!pCmdDesc) return;
+
+    memset(pCmdDesc, 0, sizeof(IOC_CmdDesc_T));
+    pCmdDesc->Status = IOC_CMD_STATUS_INITIALIZED;  // Fixed: Should be INITIALIZED after initVar
+    pCmdDesc->Result = IOC_RESULT_SUCCESS;
+}
+
+// Inline getter functions for command description
+static inline ULONG_T IOC_CmdDesc_getSeqID(IOC_CmdDesc_pT pCmdDesc) { return pCmdDesc->MsgDesc.SeqID; }
+
+static inline IOC_CmdID_T IOC_CmdDesc_getCmdID(IOC_CmdDesc_pT pCmdDesc) { return pCmdDesc->CmdID; }
+
+static inline IOC_CmdStatus_E IOC_CmdDesc_getStatus(IOC_CmdDesc_pT pCmdDesc) { return pCmdDesc->Status; }
+
+static inline IOC_Result_T IOC_CmdDesc_getResult(IOC_CmdDesc_pT pCmdDesc) { return pCmdDesc->Result; }
+
+static inline const char *IOC_CmdDesc_getCmdClassStr(IOC_CmdDesc_pT pCmdDesc) {
+    IOC_CmdID_T CmdID = IOC_CmdDesc_getCmdID(pCmdDesc);
+    return IOC_getCmdClassStr(CmdID);
+}
+
+static inline const char *IOC_CmdDesc_getCmdNameStr(IOC_CmdDesc_pT pCmdDesc) {
+    IOC_CmdID_T CmdID = IOC_CmdDesc_getCmdID(pCmdDesc);
+    return IOC_getCmdNameStr(CmdID);
+}
+
+static inline const char *IOC_CmdDesc_getCmdFullNameStr(IOC_CmdDesc_pT pCmdDesc, char *CmdFullNameBuf,
+                                                        size_t CmdFullNameBufSize) {
+    static char _mCmdFullNameBuf[64];  // Use static buffer if CmdFullNameBuf is NULL,
+                                       // for easy use but not thread-safe.
+    //---------------------------------------------------------------------------------------------
+    if (!CmdFullNameBuf) {
+        CmdFullNameBuf = &_mCmdFullNameBuf[0];
+        CmdFullNameBufSize = sizeof(_mCmdFullNameBuf);
+    }
+
+    snprintf(CmdFullNameBuf, CmdFullNameBufSize, "%s:%s", IOC_CmdDesc_getCmdClassStr(pCmdDesc),
+             IOC_CmdDesc_getCmdNameStr(pCmdDesc));
+    return CmdFullNameBuf;
+}
+
+static inline const char *IOC_CmdDesc_getStatusStr(IOC_CmdDesc_pT pCmdDesc) {
+    switch (pCmdDesc->Status) {
+        case IOC_CMD_STATUS_INVALID:
+            return "INVALID";
+        case IOC_CMD_STATUS_INITIALIZED:
+            return "INITIALIZED";
+        case IOC_CMD_STATUS_PENDING:
+            return "PENDING";
+        case IOC_CMD_STATUS_PROCESSING:
+            return "PROCESSING";
+        case IOC_CMD_STATUS_SUCCESS:
+            return "SUCCESS";
+        case IOC_CMD_STATUS_FAILED:
+            return "FAILED";
+        case IOC_CMD_STATUS_TIMEOUT:
+            return "TIMEOUT";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+// Inline setter functions for command description
+static inline void IOC_CmdDesc_setStatus(IOC_CmdDesc_pT pCmdDesc, IOC_CmdStatus_E Status) { pCmdDesc->Status = Status; }
+
+static inline void IOC_CmdDesc_setResult(IOC_CmdDesc_pT pCmdDesc, IOC_Result_T Result) { pCmdDesc->Result = Result; }
+
+static inline void IOC_CmdDesc_setTimeout(IOC_CmdDesc_pT pCmdDesc, ULONG_T TimeoutMs) {
+    pCmdDesc->TimeoutMs = TimeoutMs;
+}
+
+// Helper functions for command payload management
+static inline IOC_Result_T IOC_CmdDesc_setInPayload(IOC_CmdDesc_pT pCmdDesc, void *pData, ULONG_T DataSize) {
+    if (!pCmdDesc) return IOC_RESULT_INVALID_PARAM;
+    if (!pData && DataSize > 0) return IOC_RESULT_INVALID_PARAM;
+
+    if (DataSize <= sizeof(pCmdDesc->InPayload.EmdData)) {
+        // Use embedded data if size is small enough
+        pCmdDesc->InPayload.EmdDataSize = DataSize;
+        memcpy(pCmdDesc->InPayload.EmdData, pData, DataSize);
+        pCmdDesc->InPayload.pData = NULL;     // Clear pointer data
+        pCmdDesc->InPayload.PtrDataSize = 0;  // No pointer data allocated
+        pCmdDesc->InPayload.PtrDataLen = 0;   // No pointer data length
+    } else {
+        // Use pointer data for larger payloads
+        pCmdDesc->InPayload.pData =
+            malloc(DataSize + 1);  // Allocate memory for pointer data, +1 for null terminator if string
+        if (!pCmdDesc->InPayload.pData) {
+            return IOC_RESULT_POSIX_ENOMEM;  // Memory allocation failed
+        }
+        memset(pCmdDesc->InPayload.pData, 0, DataSize + 1);  // Clear memory
+        memcpy(pCmdDesc->InPayload.pData, pData, DataSize);
+        pCmdDesc->InPayload.EmdDataSize = 0;             // Clear embedded data size
+        pCmdDesc->InPayload.PtrDataSize = DataSize + 1;  // Allocated buffer size (with null terminator)
+        pCmdDesc->InPayload.PtrDataLen = DataSize;       // Actual data length
+    }
+    return IOC_RESULT_SUCCESS;
+}
+
+static inline IOC_Result_T IOC_CmdDesc_setOutPayload(IOC_CmdDesc_pT pCmdDesc, void *pData, ULONG_T DataSize) {
+    if (!pCmdDesc) return IOC_RESULT_INVALID_PARAM;
+    if (!pData && DataSize > 0) return IOC_RESULT_INVALID_PARAM;
+
+    if (DataSize <= sizeof(pCmdDesc->OutPayload.EmdData)) {
+        // Use embedded data if size is small enough
+        pCmdDesc->OutPayload.EmdDataSize = DataSize;
+        memcpy(pCmdDesc->OutPayload.EmdData, pData, DataSize);
+        pCmdDesc->OutPayload.pData = NULL;     // Clear pointer data
+        pCmdDesc->OutPayload.PtrDataSize = 0;  // No pointer data allocated
+        pCmdDesc->OutPayload.PtrDataLen = 0;   // No pointer data length
+    } else {
+        // Use pointer data for larger payloads
+        pCmdDesc->OutPayload.pData =
+            malloc(DataSize + 1);  // Allocate memory for pointer data, +1 for null terminator if string
+        if (!pCmdDesc->OutPayload.pData) {
+            return IOC_RESULT_POSIX_ENOMEM;  // Memory allocation failed
+        }
+        memset(pCmdDesc->OutPayload.pData, 0, DataSize + 1);  // Clear memory
+        memcpy(pCmdDesc->OutPayload.pData, pData, DataSize);
+        pCmdDesc->OutPayload.EmdDataSize = 0;             // Clear embedded data size
+        pCmdDesc->OutPayload.PtrDataSize = DataSize + 1;  // Allocated buffer size (with null terminator)
+        pCmdDesc->OutPayload.PtrDataLen = DataSize;       // Actual data length
+    }
+
+    return IOC_RESULT_SUCCESS;
+}
+
+static inline void *IOC_CmdDesc_getInData(IOC_CmdDesc_pT pCmdDesc) {
+    if (pCmdDesc) {
+        if (pCmdDesc->InPayload.EmdDataSize > 0) {
+            return pCmdDesc->InPayload.EmdData;  // Use embedded data if available
+        } else {
+            return pCmdDesc->InPayload.pData;  // Use pointer data otherwise
+        }
+    }
+    return NULL;  // Return NULL if pCmdDesc is NULL
+}
+
+static inline ULONG_T IOC_CmdDesc_getInDataSize(IOC_CmdDesc_pT pCmdDesc) {
+    if (pCmdDesc) {
+        return pCmdDesc->InPayload.PtrDataSize > 0 ? pCmdDesc->InPayload.PtrDataSize
+                                                   : 0;  // Return allocated buffer size (capacity)
+    }
+    return 0;  // Return 0 if pCmdDesc is NULL
+}
+
+static inline ULONG_T IOC_CmdDesc_getInDataLen(IOC_CmdDesc_pT pCmdDesc) {
+    if (pCmdDesc) {
+        return pCmdDesc->InPayload.PtrDataLen > 0 ? pCmdDesc->InPayload.PtrDataLen
+                                                  : pCmdDesc->InPayload.EmdDataSize;  // Return actual data length
+    }
+    return 0;  // Return 0 if pCmdDesc is NULL
+}
+
+static inline void *IOC_CmdDesc_getOutData(IOC_CmdDesc_pT pCmdDesc) {
+    if (pCmdDesc) {
+        if (pCmdDesc->OutPayload.EmdDataSize > 0) {
+            return pCmdDesc->OutPayload.EmdData;  // Use embedded data if available
+        } else {
+            return pCmdDesc->OutPayload.pData;  // Use pointer data otherwise
+        }
+    }
+    return NULL;  // Return NULL if pCmdDesc is NULL
+}
+
+static inline ULONG_T IOC_CmdDesc_getOutDataSize(IOC_CmdDesc_pT pCmdDesc) {
+    if (pCmdDesc) {
+        return pCmdDesc->OutPayload.PtrDataSize > 0 ? pCmdDesc->OutPayload.PtrDataSize
+                                                    : 0;  // Return allocated buffer size (capacity)
+    }
+    return 0;  // Return 0 if pCmdDesc is NULL
+}
+
+static inline ULONG_T IOC_CmdDesc_getOutDataLen(IOC_CmdDesc_pT pCmdDesc) {
+    if (pCmdDesc) {
+        return pCmdDesc->OutPayload.PtrDataLen > 0 ? pCmdDesc->OutPayload.PtrDataLen
+                                                   : pCmdDesc->OutPayload.EmdDataSize;  // Return actual data length
+    }
+    return 0;  // Return 0 if pCmdDesc is NULL
+}
+
+/**
+ * @brief Cleanup dynamically allocated payload memory in command descriptor
+ *        Call this before CmdDesc goes out of scope to prevent memory leaks
+ *
+ * @param pCmdDesc Pointer to command descriptor to cleanup
+ *
+ * @note This function is safe to call multiple times on the same CmdDesc
+ * @note Only frees heap-allocated memory (pData), not embedded data (EmdData)
+ */
+static inline void IOC_CmdDesc_cleanup(IOC_CmdDesc_pT pCmdDesc) {
+    if (!pCmdDesc) return;
+
+    // Free input payload heap memory
+    if (pCmdDesc->InPayload.pData) {
+        free(pCmdDesc->InPayload.pData);
+        pCmdDesc->InPayload.pData = NULL;
+        pCmdDesc->InPayload.PtrDataSize = 0;
+        pCmdDesc->InPayload.PtrDataLen = 0;
+    }
+
+    // Free output payload heap memory
+    if (pCmdDesc->OutPayload.pData) {
+        free(pCmdDesc->OutPayload.pData);
+        pCmdDesc->OutPayload.pData = NULL;
+        pCmdDesc->OutPayload.PtrDataSize = 0;
+        pCmdDesc->OutPayload.PtrDataLen = 0;
+    }
+}
+
+#define IOC_CMDDESC_PRINTABLE_BUF_SIZE 128
+
+// Helper function to create a printable string representation of command description
+static inline const char *IOC_CmdDesc_toPrintableStr(IOC_CmdDesc_pT pCmdDesc, char *PrintableBuf,
+                                                     size_t PrintableBufSize) {
+    static char _mPrintableBuf[IOC_CMDDESC_PRINTABLE_BUF_SIZE];  // Use static buffer if PrintableBuf is NULL
+    //---------------------------------------------------------------------------------------------
+    if (!PrintableBuf) {
+        PrintableBuf = &_mPrintableBuf[0];
+        PrintableBufSize = sizeof(_mPrintableBuf);
+    }
+
+    snprintf(PrintableBuf, PrintableBufSize, "CmdDesc[SeqID=%lu, Cmd=%s, Status=%s, Result=%d, TimeoutMs=%lu]",
+             IOC_CmdDesc_getSeqID(pCmdDesc), IOC_CmdDesc_getCmdFullNameStr(pCmdDesc, NULL, 0),
+             IOC_CmdDesc_getStatusStr(pCmdDesc), IOC_CmdDesc_getResult(pCmdDesc), pCmdDesc->TimeoutMs);
+    return PrintableBuf;
+}
+
+#ifdef __cplusplus
+}
+#endif
+#endif  // __IOC_TYPES_CMDDESC_H__
