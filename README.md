@@ -17,6 +17,23 @@
 
 - Detail: [Usage Scenarios](Doc/IOC_UsageScenarios.md) 
 
+## >>>>>>WHY DATA/EVENT/COMMAND<<<<<<
+
+- **CMD** (Synchronous Request-Response): ObjX always gets final result or failure reason.
+  - SYNC + NODROP = certainty (e.g., RPCs, configuration commands, critical operations)
+  
+- **EVT** (Asynchronous Fire-and-Forget): ObjX sends notification; ObjY may or may not receive.
+  - ASYNC + MAYDROP = efficiency (e.g., status updates, alerts, one-to-many broadcasts)
+  
+- **DAT** (Asynchronous Streaming): ObjX sends data chunks; flow control ensures delivery.
+  - ASYNC + NODROP + Stream = reliability for sequential integrity (e.g., file transfer, log streaming, DB replication)
+
+> **Design Insight**: Three roles separate concerns.
+>
+> - CMD for control (certainty needed).
+> - EVT for signals (throughput preferred).
+> - DAT for transfer (order + completeness required).
+
 ## >>>>>>WHAT WE WANT<<<<<<<
 
 - Design and implement and test IOC with [CaTDD](https://github.com/EnigmaWU/MyCaTDD) in the form of such as:
