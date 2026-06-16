@@ -1,11 +1,12 @@
 # MyInterObjComBase 【我的对象间通讯基地】
 
 - Created by EnigmaWU on 2026-05-17
-  - based initially on [MyIOC_inTDD_withGHC](https://github.com/EnigmaWU/MyIOC_inTDD_withGHC)
+  - based initially on interfaces and ideas from [MyIOC_inTDD_withGHC](https://github.com/EnigmaWU/MyIOC_inTDD_withGHC)
   - follows experiences from [MyGenCodeDescBase](https://github.com/EnigmaWU/MyGenCodeDescBase)
 - Used to `PlayKata` with:
   - `CaTDD`: [Comment-alive Test-Driven Development](https://github.com/EnigmaWU/MyCaTDD)
   - `Skills`: [MyCodeAgentSkills](https://github.com/EnigmaWU/MyCodeAgentSkills)
+- Development approach in this repository: `CaTDD`.
 
 ## >>>>>>WHAT WE HAVE<<<<<<<
 
@@ -36,7 +37,4 @@
 
 ## >>>>>>WHAT WE WANT<<<<<<<
 
-- Design and implement and test IOC with [CaTDD](https://github.com/EnigmaWU/MyCaTDD) in the form of such as:
-  - libIOC.a/.so in C or C++
-  - OpenAPI in Typescript or Python
-  - and so on...
+- Design and implement and test IOC with [CaTDD](https://github.com/EnigmaWU/MyCaTDD) as libIOC.a in C.
