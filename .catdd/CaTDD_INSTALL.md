@@ -1,6 +1,6 @@
 # CaTDD Install Marker
 
-- Installed version: 20260612.07
+- Installed version: 20260619.05
 
 This directory is managed by `scripts/installCaTDD4Copilot.sh` from MyCaTDD.
 

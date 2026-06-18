@@ -11,5 +11,5 @@
 # END CaTDD managed ignore rules
 
 # BEGIN CaTDD SpecCoding local state
-#/.catdd/spec/WorkingProcessLog.md
+/.catdd/spec/WorkingProcessLog.md
 # END CaTDD SpecCoding local state
