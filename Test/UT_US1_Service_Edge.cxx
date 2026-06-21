@@ -16,10 +16,12 @@
  * @[Status]: TODO
  *
  * @[AC]: AC-3
- * @[TC]: TC-P0-E3 verifyOffline_byKeepAcceptedLinkFlag_expectKeepExistingRejectNew
+ * @[TC]: TC-P0-E3
+ * verifyOffline_byKeepAcceptedLinkFlag_expectKeepExistingRejectNew
  * @[Status]: TODO
  *
  * @[AC]: AC-3
- * @[TC]: TC-P0-E4 verifyOffline_byCloseAcceptedLinkDefault_expectCloseExistingRejectNew
+ * @[TC]: TC-P0-E4
+ * verifyOffline_byCloseAcceptedLinkDefault_expectCloseExistingRejectNew
  * @[Status]: TODO
  */

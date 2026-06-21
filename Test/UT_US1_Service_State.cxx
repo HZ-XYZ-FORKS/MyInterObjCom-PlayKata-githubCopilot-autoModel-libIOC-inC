@@ -8,10 +8,12 @@
  * @[Category]: State
  * @[US]: US-1
  * @[AC]: AC-3
- * @[TC]: TC-P1-S1 verifyServiceState_byOfflineToOnlineToOffline_expectDeterministicTransitions
+ * @[TC]: TC-P1-S1
+ * verifyServiceState_byOfflineToOnlineToOffline_expectDeterministicTransitions
  * @[Status]: TODO
  *
  * @[AC]: AC-2
- * @[TC]: TC-P1-S2 verifyPendingQueue_byAcceptTimeoutOffline_expectSingleResolution
+ * @[TC]: TC-P1-S2
+ * verifyPendingQueue_byAcceptTimeoutOffline_expectSingleResolution
  * @[Status]: TODO
  */

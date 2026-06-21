@@ -12,11 +12,11 @@
 - Next recommended command: `SPEC_implUnitTests`.
 - Paired task artifact: `.catdd/spec/doingUS/20260618-TASKs.md`.
 - Requirement artifacts updated by `SPEC_updateUserStory`:
-	- `README_UserStories.md`
-	- `README_UserGuide.md`
+ 	- `README_UserStories.md`
+ 	- `README_UserGuide.md`
 - Detail design artifacts updated by `SPEC_takeDetailDesign`:
-	- `README_DetailDesign.md`
-	- `README_StateDesign.md`
+ 	- `README_DetailDesign.md`
+ 	- `README_StateDesign.md`
 
 ### Detail Design Review Result
 
@@ -122,16 +122,16 @@
 
 ```mermaid
 flowchart TD
-	A[Service calls IOC_onlineService] --> B{Client calls IOC_connectService with matching usage}
-	B -->|No| E[Reject connection]
-	B -->|Yes| C{Accept mode}
-	C -->|Auto-accept| D1[IOC creates AcptLinkID and returns ConnLinkID]
-	C -->|Manual-accept| D2[Service calls IOC_acceptClient to create AcptLinkID]
-	D1 --> F[Link pair established: AcptLinkID <-> ConnLinkID]
-	D2 --> F
-	F --> G[DAT/EVT/CMD messaging can start]
-	G --> H[Service calls IOC_offlineService]
-	H --> I[Service transitions offline]
+ A[Service calls IOC_onlineService] --> B{Client calls IOC_connectService with matching usage}
+ B -->|No| E[Reject connection]
+ B -->|Yes| C{Accept mode}
+ C -->|Auto-accept| D1[IOC creates AcptLinkID and returns ConnLinkID]
+ C -->|Manual-accept| D2[Service calls IOC_acceptClient to create AcptLinkID]
+ D1 --> F[Link pair established: AcptLinkID <-> ConnLinkID]
+ D2 --> F
+ F --> G[DAT/EVT/CMD messaging can start]
+ G --> H[Service calls IOC_offlineService]
+ H --> I[Service transitions offline]
 ```
 
 ### Model Gap Analysis
