@@ -88,6 +88,7 @@ Use this list first when explaining or adopting `Px SpecFlow` refinements from G
 - `<module-or-submodule>/README_UserStory.md`: canonical formalized requirement source for that module scope.
 - `<module-or-submodule>/README_UserGuide.md`: paired usage context for the same module scope.
 - `<module-or-submodule>/README_ArchDesign.md` and `<module-or-submodule>/README_DetailDesign.md`: design artifacts derived from and traceable to the module `README_UserStory.md` IDs.
+- `README_UserStories.md`: mandatory project-level story ledger containing TODO and DONE story state plus acceptance-criteria trace summaries.
 - `README*.md`: project-root SPEC docs created as needed for overview, architecture, stories, guide, detail design, and verification design.
 - `.catdd/spec/WorkingProcessLog.md`: optional trace log for decisions, command transitions, and unresolved questions.
 
@@ -96,11 +97,11 @@ Use this list first when explaining or adopting `Px SpecFlow` refinements from G
 Create project-root README SPEC docs only when the project needs that SPEC surface. Keep all `README*` SPEC docs in the target project root so developers and CodeAgents can find shared project and module knowledge quickly.
 
 ### 1. Architecture-Oriented (Managed by `SPEC_takeArchDesign`)
-These document global strategies, system-wide boundaries, reliability frameworks, and observability topologies.
+These document module-context architecture plus consuming-system context, along with global strategies, boundaries, reliability frameworks, and observability topologies.
 
 | File | Purpose |
 | --- | --- |
-| `README_ArchDesign.md` | High-level architecture, module decomposition, dependencies, data flow, and key trade-offs. |
+| `README_ArchDesign.md` | Module-context architecture, consuming-system context, module decomposition, dependencies, data flow, and key trade-offs. |
 | `README_UsageDesign.md` | Public boundaries, CLI/API contracts, argument parsing rules, and run examples. |
 | `README_ErrorDesign.md` | Fault-tolerance architecture, fail-safe states, watchdogs, and global error taxonomies. |
 | `README_ResourceDesign.md` | Finite resource allocations, memory/CPU/power budgets, DMA, and watchdogs. |
@@ -122,7 +123,7 @@ These document local implementation details, code tactics, and class/API behavio
 | File | Purpose |
 | --- | --- |
 | `README.md` | Project overview, ownership, manual user statements, and master SPEC directories. |
-| `README_UserStories.md` | Project-scoped user stories and trace links to SpecFlow story directories. |
+| `README_UserStories.md` | Mandatory project-scoped ledger of TODO/DONE user stories with acceptance-criteria trace/status and links to SpecFlow story directories. |
 | `README_UserGuide.md` | User-facing or developer-facing runtime usage guidance. |
 
 Use matching templates from `slashCommands/templates/` when creating a README SPEC doc for the first time.
@@ -149,6 +150,7 @@ SpecFlow lifecycle state lives under `.catdd/spec/`. Shared `README*` SPEC docs 
 | `.catdd/spec/abortUS/*-TASKs.md` | Team-shared | Commit the aborted task artifact beside the aborted story for later analysis or next-round improvement planning. |
 | `.catdd/spec/doneUS/` | Team-shared | Commit completed story records after review, verification, and close. |
 | `.catdd/spec/doneUS/*-TASKs.md` | Team-shared | Commit the completed task artifact beside the closed user story for later diagnosis. |
+| `README_UserStories.md` | Team-shared | Commit as the project-level source of truth for TODO/DONE story state and AC traceability status. |
 | `README*.md` | Team-shared | Commit project-root SPEC docs such as README, architecture design, user stories, user guide, detail design, error design, resource design, state design, performance design, compatibility design, diagnosis design, and verify design as needed. |
 | `slashCommands/templates/SpecTodoUserStoryTemplate.md` | Team-shared | Commit reusable per-story template for `.catdd/spec/todoUS/*-UserStory.md`. |
 | `.catdd/spec/WorkingProcessLog.md` | Local work state | Gitignore personal command traces, temporary decisions, and unresolved local notes. |
@@ -282,8 +284,8 @@ flowchart TB
 6. Use [../commands/Px-SpecFlow/SPEC_openUserStory.md](../commands/Px-SpecFlow/SPEC_openUserStory.md) to move a selected user story into `.catdd/spec/doingUS/`.
 7. Optionally use [../commands/Px-SpecFlow/SPEC_clearStoryIntent.md](../commands/Px-SpecFlow/SPEC_clearStoryIntent.md) when developer intent and CodeAgent intent still need to be aligned before planning.
 8. Use [../commands/Px-SpecFlow/SPEC_makePlan.md](../commands/Px-SpecFlow/SPEC_makePlan.md) to create the paired `.catdd/spec/doingUS/*-TASKs.md` artifact, express the work as Markdown checkbox tasks, distinguish intent-clearing, requirement-oriented, design-oriented, and implementation-oriented work, distinguish initial design from follow-up design revision, and choose the next required `SPEC_*` step for the opened story.
-9. Use [../commands/Px-SpecFlow/SPEC_updateUserStory.md](../commands/Px-SpecFlow/SPEC_updateUserStory.md) when the plan is requirement-oriented and module `README_UserStory.md` plus paired `README_UserGuide.md` must be updated before downstream work.
-10. Use [../commands/Px-SpecFlow/SPEC_reviewUserStory.md](../commands/Px-SpecFlow/SPEC_reviewUserStory.md) after requirement updates, and then either close requirement-oriented-only work (`SPEC_commitWorks` then `SPEC_closeUserStory`, followed by an immediate close-commit checkpoint if close generated file changes) or transfer to design-oriented next steps.
+9. Use [../commands/Px-SpecFlow/SPEC_updateUserStory.md](../commands/Px-SpecFlow/SPEC_updateUserStory.md) when the plan is requirement-oriented and project-level `README_UserStories.md` plus paired `README_UserGuide.md` (and module surfaces when used) must be updated before downstream work.
+10. Use [../commands/Px-SpecFlow/SPEC_reviewUserStory.md](../commands/Px-SpecFlow/SPEC_reviewUserStory.md) after requirement updates, and then either close requirement-oriented-only work (`SPEC_commitWorks` then `SPEC_closeUserStory`, followed by an immediate close-commit checkpoint if close generated file changes) or transfer to design-oriented next steps. `SPEC_reviewUserStory` must verify that `README_UserStories.md` TODO/DONE and AC trace status are consistent with active lifecycle artifacts.
 11. Use [../commands/Px-SpecFlow/SPEC_whatsNextTask.md](../commands/Px-SpecFlow/SPEC_whatsNextTask.md) whenever you need a single next-step recommendation from current state.
 12. Use [../commands/Px-SpecFlow/SPEC_takeArchDesign.md](../commands/Px-SpecFlow/SPEC_takeArchDesign.md) to produce initial high-level architecture design and module boundaries in `README_ArchDesign.md` when the plan says initial architecture work is needed.
 13. Use [../commands/Px-SpecFlow/SPEC_reviewArchDesign.md](../commands/Px-SpecFlow/SPEC_reviewArchDesign.md) to gate architecture quality before detailed design begins.
@@ -301,6 +303,8 @@ flowchart TB
 - `Px SpecFlow` defines lifecycle orchestration only; CaTDD method semantics remain in `methodPrompts`.
 - `SPEC_*` commands may call `UT_*` commands, but they must not replace P0/P1/P2 category rules.
 - Do not skip `SPEC_reviewUserStory` after `SPEC_updateUserStory` in requirement-oriented work.
+- Do not treat story lifecycle as complete when `README_UserStories.md` TODO/DONE or AC trace status is stale.
+- `SPEC_takeArchDesign` and `SPEC_reviewArchDesign` must keep architecture module-context focused and explicitly document consuming-system context.
 - Do not start design when developer intent and CodeAgent intent are not cleared for the active story.
 - After `SPEC_makePlan`, use `SPEC_take*Design` only for initial design work and `SPEC_update*Design` only for follow-up design revision against existing design evidence, review feedback, or story-level design gaps.
 - Every design-producing step (`SPEC_takeArchDesign`, `SPEC_updateArchDesign`, `SPEC_takeDetailDesign`, `SPEC_updateDetailDesign`) must be followed by its review gate before downstream lifecycle steps.

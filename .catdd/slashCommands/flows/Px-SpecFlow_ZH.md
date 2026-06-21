@@ -83,6 +83,7 @@ P0/P1/P2 flows = category-specific test design and implementation flows
 - `.catdd/spec/abortUS/YYYYMMDD-TASKs.md`：当故事通过 `SPEC_makePlan` 制定了计划时，与中止故事并排保留的已中止任务制品。
 - `.catdd/spec/doneUS/YYYYMMDD-UserStory.md`：完成审查、提交和 CI 后的用户故事。
 - `.catdd/spec/doneUS/YYYYMMDD-TASKs.md`：与已关闭故事并排保留的已完成任务制品，供后续诊断。
+- `README_UserStories.md`：项目级必选故事台账，记录 TODO/DOING/DONE 状态与 AC 追溯状态。
 - `<module-or-submodule>/README_UserStory.md`：该模块范围的规范化正式需求来源。
 - `<module-or-submodule>/README_UserGuide.md`：同一模块范围的配对使用上下文。
 - `<module-or-submodule>/README_ArchDesign.md` 和 `<module-or-submodule>/README_DetailDesign.md`：派生自并可追溯到模块 `README_UserStory.md` ID 的设计制品。
@@ -98,7 +99,7 @@ P0/P1/P2 flows = category-specific test design and implementation flows
 
 | 文件 | 用途 |
 | --- | --- |
-| `README_ArchDesign.md` | 高层架构、模块分解、依赖、数据流和关键权衡。 |
+| `README_ArchDesign.md` | 模块上下文架构、消费该模块的系统上下文、模块分解、依赖、数据流和关键权衡。 |
 | `README_UsageDesign.md` | 公共边界、CLI/API 契约、参数解析规则和运行示例。 |
 | `README_ErrorDesign.md` | 容错架构、故障安全状态、看门狗和全局错误分类。 |
 | `README_ResourceDesign.md` | 有限资源分配、内存/CPU/功耗预算、DMA 和看门狗。 |
@@ -120,7 +121,7 @@ P0/P1/P2 flows = category-specific test design and implementation flows
 | 文件 | 用途 |
 | --- | --- |
 | `README.md` | 项目概述、所有权、人工用户声明和主 SPEC 目录。 |
-| `README_UserStories.md` | 项目范围的用户故事及到 SpecFlow 故事目录的追溯链接。 |
+| `README_UserStories.md` | 项目级必选台账：维护 TODO/DOING/DONE 用户故事状态与验收标准追溯状态。 |
 | `README_UserGuide.md` | 面向用户或面向开发者的运行时使用指南。 |
 
 在首次创建 README SPEC 文档时，使用 `slashCommands/templates/` 中的匹配模板。
@@ -144,6 +145,7 @@ SpecFlow 生命周期状态位于 `.catdd/spec/` 下。共享的 `README*` SPEC 
 | `.catdd/spec/abortUS/*-TASKs.md` | 团队共享 | 与中止故事并排提交已中止的任务制品，供后续分析或下一轮改进规划。 |
 | `.catdd/spec/doneUS/` | 团队共享 | 提交审查、验证和关闭后的已完成故事记录。 |
 | `.catdd/spec/doneUS/*-TASKs.md` | 团队共享 | 与已关闭用户故事并排提交已完成的任务制品，供后续诊断。 |
+| `README_UserStories.md` | 团队共享 | 作为项目级用户故事状态与 AC 追溯状态的唯一共享台账提交。 |
 | `README*.md` | 团队共享 | 按需提交项目根 SPEC 文档，如 README、架构设计、用户故事、用户指南、详细设计、错误设计、资源设计、状态设计、性能设计、兼容性设计、诊断设计和验证设计。 |
 | `.catdd/spec/WorkingProcessLog.md` | 本地工作状态 | 通过 gitignore 忽略个人命令跟踪、临时决策和未解决的本地笔记。 |
 
@@ -268,8 +270,8 @@ flowchart TB
 6. 使用 [../commands/Px-SpecFlow/SPEC_openUserStory.md](../commands/Px-SpecFlow/SPEC_openUserStory.md) 将选定的用户故事移入 `.catdd/spec/doingUS/`。
 7. 可选使用 [../commands/Px-SpecFlow/SPEC_clearStoryIntent.md](../commands/Px-SpecFlow/SPEC_clearStoryIntent.md)，当开发者意图与 CodeAgent 意图在规划前仍需对齐时。
 8. 使用 [../commands/Px-SpecFlow/SPEC_makePlan.md](../commands/Px-SpecFlow/SPEC_makePlan.md) 创建配对的 `.catdd/spec/doingUS/*-TASKs.md` 制品，将工作以 Markdown 复选框任务的形式表达，区分意图澄清型、需求导向型、设计导向型和实现导向型工作，区分初始设计与后续设计修订，并为已开启的故事选择下一步所需的 `SPEC_*` 步骤。
-9. 使用 [../commands/Px-SpecFlow/SPEC_updateUserStory.md](../commands/Px-SpecFlow/SPEC_updateUserStory.md)，当计划为需求导向型且模块 `README_UserStory.md` 及配对的 `README_UserGuide.md` 必须在下游工作前更新时。
-10. 使用 [../commands/Px-SpecFlow/SPEC_reviewUserStory.md](../commands/Px-SpecFlow/SPEC_reviewUserStory.md) 在需求更新之后，然后或者关闭纯需求导向型工作（`SPEC_commitWorks` 然后 `SPEC_closeUserStory`，若关闭生成了文件变更则紧接一个 close-commit 检查点），或者转移到设计导向型的下一步。
+9. 使用 [../commands/Px-SpecFlow/SPEC_updateUserStory.md](../commands/Px-SpecFlow/SPEC_updateUserStory.md)，当计划为需求导向型且项目级 `README_UserStories.md` 与配对 `README_UserGuide.md`（以及采用模块文档时的模块需求文档）必须在下游工作前更新时。
+10. 使用 [../commands/Px-SpecFlow/SPEC_reviewUserStory.md](../commands/Px-SpecFlow/SPEC_reviewUserStory.md) 在需求更新之后，并验证 `README_UserStories.md` 的 TODO/DOING/DONE 与 AC 追溯状态是否与生命周期制品一致；然后或者关闭纯需求导向型工作（`SPEC_commitWorks` 然后 `SPEC_closeUserStory`，若关闭生成了文件变更则紧接一个 close-commit 检查点），或者转移到设计导向型的下一步。
 11. 使用 [../commands/Px-SpecFlow/SPEC_whatsNextTask.md](../commands/Px-SpecFlow/SPEC_whatsNextTask.md)，当你需要从当前状态获得单个下一步推荐时。
 12. 使用 [../commands/Px-SpecFlow/SPEC_takeArchDesign.md](../commands/Px-SpecFlow/SPEC_takeArchDesign.md)，当计划表明需要初始架构工作，在 `README_ArchDesign.md` 中产出初始高层架构设计和模块边界时。
 13. 使用 [../commands/Px-SpecFlow/SPEC_reviewArchDesign.md](../commands/Px-SpecFlow/SPEC_reviewArchDesign.md) 在详细设计开始前把关架构质量。
@@ -289,6 +291,8 @@ flowchart TB
 - `SPEC_designUnitTests` 与 `UT_design*Skeleton` 设计结果必须满足追溯闭合：每个 US 至少有 1 个 AC，每个 AC 至少有 1 个 TC。
 - `SPEC_designUnitTests` 与 `UT_design*Skeleton` 设计结果必须在测试文件 Overview 中显式声明 SUT。
 - 在需求导向型工作中，`SPEC_updateUserStory` 之后不得跳过 `SPEC_reviewUserStory`。
+- 当 `README_UserStories.md` 的 TODO/DOING/DONE 或 AC 追溯状态未同步时，不得认为故事生命周期完成。
+- `SPEC_takeArchDesign` 与 `SPEC_reviewArchDesign` 必须以模块上下文为核心，并显式描述消费该模块的系统上下文。
 - 当开发者意图与 CodeAgent 意图未对活跃故事澄清时，不得开始设计。
 - 在 `SPEC_makePlan` 之后，仅在初始设计工作时使用 `SPEC_take*Design`，仅在依赖现有设计证据、审查反馈或故事级设计差距的后续设计修订时使用 `SPEC_update*Design`。
 - 每个设计产出步骤（`SPEC_takeArchDesign`、`SPEC_updateArchDesign`、`SPEC_takeDetailDesign`、`SPEC_updateDetailDesign`）之后必须经过其审查关卡，然后才能进行下游生命周期步骤。

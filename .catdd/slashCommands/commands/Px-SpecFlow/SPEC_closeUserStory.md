@@ -14,6 +14,7 @@ Close an active user story after implementation, review, commit, and CI are comp
 
 - `doing_user_story`: active story under `.catdd/spec/doingUS/`.
 - `doing_tasks_file`: optional active `.catdd/spec/doingUS/*-TASKs.md` task artifact paired with the story.
+- `project_user_stories_doc`: project-root `README_UserStories.md` ledger to synchronize TODO/DONE and AC status.
 - `readme_spec_files`: optional project-root `README*` SPEC files updated by the story.
 - `commit_ref`: completed commit.
 - `ci_summary`: CI result or accepted verification summary.
@@ -28,6 +29,7 @@ Close an active user story after implementation, review, commit, and CI are comp
 - A paired `.catdd/spec/doneUS/*-TASKs.md` team-shared task artifact when the story was planned through `SPEC_makePlan`.
 - Local `.catdd/spec/doingUS/` work state is removed after the completed artifact is created; do not keep a duplicate closed copy in doingUS.
 - Story-specific references that still point to `.catdd/spec/doingUS/` are updated to `.catdd/spec/doneUS/` after closure so trace paths remain valid.
+- Project-level `README_UserStories.md` is synchronized so the story moves from TODO/DOING to DONE and acceptance-criteria status is aligned with closure evidence.
 - Project-context sync policy is applied after closure:
 	- Minor lifecycle impact (for example only story file movement or link normalization): remind the developer to run `SPEC_updateProjectContext`.
 	- Major lifecycle impact (for example next-command recommendation changes, pending/todo/doing/done summary changes, or project rules/constraints changed by this story): run `SPEC_updateProjectContext` in the same progress flow before declaring closure complete.
@@ -46,6 +48,7 @@ Ask the assistant to close only verified work, preserve enough history for later
 ## Conflict Guard
 
 Do not close if product intent, acceptance criteria, tests, review, commit, or CI status remains unresolved.
+Do not close if `README_UserStories.md` TODO/DONE or AC status is not synchronized with closure evidence.
 Do not leave stale story-specific trace links pointing to `.catdd/spec/doingUS/` after closure.
 Do not leave the same story ID under both `.catdd/spec/doingUS/` and `.catdd/spec/doneUS/`.
 Do not mark closure complete after major lifecycle impact until `SPEC_updateProjectContext` has been executed or explicitly delegated to the developer.
