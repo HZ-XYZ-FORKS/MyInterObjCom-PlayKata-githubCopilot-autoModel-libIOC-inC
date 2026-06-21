@@ -25,9 +25,9 @@
 | Business Value | 9 | Link establishment is the prerequisite capability for all IOC communication roles. |
 | User Value | 8 | Integrators cannot exercise DAT/EVT/CMD APIs until link setup succeeds. |
 | Cost / Effort | 4 | Core control-path behavior; moderate implementation and test effort. |
-| Risk / Complexity | 4 | Remaining uncertainty is mainly timeout/retry and reconnection policy scope. |
+| Risk / Complexity | 4 | Remaining uncertainty is mainly timeout handling. |
 
-**Priority Score:** (9 + 8) / (4 + 5) = **1.89** | **Priority:** **P1**
+**Priority Score:** (9 + 8) / (4 + 4) = **2.13** | **Priority:** **P1**
 
 ---
 
@@ -87,11 +87,11 @@ flowchart TD
 |---|---|
 | Pending client exists, service accepts once, link pair becomes active | Service never calls accept, client remains pending and cannot send DAT/EVT/CMD |
 
-**Open Questions:** Is there a required max wait duration for pending clients before automatic rejection?
+**Open Questions:** None. Connection wait is bounded by `IOC_connectService` timeout configuration via `IOC_OPTID_TIMEOUT`.
 
 ### Scenario 3: Service Offline Lifecycle Transition
 
-**Rule:** `IOC_offlineService` flag determines whether established links are kept or closed, and service offline operation must stop new connection establishment for that service.
+**Rule:** Service flags configured in `SrvArgs` at `IOC_onlineService` (notably `IOC_SRVFLAG_KEEP_ACCEPTED_LINK`) determine whether established links are kept or closed when `IOC_offlineService` is called, and service offline operation must stop new connection establishment for that service.
 **Given** At least one service instance exists and service may have established link(s)
 **When** Service App calls `IOC_offlineService(SrvID)`
 **Then** no new `IOC_connectService()` should succeed for that service until it is online again
@@ -117,24 +117,45 @@ flowchart TD
 | BR-4 | Manual-accept mode requires service acceptance for finalization. | Constraint | IOC shall keep client pending until `IOC_acceptClient` succeeds. |
 | BR-5 | Link IDs are paired for bidirectional communication. | Fact | IOC shall expose both endpoint IDs as correlated pair for message operations. |
 | BR-6 | Service offline ends availability for new connections. | Constraint | IOC shall block new connection establishment once service is offline. |
-| BR-7 | Service offline keep-or-close behavior is controlled by an offline flag. | Action Enabler | IOC shall preserve or close established links according to `IOC_offlineService` flag value. |
+| BR-7 | Service offline keep-or-close behavior is controlled by service flags set at online time. | Action Enabler | IOC shall preserve or close established links according to `SrvArgs.Flags` (notably `IOC_SRVFLAG_KEEP_ACCEPTED_LINK`) when `IOC_offlineService` is executed. |
 | BR-8 | Connect timeout is configurable through options. | Action Enabler | IOC shall support timeout-controlled connect attempts via `IOC_OPTID_TIMEOUT` and report timeout result. |
 | BR-9 | Usage compatibility follows complementary mapping rules. | Constraint | IOC shall reject incompatible usage combinations according to documented service/client mapping. |
 
 ---
 
-## Edge Cases & Error Paths
+## P0 Functional Category Mapping
 
-<!-- Techniques: write-user-story + elicit-requirements-models -->
+<!-- CaTDD P0 Functional = ValidFunc(Typical + Edge) + InvalidFunc(Misuse + Fault) -->
 
-| # | Condition | Expected Behavior | Status |
-|---|---|---|---|
-| 1 | Client requests usage not supported by service | Connection rejected with `IOC_RESULT_INCOMPATIBLE_USAGE` | draft |
-| 2 | Client connects before service online | Connection rejected, no link ID allocated | draft |
-| 3 | Service offlines while client pending manual accept | Pending request resolved by explicit failure/cleanup path | needs clarification |
-| 4 | Auto-accept callback not configured | Link establishment still succeeds without callback delivery | draft |
-| 5 | Duplicate connect requests from same client context | Requests are isolated or deduplicated by defined rule | needs clarification |
-| 6 | Connect timeout option set and service response exceeds timeout | `IOC_connectService` returns `IOC_RESULT_TIMEOUT` | draft |
+### Typical (ValidFunc)
+
+| # | Condition | Expected Behavior | AC Seed | TC Seed |
+|---|---|---|---|---|
+| T1 | Service online, compatible usage, AUTO_ACCEPT enabled | Link pair established and client receives success `ConnLinkID` | AS-1 | verifyConnect_byAutoAcceptCompatibleUsage_expectSuccess |
+| T2 | Service online, compatible usage, manual accept path | Link pair established after `IOC_acceptClient` | AS-2 | verifyConnect_byManualAcceptPendingClient_expectSuccess |
+
+### Edge (ValidFunc)
+
+| # | Condition | Expected Behavior | AC Seed | TC Seed |
+|---|---|---|---|---|
+| E1 | AUTO_ACCEPT enabled but callback not configured | Link establishment still succeeds without callback delivery | AS-1 | verifyConnect_byAutoAcceptWithoutCallback_expectSuccess |
+| E2 | Connect timeout option set and service response exceeds timeout | `IOC_connectService` returns `IOC_RESULT_TIMEOUT` | AS-1/AS-2 | verifyConnect_byTimeoutOptionExceeded_expectTimeout |
+| E3 | Service offline with KEEP flag | Existing links remain valid; new connects fail | AS-3 | verifyOffline_byKeepAcceptedLinkFlag_expectKeepExistingRejectNew |
+| E4 | Service offline with CLOSE flag | Existing links close; new connects fail | AS-3 | verifyOffline_byCloseAcceptedLinkDefault_expectCloseExistingRejectNew |
+
+### Misuse (InvalidFunc)
+
+| # | Condition | Expected Behavior | AC Seed | TC Seed |
+|---|---|---|---|---|
+| M1 | Client requests usage incompatible with service capabilities | Connection rejected with `IOC_RESULT_INCOMPATIBLE_USAGE` | AS-1 | verifyConnect_byIncompatibleUsage_expectIncompatibleUsage |
+| M2 | Client connects before service online | Connection rejected and no link ID allocated | AS-1 | verifyConnect_byServiceOffline_expectConnectionFailed |
+
+### Fault (InvalidFunc)
+
+| # | Condition | Expected Behavior | AC Seed | TC Seed |
+|---|---|---|---|---|
+| F1 | Service transitions offline while client is pending manual accept | Pending request is resolved by deterministic failure/cleanup path | AS-2/AS-3 | verifyPendingAccept_byServiceOfflineTransition_expectResolvedFailure |
+| F2 | Dependency/runtime failure occurs while handling connect request context under valid caller behavior | Request fails cleanly with deterministic cleanup/diagnostic behavior | AS-1/AS-2 | verifyConnect_byRuntimeFailureDuringConnect_expectGracefulFailure |
 
 ---
 
@@ -151,6 +172,7 @@ flowchart TD
 - DAT/EVT/CMD payload semantics after link establishment.
 - Retry/backoff design and timeout policy finalization.
 - Reconnection behavior and strategy.
+- Concurrency/race-condition design tests, which belong in a separate P2/P3 design slice.
 - Performance and multi-client fairness optimization.
 
 ---
