@@ -9,11 +9,32 @@
 ## Active Work Status
 
 - Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
-- Next recommended command: `SPEC_takeDetailDesign`.
+- Next recommended command: `SPEC_designUnitTests`.
 - Paired task artifact: `.catdd/spec/doingUS/20260618-TASKs.md`.
 - Requirement artifacts updated by `SPEC_updateUserStory`:
 	- `README_UserStories.md`
 	- `README_UserGuide.md`
+- Detail design artifacts updated by `SPEC_takeDetailDesign`:
+	- `README_DetailDesign.md`
+	- `README_StateDesign.md`
+
+### Detail Design Review Result
+
+**Review finding:** `PASS`
+
+**Evidence summary:**
+
+- Detail design traces AC-1/AC-2/AC-3 to explicit interface and behavior paths (`IOC_onlineService`, `IOC_connectService`, `IOC_acceptClient`, `IOC_offlineService`) and includes timeout/incompatible-usage handling.
+- State design defines lifecycle transitions, guards, failure behavior, and shared-state synchronization for service state, pending queue, and link-pair mapping.
+- Design remains aligned with project context boundaries (C static-library target, Service/Link model, DAT/EVT/CMD semantics) and does not introduce cross-module architecture changes.
+- Acceptance criteria are testable and ready for CaTDD US/AC/TC skeleton design.
+
+**Residual risks (non-blocking):**
+
+- Pending-request selection policy in manual mode (strict FIFO vs policy-based selection) should be fixed before implementation detail hardening.
+- KEEP_ACCEPTED_LINK follow-up operational policy remains open and should be clarified in implementation/test design notes.
+
+**Next recommended command:** `SPEC_designUnitTests`
 
 ---
 
@@ -31,6 +52,12 @@
 - `README_UserStories.md` reflects the active story and lifecycle state.
 - `README_UserGuide.md` matches the requirement intent and usage scope for US-1.
 - US-1 is requirement-stable and ready to proceed to detail design.
+
+## Detail Design Notes
+
+- `README_DetailDesign.md` now defines AC-to-design impacts, interface behavior, lifecycle behavior flow, and error/edge handling for US-1.
+- `README_StateDesign.md` now defines service lifecycle transitions, pending-connect resolution, and shared-state ownership/synchronization for link establishment.
+- Open design questions were preserved without blocking progression to detail-design review.
 
 ---
 
