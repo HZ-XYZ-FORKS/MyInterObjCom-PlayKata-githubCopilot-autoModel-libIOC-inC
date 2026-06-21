@@ -13,3 +13,6 @@
 # BEGIN CaTDD SpecCoding local state
 /.catdd/spec/WorkingProcessLog.md
 # END CaTDD SpecCoding local state
+
+# Local CMake build output
+/CMakeBuilt/

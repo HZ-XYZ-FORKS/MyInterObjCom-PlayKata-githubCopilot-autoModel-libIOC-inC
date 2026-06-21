@@ -9,7 +9,7 @@
 ## Active Work Status
 
 - Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
-- Next recommended command: `SPEC_designUnitTests`.
+- Next recommended command: `SPEC_implUnitTests`.
 - Paired task artifact: `.catdd/spec/doingUS/20260618-TASKs.md`.
 - Requirement artifacts updated by `SPEC_updateUserStory`:
 	- `README_UserStories.md`
@@ -34,7 +34,21 @@
 - Pending-request selection policy in manual mode (strict FIFO vs policy-based selection) should be fixed before implementation detail hardening.
 - KEEP_ACCEPTED_LINK follow-up operational policy remains open and should be clarified in implementation/test design notes.
 
-**Next recommended command:** `SPEC_designUnitTests`
+**Follow-up command executed:** `SPEC_designUnitTests`
+
+### Unit-Test Design Result
+
+**Design finding:** `READY`
+
+**Evidence summary:**
+
+- Project-root verification strategy was created in `README_VerifyDesign.md` with P0-first gating, selective P1 promotion, and deferred P2 rationale.
+- CaTDD split skeleton test files were created in `Test/UT_US1_Service_*.cxx` with explicit SUT declaration and US/AC/TC mappings.
+- P0 Functional skeleton set (Typical, Edge, Misuse, Fault) is complete for US-1.
+- P1 State and Capability skeletons are included using `README_StateDesign.md` and `README_DetailDesign.md` as design sources.
+- Concurrency and P2 quality categories are explicitly deferred with rationale due to missing design surfaces and US-2 ownership.
+
+**Next recommended command:** `SPEC_implUnitTests`
 
 ---
 
