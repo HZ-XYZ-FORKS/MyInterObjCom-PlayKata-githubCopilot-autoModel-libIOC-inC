@@ -9,8 +9,28 @@
 ## Active Work Status
 
 - Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
-- Next recommended command: `SPEC_updateUserStory`.
+- Next recommended command: `SPEC_takeDetailDesign`.
 - Paired task artifact: `.catdd/spec/doingUS/20260618-TASKs.md`.
+- Requirement artifacts updated by `SPEC_updateUserStory`:
+	- `README_UserStories.md`
+	- `README_UserGuide.md`
+
+---
+
+## Requirement Update Checklist
+
+- [x] Create/update project `README_UserStories.md` ledger with TODO/DOING/DONE and AC trace/status.
+- [x] Align paired `README_UserGuide.md` with active story requirement intent and scope.
+- [x] Preserve US/AC traceability to active story and analyzed source.
+- [x] Review requirement updates via `SPEC_reviewUserStory` before design progression.
+
+**Review Result:** `PASS`
+
+## Review Notes
+
+- `README_UserStories.md` reflects the active story and lifecycle state.
+- `README_UserGuide.md` matches the requirement intent and usage scope for US-1.
+- US-1 is requirement-stable and ready to proceed to detail design.
 
 ---
 
