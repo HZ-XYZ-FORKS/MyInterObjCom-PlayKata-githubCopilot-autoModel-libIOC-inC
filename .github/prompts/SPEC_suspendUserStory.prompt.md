@@ -1,16 +1,16 @@
 ---
-description: "Run CaTDD slash command SPEC_analyzeUserStory"
+description: "Run CaTDD slash command SPEC_suspendUserStory"
 agent: "agent"
 argument-hint: "Fill required command inputs, source files, target files, language, and test framework"
 ---
-# SPEC_analyzeUserStory
+# SPEC_suspendUserStory
 
 You are running a Copilot-native wrapper around a portable CaTDD slash command.
 
 ## Source Command
 
-- Portable command path: .catdd/slashCommands/commands/Px-SpecFlow/SPEC_analyzeUserStory.md
-- Default workspace link: [.catdd/slashCommands/commands/Px-SpecFlow/SPEC_analyzeUserStory.md](../../.catdd/slashCommands/commands/Px-SpecFlow/SPEC_analyzeUserStory.md)
+- Portable command path: .catdd/slashCommands/commands/Px-SpecFlow/SPEC_suspendUserStory.md
+- Default workspace link: [.catdd/slashCommands/commands/Px-SpecFlow/SPEC_suspendUserStory.md](../../.catdd/slashCommands/commands/Px-SpecFlow/SPEC_suspendUserStory.md)
 - Flow: Px-SpecFlow
 
 ## Method Source of Truth

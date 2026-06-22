@@ -38,6 +38,7 @@ Ask the assistant to apply minimum requirement-level updates to project `README_
 ## Conflict Guard
 
 Do not invent new product scope outside the active story intent.
+Do not update `README_UserStories.md` for a story whose ledger state is SUSPENDED; require `SPEC_resumeUserStory` first to resume before updating.
 Do not move this step into architecture or detail-design decisions; route those to design-oriented commands.
 Do not skip `SPEC_reviewUserStory` after updating requirement artifacts.
 

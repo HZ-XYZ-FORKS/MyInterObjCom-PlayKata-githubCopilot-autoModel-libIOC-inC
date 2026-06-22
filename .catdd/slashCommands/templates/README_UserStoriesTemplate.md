@@ -10,6 +10,12 @@ This is the SpecCoding template for project-root `README_UserStories.md`. This f
 | --- | --- | --- | --- | --- |
 | US-{{n}} | {{Story title}} | {{todo/doing}} | {{Issue/feature/input}} | {{.catdd/spec/todoUS or doingUS path}} |
 
+### SUSPENDED Stories
+
+| Story ID | Title | Suspended On | Resume Reference | Trace Link |
+| --- | --- | --- | --- | --- |
+| US-{{n}} | {{Story title}} | {{YYYY-MM-DD}} | {{git branch / worktree}} | {{.catdd/spec/suspendUS path}} |
+
 ### DONE Stories
 
 | Story ID | Title | Closed On | Evidence | Trace Link |
@@ -35,14 +41,17 @@ US-{{n}}: As a {{role}},
 - Pending input: `.catdd/spec/pendingNews/{{file}}`
 - Todo story: `.catdd/spec/todoUS/{{file}}`
 - Active story: `.catdd/spec/doingUS/{{file}}`
+- Suspended story: `.catdd/spec/suspendUS/{{file}}`
 - Done story: `.catdd/spec/doneUS/{{file}}`
 
 ## Sync Rules
 
 - Keep each opened story in TODO/DOING until closure is complete.
+- Move a story to SUSPENDED only when a durable resume reference (such as a git branch or worktree) exists.
 - Move a story to DONE only when closure evidence exists (review + commit + CI or accepted equivalent).
 - Keep AC status aligned with story lifecycle and verification evidence.
 - Do not leave story ID state mismatches between this ledger and `.catdd/spec/*US/` artifacts.
+- Do not close or update a story whose ledger state is SUSPENDED until it has been resumed via `SPEC_resumeUserStory`.
 
 ## Traceability Notes
 

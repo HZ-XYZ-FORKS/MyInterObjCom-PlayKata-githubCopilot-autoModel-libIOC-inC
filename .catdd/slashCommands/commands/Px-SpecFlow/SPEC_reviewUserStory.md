@@ -38,6 +38,7 @@ Ask the assistant to run a clarify/analyze/checklist-style review gate over requ
 
 Do not approve a story when acceptance criteria cannot be tested through CaTDD skeletons.
 Do not approve requirement updates when `README_UserStories.md` TODO/DONE state or AC trace/status is inconsistent with story lifecycle artifacts.
+Do not review a story whose `README_UserStories.md` ledger state is SUSPENDED; require `SPEC_resumeUserStory` first to resume before reviewing.
 Do not route directly from requirement review to unit-test design; transfer to design-oriented work first when architecture or detail design is still needed.
 Do not use this command as the automatic gate after `SPEC_reviewDetailDesign`; detail-design review owns that design gate.
 
