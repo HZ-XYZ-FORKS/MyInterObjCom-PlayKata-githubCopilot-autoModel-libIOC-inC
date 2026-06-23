@@ -5,27 +5,26 @@ argument-hint: "Fill required command inputs, source files, target files, langua
 ---
 # UT_implTestCase
 
-You are running a Copilot-native wrapper around a portable CaTDD slash command.
+**Thin Copilot adapter.** Source of truth: [UT_implTestCase](../../.catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md)
 
-## Source Command
+## Copilot Execution Rules
 
-- Portable command path: .catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md
-- Default workspace link: [.catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md](../../.catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md)
-- Flow: P0-FuncTestsFlow
-
-## Method Source of Truth
-
-- CaTDD method index: [.catdd/methodPrompts/README.md](../../.catdd/methodPrompts/README.md)
-- Slash command contract: [.catdd/slashCommands/UT_slashCommandTemplate.md](../../.catdd/slashCommands/UT_slashCommandTemplate.md)
-- Flow docs: [.catdd/slashCommands/flows](../../.catdd/slashCommands/flows)
-
-## Execution Rules
-
-1. Read and follow the portable source command before acting.
-2. Treat this file as a thin Copilot adapter; do not redefine CaTDD method semantics here.
-3. Use methodPrompts for category meaning, priority order, design skeleton rules, and CaTDD constraints.
-4. Use the source command for inputs, outputs, conflict guards, and next-step flow.
-5. Ask for missing product intent instead of inventing requirements.
-6. Report the next recommended slash command when the step finishes.
+1. **Read the portable source command first** for full RED/GREEN/REFACTOR contract.
+2. **Implement ONE TC at a time** — no batching.
+3. **Preserve design skeleton** using [CaTDD_designAndImplTemplate.cxx](../../.catdd/methodPrompts/CaTDD_designAndImplTemplate.cxx):
+   - OVERVIEW section (WHAT/WHERE/WHY, SCOPE, KEY CONCEPTS)
+   - COVERAGE MATRIX for US/AC/TC
+   - Complete GIVEN/WHEN/THEN for each AC
+   - @[US]/@[AC]/@[TC]/@[Status] markers preserved
+4. **RED stage (default):** Test fails before product code exists
+   - Run test, confirm meaningful failure
+   - Report: "Test is RED and waiting for product code"
+   - No product code in RED stage
+5. **GREEN stage:** Minimal product code makes test pass
+   - Add only what's needed, run test
+   - Report: "Test is GREEN"
+6. **REFACTOR stage:** Clean production code (no behavior change)
+7. **Update @[Status]** marker (RED → GREEN → REFACTOR), preserve design comments.
+8. Ask developer before guessing.
 
 ONE-MORE-THING: ask developer if something not sure
