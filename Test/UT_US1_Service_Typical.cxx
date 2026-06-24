@@ -12,7 +12,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "IOC/IOC.h"
+#include <chrono>
 #include <gtest/gtest.h>
+#include <thread>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF OVERVIEW OF THIS UNIT TESTING
@@ -221,8 +223,7 @@ TEST_F(US1_TypicalTest,
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // TC-P0-T2: verifyConnect_byManualAcceptPendingClient_expectSuccess
-// @[Status]: RED (expecting test to fail until manual-accept product code
-// exists)
+// @[Status]: GREEN (test passes with manual-accept product code)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -271,18 +272,25 @@ TEST_F(US1_TypicalTest,
   connArgs.SrvURI.Port = 0;
   connArgs.Usage = IOC_LinkUsageDatSender;
 
-  result = IOC_connectService(&clientConnLinkID_, &connArgs, nullptr);
+  // In default NULL option, connectService may block for manual-accept.
+  // Run connect on another thread so this thread can issue IOC_acceptClient.
+  IOC_Result_T connectResult = IOC_RESULT_FAILURE;
+  std::thread connectThread([&]() {
+    connectResult = IOC_connectService(&clientConnLinkID_, &connArgs, nullptr);
+  });
 
-  // VERIFY: RED expectation today is that this path is not implemented yet.
-  EXPECT_EQ(result, IOC_RESULT_SUCCESS)
-      << "Manual-accept client connect should succeed and remain pending until "
-         "IOC_acceptClient finalizes it";
-  EXPECT_NE(clientConnLinkID_, 0)
-      << "Client-side link ID should be reserved for pending manual-accept "
-         "connection";
+  // Give connect thread a brief moment to enqueue pending manual-accept state.
+  std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
   result = IOC_acceptClient(srvID_, &srvAcceptLinkID_, nullptr);
 
+  connectThread.join();
+
+  EXPECT_EQ(connectResult, IOC_RESULT_SUCCESS)
+      << "Manual-accept client connect should complete after IOC_acceptClient "
+         "finalizes it";
+  EXPECT_NE(clientConnLinkID_, 0)
+      << "Client-side link ID should be valid after manual-accept completion";
   EXPECT_EQ(result, IOC_RESULT_SUCCESS)
       << "Service accept should finalize the pending client in manual-accept "
          "mode";

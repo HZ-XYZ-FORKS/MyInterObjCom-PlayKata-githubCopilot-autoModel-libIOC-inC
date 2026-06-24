@@ -1,5 +1,6 @@
 #include "IOC/IOC_SrvAPI.h"
 
+#include <pthread.h>
 #include <string.h>
 
 #define IOC_MAX_SERVICES 16
@@ -16,12 +17,17 @@ typedef struct {
   IOC_LinkID_T id;
   IOC_SrvID_T srv_id;
   IOC_LinkUsage_T client_usage;
+  IOC_Bool_T accepted;
+  IOC_Bool_T is_server_side;
+  IOC_LinkID_T peer_link_id;
 } IOC_LinkSlot_T;
 
 static IOC_ServiceSlot_T g_services[IOC_MAX_SERVICES];
 static IOC_LinkSlot_T g_links[IOC_MAX_LINKS];
 static IOC_SrvID_T g_next_srv_id = 1U;
 static IOC_LinkID_T g_next_link_id = 1U;
+static pthread_mutex_t g_connect_wait_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t g_connect_wait_cond = PTHREAD_COND_INITIALIZER;
 
 static IOC_Bool_T IOC__isUriEqual(const IOC_SrvURI_T *a,
                                   const IOC_SrvURI_T *b) {
@@ -84,6 +90,26 @@ static IOC_LinkSlot_T *IOC__findLinkById(IOC_LinkID_T id) {
   return NULL;
 }
 
+static IOC_LinkSlot_T *IOC__findPendingClientLinkBySrvId(IOC_SrvID_T srv_id) {
+  for (size_t i = 0; i < IOC_MAX_LINKS; ++i) {
+    if (g_links[i].in_use && g_links[i].srv_id == srv_id &&
+        g_links[i].is_server_side == IOC_FALSE &&
+        g_links[i].accepted == IOC_FALSE) {
+      return &g_links[i];
+    }
+  }
+  return NULL;
+}
+
+static IOC_LinkSlot_T *IOC__allocLinkSlot(void) {
+  for (size_t i = 0; i < IOC_MAX_LINKS; ++i) {
+    if (!g_links[i].in_use) {
+      return &g_links[i];
+    }
+  }
+  return NULL;
+}
+
 IOC_Result_T IOC_onlineService(IOC_SrvID_pT pSrvID,
                                const IOC_SrvArgs_pT pSrvArgs) {
   if (!pSrvID || !pSrvArgs || !pSrvArgs->SrvURI.pProtocol ||
@@ -117,6 +143,12 @@ IOC_Result_T IOC_offlineService(IOC_SrvID_T SrvID) {
   for (size_t i = 0; i < IOC_MAX_LINKS; ++i) {
     if (g_links[i].in_use && g_links[i].srv_id == SrvID) {
       g_links[i].in_use = IOC_FALSE;
+      g_links[i].id = IOC_INVALID_LINK_ID;
+      g_links[i].srv_id = IOC_INVALID_SRV_ID;
+      g_links[i].client_usage = IOC_LinkUsageUndefined;
+      g_links[i].accepted = IOC_FALSE;
+      g_links[i].is_server_side = IOC_FALSE;
+      g_links[i].peer_link_id = IOC_INVALID_LINK_ID;
     }
   }
 
@@ -128,10 +160,49 @@ IOC_Result_T IOC_offlineService(IOC_SrvID_T SrvID) {
 
 IOC_Result_T IOC_acceptClient(IOC_SrvID_T SrvID, IOC_LinkID_pT pLinkID,
                               const IOC_Options_pT pOption) {
-  (void)SrvID;
-  (void)pLinkID;
   (void)pOption;
-  return IOC_RESULT_NOT_SUPPORT_MANUAL_ACCEPT;
+
+  if (!pLinkID) {
+    return IOC_RESULT_INVALID_PARAM;
+  }
+
+  IOC_ServiceSlot_T *service = IOC__findServiceById(SrvID);
+  if (!service) {
+    return IOC_RESULT_NOT_EXIST_SERVICE;
+  }
+
+  if ((service->args.Flags & IOC_SRVFLAG_AUTO_ACCEPT) != 0U) {
+    return IOC_RESULT_NOT_SUPPORT_MANUAL_ACCEPT;
+  }
+
+  IOC_LinkSlot_T *pending_client = IOC__findPendingClientLinkBySrvId(SrvID);
+  if (!pending_client) {
+    return IOC_RESULT_NOT_EXIST_LINK;
+  }
+
+  IOC_LinkSlot_T *server_link = IOC__allocLinkSlot();
+  if (!server_link) {
+    return IOC_RESULT_TOO_MANY_LINKS;
+  }
+
+  server_link->in_use = IOC_TRUE;
+  server_link->id = g_next_link_id++;
+  server_link->srv_id = SrvID;
+  server_link->client_usage =
+      IOC__complementaryUsage(pending_client->client_usage);
+  server_link->accepted = IOC_TRUE;
+  server_link->is_server_side = IOC_TRUE;
+  server_link->peer_link_id = pending_client->id;
+
+  pending_client->accepted = IOC_TRUE;
+  pending_client->peer_link_id = server_link->id;
+
+  pthread_mutex_lock(&g_connect_wait_mutex);
+  pthread_cond_broadcast(&g_connect_wait_cond);
+  pthread_mutex_unlock(&g_connect_wait_mutex);
+
+  *pLinkID = server_link->id;
+  return IOC_RESULT_SUCCESS;
 }
 
 IOC_Result_T IOC_connectService(IOC_LinkID_pT pLinkID,
@@ -155,22 +226,86 @@ IOC_Result_T IOC_connectService(IOC_LinkID_pT pLinkID,
     return IOC_RESULT_INCOMPATIBLE_USAGE;
   }
 
-  if ((service->args.Flags & IOC_SRVFLAG_AUTO_ACCEPT) == 0U) {
-    return IOC_RESULT_NOT_SUPPORT_MANUAL_ACCEPT;
+  IOC_LinkSlot_T *client_link = IOC__allocLinkSlot();
+  if (!client_link) {
+    return IOC_RESULT_TOO_MANY_LINKS;
   }
 
-  for (size_t i = 0; i < IOC_MAX_LINKS; ++i) {
-    if (!g_links[i].in_use) {
-      g_links[i].in_use = IOC_TRUE;
-      g_links[i].id = g_next_link_id++;
-      g_links[i].srv_id = service->id;
-      g_links[i].client_usage = pConnArgs->Usage;
-      *pLinkID = g_links[i].id;
+  client_link->in_use = IOC_TRUE;
+  client_link->id = g_next_link_id++;
+  client_link->srv_id = service->id;
+  client_link->client_usage = pConnArgs->Usage;
+  client_link->accepted =
+      ((service->args.Flags & IOC_SRVFLAG_AUTO_ACCEPT) != 0U) ? IOC_TRUE
+                                                              : IOC_FALSE;
+  client_link->is_server_side = IOC_FALSE;
+  client_link->peer_link_id = IOC_INVALID_LINK_ID;
+  *pLinkID = client_link->id;
+
+  if ((service->args.Flags & IOC_SRVFLAG_AUTO_ACCEPT) != 0U) {
+    IOC_LinkSlot_T *server_link = IOC__allocLinkSlot();
+    if (!server_link) {
+      client_link->in_use = IOC_FALSE;
+      client_link->id = IOC_INVALID_LINK_ID;
+      client_link->srv_id = IOC_INVALID_SRV_ID;
+      client_link->client_usage = IOC_LinkUsageUndefined;
+      client_link->accepted = IOC_FALSE;
+      client_link->is_server_side = IOC_FALSE;
+      client_link->peer_link_id = IOC_INVALID_LINK_ID;
+      return IOC_RESULT_TOO_MANY_LINKS;
+    }
+
+    server_link->in_use = IOC_TRUE;
+    server_link->id = g_next_link_id++;
+    server_link->srv_id = service->id;
+    server_link->client_usage = IOC__complementaryUsage(pConnArgs->Usage);
+    server_link->accepted = IOC_TRUE;
+    server_link->is_server_side = IOC_TRUE;
+    server_link->peer_link_id = client_link->id;
+
+    client_link->peer_link_id = server_link->id;
+  }
+
+  if ((service->args.Flags & IOC_SRVFLAG_AUTO_ACCEPT) == 0U) {
+    // Default behavior for NULL option is blocking; caller should schedule
+    // IOC_acceptClient from another thread/execution context to avoid dead
+    // wait.
+    IOC_BoolResult_T is_nonblock =
+        IOC_Option_isNonBlockMode((IOC_Options_pT)pOption);
+    if (is_nonblock == IOC_RESULT_YES) {
       return IOC_RESULT_SUCCESS;
     }
+
+    IOC_BoolResult_T is_timeout =
+        IOC_Option_isTimeoutMode((IOC_Options_pT)pOption);
+    ULONG_T timeout_us = IOC_Option_getTimeoutUS((IOC_Options_pT)pOption);
+
+    pthread_mutex_lock(&g_connect_wait_mutex);
+    while (client_link->accepted == IOC_FALSE) {
+      if (is_timeout == IOC_RESULT_YES) {
+        struct timespec ts;
+        clock_gettime(CLOCK_REALTIME, &ts);
+        ts.tv_sec += (time_t)(timeout_us / 1000000U);
+        ts.tv_nsec += (long)((timeout_us % 1000000U) * 1000U);
+        if (ts.tv_nsec >= 1000000000L) {
+          ts.tv_sec += 1;
+          ts.tv_nsec -= 1000000000L;
+        }
+
+        int wait_rc = pthread_cond_timedwait(&g_connect_wait_cond,
+                                             &g_connect_wait_mutex, &ts);
+        if (wait_rc != 0 && client_link->accepted == IOC_FALSE) {
+          pthread_mutex_unlock(&g_connect_wait_mutex);
+          return IOC_RESULT_TIMEOUT;
+        }
+      } else {
+        pthread_cond_wait(&g_connect_wait_cond, &g_connect_wait_mutex);
+      }
+    }
+    pthread_mutex_unlock(&g_connect_wait_mutex);
   }
 
-  return IOC_RESULT_TOO_MANY_LINKS;
+  return IOC_RESULT_SUCCESS;
 }
 
 IOC_Result_T IOC_closeLink(IOC_LinkID_T LinkID) {
@@ -183,5 +318,8 @@ IOC_Result_T IOC_closeLink(IOC_LinkID_T LinkID) {
   link->id = IOC_INVALID_LINK_ID;
   link->srv_id = IOC_INVALID_SRV_ID;
   link->client_usage = IOC_LinkUsageUndefined;
+  link->accepted = IOC_FALSE;
+  link->is_server_side = IOC_FALSE;
+  link->peer_link_id = IOC_INVALID_LINK_ID;
   return IOC_RESULT_SUCCESS;
 }

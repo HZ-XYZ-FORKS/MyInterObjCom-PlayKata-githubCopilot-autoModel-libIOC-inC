@@ -34,7 +34,8 @@ IOC_Result_T IOC_onlineService(
  * shutdown procedures are performed to safely disable the service.
  *
  * @param SrvID The identifier of the IOC service to be taken offline.
- * @return IOC_Result_T The result of the offline operation, indicating success or failure.
+ * @return IOC_Result_T The result of the offline operation, indicating success
+ * or failure.
  */
 IOC_Result_T IOC_offlineService(
     /*ARG_IN*/ IOC_SrvID_T SrvID);
@@ -65,73 +66,112 @@ IOC_Result_T IOC_acceptClient(
 /**
  * @brief Establishes a client connection to an IOC service.
  *
- * This function creates a communication link between a client and an IOC service, enabling
- * data transfer, event messaging, or command execution based on the specified usage type.
- * The resulting link's capabilities are strictly determined by the pConnArgs->Usage field.
+ * This function creates a communication link between a client and an IOC
+ * service, enabling data transfer, event messaging, or command execution based
+ * on the specified usage type. The resulting link's capabilities are strictly
+ * determined by the pConnArgs->Usage field.
  *
- * @param[out] pLinkID    Pointer to store the resulting link identifier upon successful connection.
- *                        ⚠️  **CRITICAL**: The returned LinkID can ONLY be used for operations
- *                        matching its Usage capability:
- *                        - IOC_LinkUsageDatSender    → Can call IOC_sendDAT() only
- *                        - IOC_LinkUsageDatReceiver  → Can call IOC_recvDAT() only
- *                        - IOC_LinkUsageEvtConsumer  → Can subscribe to events via IOC_subEVT()
- *                        - IOC_LinkUsageEvtProducer  → Can publish events via IOC_postEVT()
- *                        - IOC_LinkUsageCmdInitiator → Can initiate commands via IOC_execCMD()
- *                        - IOC_LinkUsageCmdExecutor  → Can execute commands via callback
+ * @param[out] pLinkID    Pointer to store the resulting link identifier upon
+ * successful connection. ⚠️  **CRITICAL**: The returned LinkID can ONLY be used
+ * for operations matching its Usage capability:
+ *                        - IOC_LinkUsageDatSender    → Can call IOC_sendDAT()
+ * only
+ *                        - IOC_LinkUsageDatReceiver  → Can call IOC_recvDAT()
+ * only
+ *                        - IOC_LinkUsageEvtConsumer  → Can subscribe to events
+ * via IOC_subEVT()
+ *                        - IOC_LinkUsageEvtProducer  → Can publish events via
+ * IOC_postEVT()
+ *                        - IOC_LinkUsageCmdInitiator → Can initiate commands
+ * via IOC_execCMD()
+ *                        - IOC_LinkUsageCmdExecutor  → Can execute commands via
+ * callback
  *
- * @param[in]  pConnArgs  Connection arguments specifying service details and link usage.
+ * @param[in]  pConnArgs  Connection arguments specifying service details and
+ * link usage.
  *                        **REQUIRED FIELDS**:
  *                        - SrvURI: Service address (protocol, host, path)
- *                        - Usage: Determines link capabilities (see pLinkID description)
+ *                        - Usage: Determines link capabilities (see pLinkID
+ * description)
  *
  *                        **OPTIONAL FIELDS**:
  *                        - UsageArgs: Usage-specific configuration
- *                          - .pEvt: Event callback/subscription config (for event usage)
- *                          - .pCmd: Command execution config (for command usage)
+ *                          - .pEvt: Event callback/subscription config (for
+ * event usage)
+ *                          - .pCmd: Command execution config (for command
+ * usage)
  *                          - .pDat: Data transfer config (for data usage)
  *
- *                        **SERVICE COMPATIBILITY**: The target service must support the
- *                        complementary usage capability:
- *                        | Client Usage             | Required Service Capability    |
+ *                        **SERVICE COMPATIBILITY**: The target service must
+ * support the complementary usage capability: | Client Usage             |
+ * Required Service Capability    |
  *                        |-------------------------|-------------------------------|
- *                        | IOC_LinkUsageDatSender   | IOC_LinkUsageDatReceiver      |
- *                        | IOC_LinkUsageDatReceiver | IOC_LinkUsageDatSender        |
- *                        | IOC_LinkUsageEvtConsumer | IOC_LinkUsageEvtProducer      |
- *                        | IOC_LinkUsageEvtProducer | IOC_LinkUsageEvtConsumer      |
- *                        | IOC_LinkUsageCmdInitiator| IOC_LinkUsageCmdExecutor      |
- *                        | IOC_LinkUsageCmdExecutor | IOC_LinkUsageCmdInitiator     |
+ *                        | IOC_LinkUsageDatSender   | IOC_LinkUsageDatReceiver
+ * | | IOC_LinkUsageDatReceiver | IOC_LinkUsageDatSender        | |
+ * IOC_LinkUsageEvtConsumer | IOC_LinkUsageEvtProducer      | |
+ * IOC_LinkUsageEvtProducer | IOC_LinkUsageEvtConsumer      | |
+ * IOC_LinkUsageCmdInitiator| IOC_LinkUsageCmdExecutor      | |
+ * IOC_LinkUsageCmdExecutor | IOC_LinkUsageCmdInitiator     |
  *
- *                        🚩 **FUTURE FEATURE - AUTO-SUBSCRIBE**: When Usage == IOC_LinkUsageEvtConsumer
- *                        and UsageArgs.pEvt is provided, the function may automatically subscribe
- *                        to specified events after connection. See UT_EventTypicalAutoSubscribe.cxx.
+ *                        🚩 **FUTURE FEATURE - AUTO-SUBSCRIBE**: When Usage ==
+ * IOC_LinkUsageEvtConsumer and UsageArgs.pEvt is provided, the function may
+ * automatically subscribe to specified events after connection. See
+ * UT_EventTypicalAutoSubscribe.cxx.
  *
- * @param[in]  pOption    Optional connection configuration. Pass NULL for default behavior.
+ * @param[in]  pOption    Optional connection configuration. Pass NULL for
+ * default behavior.
  *                        **DEFAULT (pOption = NULL)**: SYNCHRONOUS mode where:
  *                        - Connection establishment blocks until completed
- *                        - Subsequent IOC_sendDAT()/IOC_recvDAT() calls block until completion
+ *                        - Subsequent IOC_sendDAT()/IOC_recvDAT() calls block
+ * until completion
  *                        - Timeout behavior follows system defaults
+ *
+ *                        **MANUAL_ACCEPT SAFETY NOTE**:
+ *                        - Services without IOC_SRVFLAG_AUTO_ACCEPT may require
+ *                          a follow-up IOC_acceptClient() call to finalize a
+ * link.
+ *                        - In default sync/blocking mode (pOption == NULL),
+ *                          IOC_connectService() may block until manual accept
+ * completes.
+ *                        - To avoid indefinite wait, use timeout/non-block
+ * options, or call IOC_acceptClient() from another thread/context.
+ *                        - If connect and accept are both executed in the same
+ * thread, a blocking wait inside IOC_connectService() can cause dead waiting.
  *
  *                        **CUSTOM OPTIONS**: Set IOC_Options to configure:
  *                        - Timeout values (IOC_OPTID_TIMEOUT)
  *                        - Asynchronous operation modes
  *                        - Protocol-specific parameters
  *
- * @retval IOC_RESULT_SUCCESS          Connection established successfully. Link created with
- *                                     capabilities matching pConnArgs->Usage.
- * @retval IOC_RESULT_INVALID_PARAM    Invalid arguments (NULL pointers, malformed URI, etc.)
- * @retval IOC_RESULT_CONNECTION_FAILED Unable to reach service or establish connection
- * @retval IOC_RESULT_INCOMPATIBLE_USAGE Service doesn't support the requested Usage type
+ * @retval IOC_RESULT_SUCCESS          Connection established successfully. Link
+ * created with capabilities matching pConnArgs->Usage.
+ * @retval IOC_RESULT_INVALID_PARAM    Invalid arguments (NULL pointers,
+ * malformed URI, etc.)
+ * @retval IOC_RESULT_CONNECTION_FAILED Unable to reach service or establish
+ * connection
+ * @retval IOC_RESULT_INCOMPATIBLE_USAGE Service doesn't support the requested
+ * Usage type
  * @retval IOC_RESULT_POSIX_ENOMEM     Insufficient memory to create link object
- * @retval IOC_RESULT_TIMEOUT          Connection attempt timed out (in synchronous mode)
+ * @retval IOC_RESULT_TIMEOUT          Connection attempt timed out (in
+ * synchronous mode)
  * @retval IOC_RESULT_TOO_MANY_CLIENTS Service has reached maximum client limit
  *
- * @note **Thread Safety**: This function is thread-safe and supports concurrent connections.
- * @note **Resource Management**: Use IOC_closeLink() to properly release the connection.
- * @note **Performance**: For high-throughput scenarios, consider asynchronous mode via pOption.
- * @note **Debugging**: Use IOC_getLinkState() to verify connection state after successful connection.
+ * @note **Thread Safety**: This function is thread-safe and supports concurrent
+ * connections.
+ * @note **Resource Management**: Use IOC_closeLink() to properly release the
+ * connection.
+ * @note **Performance**: For high-throughput scenarios, consider asynchronous
+ * mode via pOption.
+ * @note **Debugging**: Use IOC_getLinkState() to verify connection state after
+ * successful connection.
  *
- * @warning **Protocol Dependency**: Connection behavior varies by protocol (FIFO, TCP, etc.).
- *          Some protocols may require the service to be online before connection attempts.
+ * @warning **Protocol Dependency**: Connection behavior varies by protocol
+ * (FIFO, TCP, etc.). Some protocols may require the service to be online before
+ * connection attempts.
+ * @warning **Threading/Ordering**: For MANUAL_ACCEPT workflows, ensure
+ * IOC_acceptClient() can be scheduled after IOC_connectService() returns; avoid
+ * designs that require connect to block until accept in the same execution
+ * context.
  *
  * @see IOC_onlineService() - Create a service that clients can connect to
  * @see IOC_acceptClient() - Server-side function to accept incoming connections
@@ -185,12 +225,9 @@ IOC_Result_T IOC_acceptClient(
  * IOC_Result_T result = IOC_connectService(&consumerLinkID, &connArgs, NULL);
  * if (result == IOC_RESULT_SUCCESS) {
  *     // Setup event subscription
- *     IOC_EvtID_T events[] = { IOC_EVTID_TEST_KEEPALIVE, IOC_EVTID_TEST_ERROR };
- *     IOC_SubEvtArgs_T subArgs = {
- *         .CbProcEvt_F = MyEventCallback,
- *         .pCbPrivData = &myPrivateData,
- *         .EvtNum = 2,
- *         .pEvtIDs = events
+ *     IOC_EvtID_T events[] = { IOC_EVTID_TEST_KEEPALIVE, IOC_EVTID_TEST_ERROR
+ * }; IOC_SubEvtArgs_T subArgs = { .CbProcEvt_F = MyEventCallback, .pCbPrivData
+ * = &myPrivateData, .EvtNum = 2, .pEvtIDs = events
  *     };
  *
  *     IOC_subEVT(consumerLinkID, &subArgs);  // Subscribe to events
@@ -252,4 +289,4 @@ IOC_Result_T IOC_broadcastEVT(
 #ifdef __cplusplus
 }
 #endif
-#endif  //__IOC_SRV_API_H__
+#endif //__IOC_SRV_API_H__
