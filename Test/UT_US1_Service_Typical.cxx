@@ -111,7 +111,7 @@
  * paired link IDs
  *   @[Expect]: Both online and connect and accept calls return success;
  * non-zero link IDs
- *   @[Status]: TODO (will implement after TC-P0-T1 passes)
+ *   @[Status]: RED (test implemented, product code missing) → GREEN → REFACTOR
  */
 //======>END OF TEST CASES
 // DESIGN==================================================================
@@ -146,7 +146,7 @@ protected:
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // TC-P0-T1: verifyConnect_byAutoAcceptCompatibleUsage_expectSuccess
-// @[Status]: RED (expecting test to fail - product code not yet implemented)
+// @[Status]: GREEN (test passes with minimal product code)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -215,6 +215,79 @@ TEST_F(US1_TypicalTest,
       << "Client link ID must be non-zero after successful connect";
   // Note: Server-side link ID is obtained implicitly by service in auto-accept
   // mode via IOC_getServiceLinkIDs() or OnAutoAccepted_F callback
+
+  // CLEANUP: handled by TearDown()
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// TC-P0-T2: verifyConnect_byManualAcceptPendingClient_expectSuccess
+// @[Status]: RED (expecting test to fail until manual-accept product code
+// exists)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+ * @[Class]: P0 Functional / ValidFunc
+ * @[Category]: Typical
+ * @[Intent]: Prove manual-accept link establishment works with explicit accept
+ * call
+ * @[UseWhen]: Service online without AUTO_ACCEPT; server must explicitly accept
+ * pending client
+ * @[AvoidWhen]: Testing auto-accept fast path, incompatible usage, or fault
+ * handling
+ * @[US]: US-1
+ * @[AC]: AC-2
+ * @[TC]: TC-P0-T2 verifyConnect_byManualAcceptPendingClient_expectSuccess
+ *
+ * @[Brief]: GIVEN service online in MANUAL_ACCEPT mode, WHEN client calls
+ * IOC_connectService and service later calls IOC_acceptClient, THEN IOC returns
+ * success and both endpoints hold valid non-zero link IDs
+ */
+TEST_F(US1_TypicalTest,
+       TC_P0_T2_verifyConnect_byManualAcceptPendingClient_expectSuccess) {
+  // SETUP: Prepare service without AUTO_ACCEPT so explicit accept is required.
+  IOC_SrvArgs_T srvArgs;
+  IOC_Helper_initSrvArgs(&srvArgs);
+
+  srvArgs.SrvURI.pProtocol = IOC_SRV_PROTO_FIFO;
+  srvArgs.SrvURI.pHost = IOC_SRV_HOST_LOCAL_PROCESS;
+  srvArgs.SrvURI.pPath = "UT_Service_Typical_ManualAccept";
+  srvArgs.SrvURI.Port = 0;
+  srvArgs.Flags = IOC_SRVFLAG_NONE;
+  srvArgs.UsageCapabilites = IOC_LinkUsageDatReceiver;
+  srvArgs.UsageArgs.pDat = nullptr;
+
+  IOC_Result_T result = IOC_onlineService(&srvID_, &srvArgs);
+  ASSERT_EQ(result, IOC_RESULT_SUCCESS)
+      << "Service failed to come online for manual-accept scenario";
+  ASSERT_NE(srvID_, 0) << "Service ID must be valid before connect/accept";
+
+  // BEHAVIOR: Client connects first; service should accept explicitly later.
+  IOC_ConnArgs_T connArgs;
+  IOC_Helper_initConnArgs(&connArgs);
+
+  connArgs.SrvURI.pProtocol = IOC_SRV_PROTO_FIFO;
+  connArgs.SrvURI.pHost = IOC_SRV_HOST_LOCAL_PROCESS;
+  connArgs.SrvURI.pPath = "UT_Service_Typical_ManualAccept";
+  connArgs.SrvURI.Port = 0;
+  connArgs.Usage = IOC_LinkUsageDatSender;
+
+  result = IOC_connectService(&clientConnLinkID_, &connArgs, nullptr);
+
+  // VERIFY: RED expectation today is that this path is not implemented yet.
+  EXPECT_EQ(result, IOC_RESULT_SUCCESS)
+      << "Manual-accept client connect should succeed and remain pending until "
+         "IOC_acceptClient finalizes it";
+  EXPECT_NE(clientConnLinkID_, 0)
+      << "Client-side link ID should be reserved for pending manual-accept "
+         "connection";
+
+  result = IOC_acceptClient(srvID_, &srvAcceptLinkID_, nullptr);
+
+  EXPECT_EQ(result, IOC_RESULT_SUCCESS)
+      << "Service accept should finalize the pending client in manual-accept "
+         "mode";
+  EXPECT_NE(srvAcceptLinkID_, 0)
+      << "Server-side accepted link ID must be non-zero after explicit accept";
 
   // CLEANUP: handled by TearDown()
 }

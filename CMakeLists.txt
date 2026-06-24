@@ -61,7 +61,7 @@ else()
     add_library(${PROJECT_LIB} INTERFACE)
 endif()
 
-target_include_directories(${PROJECT_LIB} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Include)
+target_include_directories(${PROJECT_LIB} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Include)
 
 if(CONFIG_BUILD_UNIT_TESTING)
     enable_testing()
