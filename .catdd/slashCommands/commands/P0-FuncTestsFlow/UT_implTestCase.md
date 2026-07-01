@@ -35,11 +35,11 @@ Ask the assistant to:
 3. Implement minimal production code for GREEN only after RED is meaningful.
 4. Refactor only after the selected TC is GREEN and only inside the requested scope.
 5. In REFACTOR stage, apply this order:
-   - First, refine and clear design comments: follow the CaTDD template, preserve US/AC/TC markers, and make key points glance-readable.
-   - Second, refactor test code for readability without changing the TC purpose, AC meaning, coverage intent, or expected behavior.
-   - If a key missing behavior, edge case, acceptance point, or test purpose is discovered, stop expanding the current TC and ask the developer to add or select a new test case.
-   - Third, refactor production code for readability and local structure only, with no behavior, API, contract, or observable state change.
-   - Last, rerun the focused TC and relevant regression scope; the final state must remain GREEN before marking REFACTOR complete.
+	- First, refine and clear design comments: follow the CaTDD template, preserve US/AC/TC markers, and make key points glance-readable.
+	- Second, refactor test code for readability without changing the TC purpose, AC meaning, coverage intent, or expected behavior.
+	- If a key missing behavior, edge case, acceptance point, or test purpose is discovered, stop expanding the current TC and ask the developer to add or select a new test case.
+	- Third, refactor production code for readability and local structure only, with no behavior, API, contract, or observable state change.
+	- Last, rerun the focused TC and relevant regression scope; the final state must remain GREEN before marking REFACTOR complete.
 6. Update TC status without deleting design comments.
 
 ## Conflict Guard

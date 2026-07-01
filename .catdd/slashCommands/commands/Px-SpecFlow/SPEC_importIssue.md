@@ -38,12 +38,12 @@ Use the following routing policy:
 `auto` selection rules:
 
 - Prefer `subagent` when any of these are true:
- 	- issue source is long-form (roughly >120 lines or >8KB)
- 	- multiple source artifacts are included (URL + logs + pasted report)
- 	- active conversation context is already heavy and preserving working memory is more important than latency
+	- issue source is long-form (roughly >120 lines or >8KB)
+	- multiple source artifacts are included (URL + logs + pasted report)
+	- active conversation context is already heavy and preserving working memory is more important than latency
 - Prefer `inline` when:
- 	- issue source is short and deterministic
- 	- import is a simple single-file write with no bulky attachments
+	- issue source is short and deterministic
+	- import is a simple single-file write with no bulky attachments
 
 Cost note:
 

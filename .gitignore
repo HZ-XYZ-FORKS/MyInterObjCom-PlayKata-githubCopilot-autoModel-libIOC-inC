@@ -10,9 +10,10 @@
 #.github/prompts/SPEC_*.prompt.md
 # END CaTDD managed ignore rules
 
-# BEGIN CaTDD SpecCoding local state
-/.catdd/spec/WorkingProcessLog.md
-# END CaTDD SpecCoding local state
 
 # Local CMake build output
 /CMakeBuilt/
+
+# BEGIN CaTDD SpecCoding local state
+/.catdd/spec/WorkingProcessLog.md
+# END CaTDD SpecCoding local state

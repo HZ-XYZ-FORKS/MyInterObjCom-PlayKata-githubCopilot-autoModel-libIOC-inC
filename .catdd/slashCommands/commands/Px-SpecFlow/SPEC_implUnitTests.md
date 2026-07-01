@@ -2,120 +2,88 @@
 
 ## Purpose
 
-**Lifecycle coordinator** for implementing CaTDD test cases across an active user story.
-
-SPEC_implUnitTests orchestrates **cross-file, cross-category sequencing** (P0 Functional priority order).
-It delegates **per-TC test implementation** to `UT_implTestCase` for strict RED/GREEN/REFACTOR discipline.
+Implement selected CaTDD test cases for the active user story in test-first order, consuming `SPEC_designUnitTests` handoff slices through `P0-FuncTestsFlow` first and only then P1/P2 slices when they are ready.
 
 ## CoT Pattern
 
-**Linear Orchestration** — Direct execution. SPEC_implUnitTests:
+**ReACT** — Reasoning + Acting with observable checkpoints. This command must inspect the selected TC slices and skeleton review status, reason about category priority and implementation order, act by selecting (via `UT_tellMeNextImplTest`), implementing (via `UT_implTestCase`), and reviewing (via `UT_reviewImplTestCase`) each TC, observe the review result, then decide whether to implement the next TC or hand off to product-code implementation. The loop is priority locked: complete P0 Functional TC implementation before any P1/P2 promotion.
 
-1. Parses the active story's TC list from design verification artifacts
-2. Selects TCs matching P0 Functional priority order (Typical → Edge → Misuse → Fault)
-3. **For each selected TC**: invokes `UT_implTestCase` with:
-   - Single TC ID
-   - Target test file
-   - Source files
-   - Stage (RED → GREEN or REFACTOR)
-4. Reports cumulative test status and recommends next SPEC command
+Use concise public reasoning summaries, not hidden chain-of-thought transcripts.
 
-If any TC fails RED or GREEN phase, SPEC_implUnitTests surfaces the failure before advancing.
+Example ReACT trace for a single-TC pass:
 
-## Responsibility Division
-
-**SPEC_implUnitTests handles** (Px-SpecFlow lifecycle layer):
-
-- Which TCs to implement (category priority order, P0-first)
-- Cross-file coordination (which TC lives in which test file)
-- Test framework selection and build validation
-- Cumulative status reporting across multiple TCs
-- Next SPEC command routing
-
-**UT_implTestCase handles** (CaTDD category mechanics):
-
-- Design skeleton preservation (@[US]/@[AC]/@[TC]/@[Status])
-- RED state verification (test fails before product code)
-- GREEN state verification (test passes after minimal product code)
-- REFACTOR scope containment
-- Single TC at a time
+1. `Reason`: The handoff lists P0 Functional TCs; Typical TC-001 is TODO with no dependencies.
+2. `Act`: Apply `UT_implTestCase` mechanics to implement TC-001 in RED stage.
+3. `Observe`: Implementation compiles; test runner shows expected RED.
+4. `Act`: Apply `UT_reviewImplTestCase` mechanics — implementation aligns with TC-001 skeleton.
+5. `Observe`: Review passes; no drift found.
+6. `Decide`: Recommend `SPEC_implProductCodes` for GREEN pass, or another `SPEC_implUnitTests` pass for the next TC.
 
 ## Inputs
 
-- `selected_category`: P0 Functional category to implement (e.g., "Typical", "Edge", "Misuse", "Fault")
-  - If omitted: use verification design artifact to auto-select next P0 category in priority order
-- `test_framework`: project test framework (e.g., GoogleTest, Catch2)
-  - Usually auto-detected from CMakeLists.txt or build config
+- `selected_tc`: one or more selected TC entries.
+- `target_test_files`: test files to update.
+- `test_framework`: project test framework.
+- `tc_slices`: test-case slices produced by `SPEC_designUnitTests`, including US/AC/TC, category, priority, dependency, and validation checkpoint.
+- `category_priority`: default order is P0 Functional, then P1 Design, then P2 Quality.
+- `review_status`: latest `UT_reviewFuncTestsSkeleton`, `UT_reviewDesignTestsSkeleton`, or `UT_reviewQualityTestsSkeleton` result when available.
+- `source_files`: optional production files related to the selected TC; product changes still belong to later TDD stage or `SPEC_implProductCodes` unless explicitly requested.
+- `test_result`: optional test output, failure summary, or review result from the previous implementation pass.
 
 ## Method References
 
-- [Px-SpecFlow](../../flows/Px-SpecFlow.md) — Lifecycle context
-- [P0-FuncTestsFlow](../../flows/P0-FuncTestsFlow.md) — P0 priority order
-- [UT_implTestCase](../P0-FuncTestsFlow/UT_implTestCase.md) — Delegated TC implementation
-- [CaTDD_methodPrompt](../../../methodPrompts/CaTDD_methodPrompt.md) — Category semantics
+- [Px-SpecFlow](../../flows/Px-SpecFlow.md)
+- [P0-FuncTestsFlow.md](../../flows/P0-FuncTestsFlow.md)
+- [P1-DesignTestsFlow.md](../../flows/P1-DesignTestsFlow.md)
+- [P2-QualityTestsFlow.md](../../flows/P2-QualityTestsFlow.md)
+- [UT_tellMeNextImplTest.md](../../commands/P0-FuncTestsFlow/UT_tellMeNextImplTest.md)
+- [UT_implTestCase.md](../../commands/P0-FuncTestsFlow/UT_implTestCase.md)
+- [UT_reviewImplTestCase.md](../../commands/P0-FuncTestsFlow/UT_reviewImplTestCase.md)
+- [../../../methodPrompts/CaTDD_methodPrompt.md](../../../methodPrompts/CaTDD_methodPrompt.md)
 
 ## Output Contract
 
-- **For each TC in the selected category:**
-  - `UT_implTestCase` output: test code with preserved skeleton, RED or GREEN status, status marker updated
-  - Verification: test runs and shows actual result (RED/GREEN/ERROR)
-- **Cumulative report:** X of Y TCs in category passing. Next category recommendation.
-- **Next recommended command:**
-  - If category TCs all GREEN: `SPEC_implUnitTests` with next P0 category (e.g., Edge → Misuse → Fault)
-  - If category has RED or ERROR: `SPEC_implProductCodes` to implement product behavior for failing TC
-  - After all P0 categories complete: `SPEC_implProductCodes` or promote to P1 (State/Capability)
+- Implemented test case code in committed test files, tied to selected TC comments.
+- Preserved comment-alive CaTDD design sections, including US/AC/TC, `@[Category]`, `@[Priority]`, `@[SourceSPEC]`, `@[SourceUT]`, `@[Template]`, and `@[SUT]` markers.
+- Test status update showing `TODO`, `RED`, `GREEN`, `ISSUES`, or `BLOCKED` state when known.
+- Evidence that TC selection respected P0-first priority, or an explicit developer override for a P1/P2 TC.
+- Verification command and result when available.
+- TC review result: alignment check against the US/AC/TC skeleton, missing or excessive assertions, setup/cleanup gaps, and drift findings.
+- Next recommended command: `SPEC_implProductCodes` (for GREEN pass), another `SPEC_implUnitTests` pass (for the next TC), `UT_reviewImplTestCase` (when drift needs attention), or `SPEC_designUnitTests` (when skeleton revision is needed).
 
-## Execution Flow
+## Flow Coupling
 
-```text
-SPEC_implUnitTests [<category>]
-  ├─ Locate <UT_<feature>_<category>.cxx> test file in project
-  ├─ Extract all TC entries from file: TC-<id-1>, TC-<id-2>, ...
-  │
-  ├─ For each TC:
-  │   └─ UT_implTestCase (TC-<id>, test_file, sources, stage=RED)
-  │      ├─ Preserve @[US]/@[AC]/@[TC] skeleton
-  │      ├─ Implement test code
-  │      ├─ Run: ✗ FAIL (RED) ← Expected, skeleton ready for product code
-  │      └─ Report TC status: RED
-  │
-  └─ Summary: <category> coverage: X/Y RED, Z/Y GREEN ✓
-     Next: SPEC_implProductCodes for failing TCs, or next category
+`SPEC_implUnitTests` consumes skeletons produced by the design flows. It does not redesign categories.
 
-EXAMPLE (IOC project):
-  SPEC_implUnitTests [Typical]
-    ├─ Locate Test/UT_US1_Service_Typical.cxx
-    ├─ Extract: TC-P0-T1, TC-P0-T2
-    ├─ For TC-P0-T1: UT_implTestCase → RED ✓
-    ├─ For TC-P0-T2: UT_implTestCase → RED ✓
-    └─ Summary: Typical: 0/2 GREEN, 2/2 RED
-       Next: SPEC_implProductCodes for P0 Typical
-```
+1. Use `UT_tellMeNextImplTest` selection rules when no explicit TC is selected.
+2. Prefer the highest-priority ready P0 Functional TC from `Typical`, `Edge`, `Misuse`, or `Fault`.
+3. Move to P1 `State`, `Capability`, or `Concurrency` TCs only when P0 TCs are implemented, blocked with evidence, or explicitly bypassed by the developer.
+4. Move to P2 `Performance`, `Robust`, `Compatibility`, or `Configuration` TCs only when P0 exists and relevant P1 coverage is complete, blocked with evidence, or explicitly not applicable.
+5. Use `UT_implTestCase` mechanics for each selected TC: locate the TC, preserve comments, implement exactly the requested test body, update status, and report verification.
+6. Use `UT_reviewImplTestCase` mechanics after each implementation: compare implementation against the TC skeleton, check assertions verify the promised expectation, check setup/behavior/verify/cleanup clarity, and report alignment or drift.
+7. Decide: if review passes, recommend `SPEC_implProductCodes` (for GREEN pass) or another `SPEC_implUnitTests` pass (for the next TC). If review finds drift, route to the recommended action (fix implementation, revise skeleton, or select next TC).
+
+The SPEC command owns story-level ordering and handoff to product-code implementation. The `UT_*` command contract owns TC-level mechanics.
+
+## Implementation Rules
+
+- Implement exactly the selected TC or selected small batch. If no TC is selected, choose one TC by the flow priority order.
+- Keep unrelated skeletons untouched except for status markers that are directly affected by the implemented TC.
+- Preserve the design intent and trace comments. Do not collapse US/AC/TC comments into ordinary test names.
+- Prefer RED first when behavior is missing. A meaningful failing test is a valid result and should route next to `SPEC_implProductCodes`.
+- Do not implement product code inside this command unless the developer explicitly requests a combined TDD step.
+- When a selected TC depends on missing P1/P2 design evidence, stop and route back to `SPEC_designUnitTests` or the appropriate design command instead of inventing behavior.
+- After implementation, run `UT_reviewImplTestCase` before proceeding to the next TC or `SPEC_implProductCodes`. If review finds implementation-skeleton drift, do not proceed until the drift is resolved: fix the implementation, revise the skeleton, or ask the developer.
 
 ## Prompt Template
 
-When invoked, ask the developer:
-
-1. **Category focus?** (Default: next P0 category from verification design)
-   - Options: Typical, Edge, Misuse, Fault (P0 Functional priority order)
-   - Or: State, Capability, Concurrency (P1 Design, after P0 complete)
-   - If ambiguous: "Verification design shows P0 categories in order: [list from project]. Which should I implement next?"
-
-2. **Single TC or batch?** (Default: batch all TCs in selected category)
-   - Single TC: `UT_implTestCase` for one specific TC with explicit RED/GREEN stage
-   - Batch: `UT_implTestCase` invoked for each TC sequentially, status accumulated
-
-3. **Stage?** (Default: RED → GREEN sequence)
-   - RED: Implement test only, show failure (no product code yet)
-   - GREEN: Product code exists and should now pass
-   - REFACTOR: Product code works, clean it up (no behavior change)
+Ask the assistant to run an observable ReACT loop: reason about TC priority and skeleton review status, act by selecting (via `UT_tellMeNextImplTest`), implementing (via `UT_implTestCase`), and reviewing (via `UT_reviewImplTestCase`) one TC at a time, observe implementation quality and review alignment, then decide the next step. Preserve CaTDD skeleton metadata, respect P0-first ordering, and keep unrelated test skeletons untouched.
 
 ## Conflict Guard
 
-- **Do not batch TCs across categories.** Typical → Edge → Misuse → Fault in order. Enforce P0 Functional ordering.
-- **Do not reimplement UT_implTestCase logic.** Delegate per-TC work to `UT_implTestCase` instead of duplicating skeleton preservation, RED/GREEN verification, or status tracking.
-- **Do not advance to SPEC_implProductCodes until all TCs in current category are RED.** RED state proves tests are meaningful.
-- If a TC cannot compile or run (build error, missing API), surface that as a blocker before proceeding.
-- If test framework is unknown or build fails, ask developer for clarification.
+Respect test-first order. Do not skip ready P0 Functional TCs in favor of P1/P2 work unless the developer explicitly selected that TC or the P0 TCs are complete, blocked, or not applicable. If tests cannot run or fail unexpectedly, report that before implementing product code.
+Do not redesign skeletons during implementation. If the skeleton is untraceable, missing AC/TC links, or in the wrong category, route back to `SPEC_designUnitTests`.
+Do not proceed to `SPEC_implProductCodes` or the next TC when `UT_reviewImplTestCase` finds implementation-skeleton drift that is not yet resolved.
+Do not skip the review step between TC implementation and product-code handoff: every implemented TC should pass `UT_reviewImplTestCase` before the next lifecycle step.
 
 ONE-MORE-THING: ask developer if something not sure

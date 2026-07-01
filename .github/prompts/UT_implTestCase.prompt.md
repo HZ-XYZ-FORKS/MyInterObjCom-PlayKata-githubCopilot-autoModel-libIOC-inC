@@ -5,13 +5,27 @@ argument-hint: "Fill required command inputs, source files, target files, langua
 ---
 # UT_implTestCase
 
-**Thin Copilot adapter.** Source of truth: [UT_implTestCase](../../.catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md)
+You are running a Copilot-native wrapper around a portable CaTDD slash command.
 
-## Copilot Execution Rules
+## Source Command
 
-1. **Read the portable source command first** and follow it as the full RED/GREEN/REFACTOR contract.
-2. **Do not restate or override the source command.** If this wrapper conflicts with it, the source command wins.
-3. **Implement one selected TC at a time; no batching.**
-4. **Use the CaTDD design template as the structural reference** and preserve US/AC/TC/status markers.
-5. **Report verification according to the source command output contract.**
-6. Ask the developer before guessing unclear product intent, acceptance criteria, or test behavior.
+- Portable command path: .catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md
+- Default workspace link: [.catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md](../../.catdd/slashCommands/commands/P0-FuncTestsFlow/UT_implTestCase.md)
+- Flow: P0-FuncTestsFlow
+
+## Method Source of Truth
+
+- CaTDD method index: [.catdd/methodPrompts/README.md](../../.catdd/methodPrompts/README.md)
+- Slash command contract: [.catdd/slashCommands/UT_slashCommandTemplate.md](../../.catdd/slashCommands/UT_slashCommandTemplate.md)
+- Flow docs: [.catdd/slashCommands/flows](../../.catdd/slashCommands/flows)
+
+## Execution Rules
+
+1. Read and follow the portable source command before acting.
+2. Treat this file as a thin Copilot adapter; do not redefine CaTDD method semantics here.
+3. Use methodPrompts for category meaning, priority order, design skeleton rules, and CaTDD constraints.
+4. Use the source command for inputs, outputs, conflict guards, and next-step flow.
+5. Ask for missing product intent instead of inventing requirements.
+6. Report the next recommended slash command when the step finishes.
+
+ONE-MORE-THING: ask developer if something not sure

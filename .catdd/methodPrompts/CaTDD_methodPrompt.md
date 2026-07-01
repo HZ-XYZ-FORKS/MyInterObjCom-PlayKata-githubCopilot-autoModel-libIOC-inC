@@ -1498,7 +1498,6 @@ When you encounter problems during test implementation, follow these systematic 
    "To unblock:
    
    Option A: Implement IOC_getCapability() API first (estimated 4 hours)
-
   Option B: Continue with other P0 tests, defer capacity tests to P1
    Option C: Use hard-coded constant for now, add TODO to fix later
 
