@@ -83,7 +83,7 @@
  * @[AC]: AC-3
  * @[TC]: TC-P0-E3
  * verifyOffline_byKeepAcceptedLinkFlag_expectKeepExistingRejectNew
- * @[Status]: RED
+ * @[Status]: GREEN
  *
  * @[AC]: AC-3
  * @[TC]: TC-P0-E4

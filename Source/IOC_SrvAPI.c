@@ -140,8 +140,17 @@ IOC_Result_T IOC_offlineService(IOC_SrvID_T SrvID) {
     return IOC_RESULT_NOT_EXIST_SERVICE;
   }
 
+  IOC_Bool_T keep_accepted_links =
+      ((service->args.Flags & IOC_SRVFLAG_KEEP_ACCEPTED_LINK) != 0U)
+          ? IOC_TRUE
+          : IOC_FALSE;
+
   for (size_t i = 0; i < IOC_MAX_LINKS; ++i) {
     if (g_links[i].in_use && g_links[i].srv_id == SrvID) {
+      if (keep_accepted_links == IOC_TRUE && g_links[i].accepted == IOC_TRUE) {
+        continue;
+      }
+
       g_links[i].in_use = IOC_FALSE;
       g_links[i].id = IOC_INVALID_LINK_ID;
       g_links[i].srv_id = IOC_INVALID_SRV_ID;
