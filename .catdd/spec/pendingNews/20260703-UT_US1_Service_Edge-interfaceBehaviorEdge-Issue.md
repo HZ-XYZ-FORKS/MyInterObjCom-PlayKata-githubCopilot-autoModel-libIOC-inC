@@ -29,3 +29,4 @@ Keep this issue focused on interface behavior edge scenarios for `UT_US1_Service
 - project_context: .catdd/spec/projectContext.md
 - related_active_story: .catdd/spec/doingUS/20260618-EstablishedLink-UserStory.md
 - notes: Imported as raw pending issue only; no user story or acceptance criteria generated in this step.
+- sequencing_note: Developer decision on 2026-07-03 is to complete current US-1 first, then run SPEC_analyzeIssue for this pending issue.
