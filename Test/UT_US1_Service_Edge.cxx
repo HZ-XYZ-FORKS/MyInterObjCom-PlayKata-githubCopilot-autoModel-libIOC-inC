@@ -1,20 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "IOC/IOC.h"
+#include "_UT_Common.h"
 #include <cstdio>
-
-#ifndef VERIFY_KEYPOINT_EQ
-#define VERIFY_KEYPOINT_EQ(actual, expected, message)                          \
-  EXPECT_EQ((actual), (expected)) << (message)
-#endif
-#ifndef VERIFY_KEYPOINT_NE
-#define VERIFY_KEYPOINT_NE(actual, expected, message)                          \
-  EXPECT_NE((actual), (expected)) << (message)
-#endif
-#ifndef VERIFY_KEYPOINT_TRUE
-#define VERIFY_KEYPOINT_TRUE(condition, message)                               \
-  EXPECT_TRUE((condition)) << (message)
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // UT_US1_Service_Edge.cxx - CaTDD Implementation for IOC Link Establishment
@@ -28,7 +16,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF OVERVIEW OF THIS UNIT TESTING
-//FILE===============================================
+// FILE===============================================
 /**
  * @brief
  *   [WHAT] This file verifies IOC Service/Client link-establishment edge
@@ -46,11 +34,11 @@
  *   - Production code: Source/IOC_SrvAPI.c.
  */
 //======>END OF OVERVIEW OF THIS UNIT TESTING
-//FILE=================================================
+// FILE=================================================
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF ACCEPTANCE CRITERIA
-//DESIGN=======================================================
+// DESIGN=======================================================
 /**
  * [@US-1] Establish IOC Link Between Service and Client
  *
@@ -60,11 +48,11 @@
  * connects.
  */
 //=======>END OF ACCEPTANCE CRITERIA
-//DESIGN========================================================
+// DESIGN========================================================
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF TEST CASES
-//DESIGN================================================================
+// DESIGN================================================================
 /**
  * SUT: IOC Service/Link establishment behavior
  * APIs: IOC_connectService, IOC_offlineService
@@ -88,10 +76,10 @@
  * @[AC]: AC-3
  * @[TC]: TC-P0-E4
  * verifyOffline_byCloseAcceptedLinkDefault_expectCloseExistingRejectNew
- * @[Status]: TODO
+ * @[Status]: GREEN
  */
 //======>END OF TEST CASES
-//DESIGN==================================================================
+// DESIGN==================================================================
 
 namespace {
 class US1_EdgeTest : public ::testing::Test {
@@ -122,8 +110,8 @@ protected:
 TEST_F(US1_EdgeTest,
        TC_P0_E1_verifyConnect_byAutoAcceptWithoutCallback_expectSuccess) {
   //===>>> SETUP <<<===
-  printf("SETUP: "
-         "TC_P0_E1_verifyConnect_byAutoAcceptWithoutCallback_expectSuccess\n");
+  UT_PHASE_SETUP(
+      "TC_P0_E1_verifyConnect_byAutoAcceptWithoutCallback_expectSuccess");
 
   IOC_SrvArgs_T srvArgs;
   IOC_Helper_initSrvArgs(&srvArgs);
@@ -142,7 +130,7 @@ TEST_F(US1_EdgeTest,
   srvArgs.UsageArgs.pDat = &datArgs;
 
   //===>>> BEHAVIOR <<<===
-  printf("BEHAVIOR: online service + connect client in auto-accept mode\n");
+  UT_PHASE_BEHAVIOR("online service + connect client in auto-accept mode");
 
   IOC_Result_T result = IOC_onlineService(&srvID_, &srvArgs);
   ASSERT_EQ(result, IOC_RESULT_SUCCESS)
@@ -161,7 +149,7 @@ TEST_F(US1_EdgeTest,
   result = IOC_connectService(&clientConnLinkID_, &connArgs, nullptr);
 
   //===>>> VERIFY <<<===
-  printf("VERIFY: connect succeeds and link is valid\n");
+  UT_PHASE_VERIFY("connect succeeds and link is valid");
   VERIFY_KEYPOINT_EQ(
       result, IOC_RESULT_SUCCESS,
       "Auto-accept connect should succeed when callback is not configured");
@@ -169,19 +157,19 @@ TEST_F(US1_EdgeTest,
                      "Client link ID must be valid after successful connect");
 
   //===>>> CLEANUP <<<===
-  printf("CLEANUP: handled by fixture TearDown\n");
+  UT_PHASE_CLEANUP("handled by fixture TearDown");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF TODO/IMPLEMENTATION TRACKING
-//SECTION============================================
+// SECTION============================================
 // P0 Edge status summary for this file:
 // - E1: REFACTOR
 // - E2: REFACTOR
-// - E3: RED (KEEP_ACCEPTED_LINK behavior not yet satisfied by product code)
-// - E4: TODO
+// - E3: GREEN
+// - E4: GREEN
 //======>END OF TODO/IMPLEMENTATION TRACKING
-//SECTION===============================================
+// SECTION===============================================
 
 /*
  * @[Class]: P0 Functional / ValidFunc
@@ -195,8 +183,8 @@ TEST_F(US1_EdgeTest,
 TEST_F(US1_EdgeTest,
        TC_P0_E2_verifyConnect_byTimeoutOptionExceeded_expectTimeout) {
   //===>>> SETUP <<<===
-  printf(
-      "SETUP: TC_P0_E2_verifyConnect_byTimeoutOptionExceeded_expectTimeout\n");
+  UT_PHASE_SETUP(
+      "TC_P0_E2_verifyConnect_byTimeoutOptionExceeded_expectTimeout");
 
   IOC_SrvArgs_T srvArgs;
   IOC_Helper_initSrvArgs(&srvArgs);
@@ -228,17 +216,17 @@ TEST_F(US1_EdgeTest,
   IOC_Option_defineSyncTimeout(connectOpt, IOC_TIMEOUT_IMMEDIATE);
 
   //===>>> BEHAVIOR <<<===
-  printf("BEHAVIOR: connect with explicit sync-timeout and no manual accept\n");
+  UT_PHASE_BEHAVIOR("connect with explicit sync-timeout and no manual accept");
   result = IOC_connectService(&clientConnLinkID_, &connArgs, &connectOpt);
 
   //===>>> VERIFY <<<===
-  printf("VERIFY: timeout result is exact IOC_RESULT_TIMEOUT\n");
+  UT_PHASE_VERIFY("timeout result is exact IOC_RESULT_TIMEOUT");
   VERIFY_KEYPOINT_EQ(result, IOC_RESULT_TIMEOUT,
                      "Connect must return IOC_RESULT_TIMEOUT exactly when "
                      "timeout is exceeded");
 
   //===>>> CLEANUP <<<===
-  printf("CLEANUP: handled by fixture TearDown\n");
+  UT_PHASE_CLEANUP("handled by fixture TearDown");
 }
 
 /*
@@ -255,9 +243,8 @@ TEST_F(
     US1_EdgeTest,
     TC_P0_E3_verifyOffline_byKeepAcceptedLinkFlag_expectKeepExistingRejectNew) {
   //===>>> SETUP <<<===
-  printf("SETUP: "
-         "TC_P0_E3_verifyOffline_byKeepAcceptedLinkFlag_"
-         "expectKeepExistingRejectNew\n");
+  UT_PHASE_SETUP("TC_P0_E3_verifyOffline_byKeepAcceptedLinkFlag_"
+                 "expectKeepExistingRejectNew");
 
   IOC_SrvArgs_T srvArgs;
   IOC_Helper_initSrvArgs(&srvArgs);
@@ -286,7 +273,7 @@ TEST_F(
   connArgs.Usage = IOC_LinkUsageDatSender;
 
   //===>>> BEHAVIOR <<<===
-  printf("BEHAVIOR: establish link, offline service, then attempt reconnect\n");
+  UT_PHASE_BEHAVIOR("establish link, offline service, then attempt reconnect");
 
   result = IOC_connectService(&clientConnLinkID_, &connArgs, nullptr);
   ASSERT_EQ(result, IOC_RESULT_SUCCESS)
@@ -299,27 +286,113 @@ TEST_F(
       << "Service offline should succeed with KEEP_ACCEPTED_LINK enabled";
   srvID_ = IOC_INVALID_SRV_ID;
 
-  result = IOC_closeLink(clientConnLinkID_);
-
-  //===>>> VERIFY <<<===
-  printf("VERIFY: kept link remains valid and reconnect is rejected\n");
-  VERIFY_KEYPOINT_EQ(result, IOC_RESULT_SUCCESS,
-                     "Existing link should remain valid after offline when "
-                     "KEEP_ACCEPTED_LINK is set");
-  clientConnLinkID_ = IOC_INVALID_LINK_ID;
+  IOC_Result_T closeResult = IOC_closeLink(clientConnLinkID_);
 
   IOC_Option_defineSyncTimeout(connectOpt, IOC_TIMEOUT_IMMEDIATE);
   IOC_LinkID_T newConnLinkID = IOC_INVALID_LINK_ID;
-  result = IOC_connectService(&newConnLinkID, &connArgs, &connectOpt);
-  VERIFY_KEYPOINT_NE(result, IOC_RESULT_SUCCESS,
+  IOC_Result_T reconnectResult =
+      IOC_connectService(&newConnLinkID, &connArgs, &connectOpt);
+
+  //===>>> VERIFY <<<===
+  UT_PHASE_VERIFY("kept link remains valid and reconnect is rejected");
+  VERIFY_KEYPOINT_EQ(closeResult, IOC_RESULT_SUCCESS,
+                     "Existing link should remain valid after offline when "
+                     "KEEP_ACCEPTED_LINK is set");
+  clientConnLinkID_ = IOC_INVALID_LINK_ID;
+  VERIFY_KEYPOINT_NE(reconnectResult, IOC_RESULT_SUCCESS,
                      "New connect must fail after service is offline");
   VERIFY_KEYPOINT_EQ(
       newConnLinkID, IOC_INVALID_LINK_ID,
       "Failed reconnect after offline must not produce a usable link ID");
 
   //===>>> CLEANUP <<<===
-  printf("CLEANUP: close unexpected link if produced; otherwise fixture "
-         "handles cleanup\n");
+  UT_PHASE_CLEANUP("close unexpected link if produced; otherwise fixture "
+                   "handles cleanup");
+  if (newConnLinkID != IOC_INVALID_LINK_ID) {
+    IOC_closeLink(newConnLinkID);
+  }
+}
+
+/*
+ * @[Class]: P0 Functional / ValidFunc
+ * @[Category]: Edge
+ * @[Intent]: Default offline behavior closes accepted links and rejects new
+ * connections
+ * @[US]: US-1
+ * @[AC]: AC-3
+ * @[TC]: TC-P0-E4
+ * verifyOffline_byCloseAcceptedLinkDefault_expectCloseExistingRejectNew
+ */
+TEST_F(
+    US1_EdgeTest,
+    TC_P0_E4_verifyOffline_byCloseAcceptedLinkDefault_expectCloseExistingRejectNew) {
+  //===>>> SETUP <<<===
+  UT_PHASE_SETUP("TC_P0_E4_verifyOffline_byCloseAcceptedLinkDefault_"
+                 "expectCloseExistingRejectNew");
+
+  IOC_SrvArgs_T srvArgs;
+  IOC_Helper_initSrvArgs(&srvArgs);
+
+  srvArgs.SrvURI.pProtocol = IOC_SRV_PROTO_FIFO;
+  srvArgs.SrvURI.pHost = IOC_SRV_HOST_LOCAL_PROCESS;
+  srvArgs.SrvURI.pPath = "UT_Service_Edge_CloseAccepted";
+  srvArgs.SrvURI.Port = 0;
+  // Default close behavior: no KEEP_ACCEPTED_LINK flag.
+  srvArgs.Flags = IOC_SRVFLAG_AUTO_ACCEPT;
+  srvArgs.UsageCapabilites = IOC_LinkUsageDatReceiver;
+  srvArgs.UsageArgs.pDat = nullptr;
+
+  IOC_Result_T result = IOC_onlineService(&srvID_, &srvArgs);
+  ASSERT_EQ(result, IOC_RESULT_SUCCESS)
+      << "Service online should succeed for close-accepted default scenario";
+  ASSERT_NE(srvID_, IOC_INVALID_SRV_ID)
+      << "Service ID must be valid before creating the initial link";
+
+  IOC_ConnArgs_T connArgs;
+  IOC_Helper_initConnArgs(&connArgs);
+  connArgs.SrvURI.pProtocol = IOC_SRV_PROTO_FIFO;
+  connArgs.SrvURI.pHost = IOC_SRV_HOST_LOCAL_PROCESS;
+  connArgs.SrvURI.pPath = "UT_Service_Edge_CloseAccepted";
+  connArgs.SrvURI.Port = 0;
+  connArgs.Usage = IOC_LinkUsageDatSender;
+
+  //===>>> BEHAVIOR <<<===
+  UT_PHASE_BEHAVIOR("establish link, offline service in default close mode, "
+                    "then reconnect");
+
+  result = IOC_connectService(&clientConnLinkID_, &connArgs, nullptr);
+  ASSERT_EQ(result, IOC_RESULT_SUCCESS)
+      << "Initial connect should succeed before service offline";
+  ASSERT_NE(clientConnLinkID_, IOC_INVALID_LINK_ID)
+      << "Initial client link must be valid before service offline";
+
+  result = IOC_offlineService(srvID_);
+  ASSERT_EQ(result, IOC_RESULT_SUCCESS)
+      << "Service offline should succeed in default close mode";
+  srvID_ = IOC_INVALID_SRV_ID;
+
+  IOC_Result_T closeResult = IOC_closeLink(clientConnLinkID_);
+
+  IOC_Option_defineSyncTimeout(connectOpt, IOC_TIMEOUT_IMMEDIATE);
+  IOC_LinkID_T newConnLinkID = IOC_INVALID_LINK_ID;
+  IOC_Result_T reconnectResult =
+      IOC_connectService(&newConnLinkID, &connArgs, &connectOpt);
+
+  //===>>> VERIFY <<<===
+  UT_PHASE_VERIFY("existing link is closed and reconnect is rejected");
+  VERIFY_KEYPOINT_EQ(
+      closeResult, IOC_RESULT_NOT_EXIST_LINK,
+      "Existing link should be closed by default after service offline");
+  clientConnLinkID_ = IOC_INVALID_LINK_ID;
+  VERIFY_KEYPOINT_EQ(reconnectResult, IOC_RESULT_NOT_EXIST_SERVICE,
+                     "New connect should fail because service is offline");
+  VERIFY_KEYPOINT_EQ(
+      newConnLinkID, IOC_INVALID_LINK_ID,
+      "Failed reconnect after offline should not produce a usable link ID");
+
+  //===>>> CLEANUP <<<===
+  UT_PHASE_CLEANUP("close unexpected link if produced; otherwise fixture "
+                   "handles cleanup");
   if (newConnLinkID != IOC_INVALID_LINK_ID) {
     IOC_closeLink(newConnLinkID);
   }

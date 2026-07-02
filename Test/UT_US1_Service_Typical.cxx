@@ -12,6 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "IOC/IOC.h"
+#include "_UT_Common.h"
 #include <chrono>
 #include <gtest/gtest.h>
 #include <thread>
@@ -173,7 +174,10 @@ protected:
  */
 TEST_F(US1_TypicalTest,
        TC_P0_T1_verifyConnect_byAutoAcceptCompatibleUsage_expectSuccess) {
-  // SETUP: Prepare service with AUTO_ACCEPT capability
+  //===>>> SETUP <<<===
+  UT_PHASE_SETUP(
+      "TC_P0_T1_verifyConnect_byAutoAcceptCompatibleUsage_expectSuccess");
+  // Prepare service with AUTO_ACCEPT capability.
   IOC_SrvArgs_T srvArgs;
   IOC_Helper_initSrvArgs(&srvArgs);
 
@@ -192,7 +196,9 @@ TEST_F(US1_TypicalTest,
   // No special usage args needed for this typical case (no callbacks for now)
   srvArgs.UsageArgs.pDat = nullptr;
 
-  // BEHAVIOR: Bring service online
+  //===>>> BEHAVIOR <<<===
+  UT_PHASE_BEHAVIOR("online service + connect client in auto-accept mode");
+  // Bring service online, then connect client with complementary usage.
   IOC_Result_T result = IOC_onlineService(&srvID_, &srvArgs);
   ASSERT_EQ(result, IOC_RESULT_SUCCESS)
       << "Service failed to come online: expected IOC_RESULT_SUCCESS";
@@ -200,7 +206,6 @@ TEST_F(US1_TypicalTest,
       << "Service ID must be valid (not IOC_INVALID_SRV_ID) after successful "
          "online";
 
-  // BEHAVIOR: Client connects with complementary usage (DAT_SENDER)
   IOC_ConnArgs_T connArgs;
   IOC_Helper_initConnArgs(&connArgs);
 
@@ -215,16 +220,22 @@ TEST_F(US1_TypicalTest,
 
   result = IOC_connectService(&clientConnLinkID_, &connArgs, nullptr);
 
-  // VERIFY: Connection succeeded and both sides have valid link IDs
-  EXPECT_EQ(result, IOC_RESULT_SUCCESS)
-      << "Client connect should return IOC_RESULT_SUCCESS in auto-accept mode";
-  EXPECT_NE(clientConnLinkID_, IOC_INVALID_LINK_ID)
-      << "Client link ID must be valid (not IOC_INVALID_LINK_ID) after "
-         "successful connect";
+  //===>>> VERIFY <<<===
+  UT_PHASE_VERIFY("connect succeeds and link is valid");
+  // Connection succeeds and client-side link is valid.
+  VERIFY_KEYPOINT_EQ(result, IOC_RESULT_SUCCESS,
+                     "Client connect should return IOC_RESULT_SUCCESS in "
+                     "auto-accept mode");
+  VERIFY_KEYPOINT_NE(
+      clientConnLinkID_, IOC_INVALID_LINK_ID,
+      "Client link ID must be valid (not IOC_INVALID_LINK_ID) after "
+      "successful connect");
   // Note: Server-side link ID is obtained implicitly by service in auto-accept
   // mode via IOC_getServiceLinkIDs() or OnAutoAccepted_F callback
 
-  // CLEANUP: handled by TearDown()
+  //===>>> CLEANUP <<<===
+  UT_PHASE_CLEANUP("handled by TearDown");
+  // handled by TearDown()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +262,10 @@ TEST_F(US1_TypicalTest,
  */
 TEST_F(US1_TypicalTest,
        TC_P0_T2_verifyConnect_byManualAcceptPendingClient_expectSuccess) {
-  // SETUP: Prepare service without AUTO_ACCEPT so explicit accept is required.
+  //===>>> SETUP <<<===
+  UT_PHASE_SETUP(
+      "TC_P0_T2_verifyConnect_byManualAcceptPendingClient_expectSuccess");
+  // Prepare service without AUTO_ACCEPT so explicit accept is required.
   IOC_SrvArgs_T srvArgs;
   IOC_Helper_initSrvArgs(&srvArgs);
 
@@ -270,7 +284,10 @@ TEST_F(US1_TypicalTest,
       << "Service ID must be valid (not IOC_INVALID_SRV_ID) before "
          "connect/accept";
 
-  // BEHAVIOR: Client connects first; service should accept explicitly later.
+  //===>>> BEHAVIOR <<<===
+  UT_PHASE_BEHAVIOR(
+      "online service, connect pending client, then manual accept");
+  // Client connects first; service accepts explicitly to complete pairing.
   IOC_ConnArgs_T connArgs;
   IOC_Helper_initConnArgs(&connArgs);
 
@@ -294,18 +311,26 @@ TEST_F(US1_TypicalTest,
 
   connectThread.join();
 
-  EXPECT_EQ(connectResult, IOC_RESULT_SUCCESS)
-      << "Manual-accept client connect should complete after IOC_acceptClient "
-         "finalizes it";
-  EXPECT_NE(clientConnLinkID_, IOC_INVALID_LINK_ID)
-      << "Client-side link ID should be valid (not IOC_INVALID_LINK_ID) after "
-         "manual-accept completion";
-  EXPECT_EQ(result, IOC_RESULT_SUCCESS)
-      << "Service accept should finalize the pending client in manual-accept "
-         "mode";
-  EXPECT_NE(srvAcceptLinkID_, IOC_INVALID_LINK_ID)
-      << "Server-side accepted link ID must be valid (not IOC_INVALID_LINK_ID) "
-         "after explicit accept";
+  //===>>> VERIFY <<<===
+  UT_PHASE_VERIFY("connect and accept succeed with valid paired link IDs");
+  // Connect and accept both succeed; both endpoint link IDs are valid.
+  VERIFY_KEYPOINT_EQ(
+      connectResult, IOC_RESULT_SUCCESS,
+      "Manual-accept client connect should complete after IOC_acceptClient "
+      "finalizes it");
+  VERIFY_KEYPOINT_NE(
+      clientConnLinkID_, IOC_INVALID_LINK_ID,
+      "Client-side link ID should be valid (not IOC_INVALID_LINK_ID) after "
+      "manual-accept completion");
+  VERIFY_KEYPOINT_EQ(result, IOC_RESULT_SUCCESS,
+                     "Service accept should finalize the pending client in "
+                     "manual-accept mode");
+  VERIFY_KEYPOINT_NE(
+      srvAcceptLinkID_, IOC_INVALID_LINK_ID,
+      "Server-side accepted link ID must be valid (not IOC_INVALID_LINK_ID) "
+      "after explicit accept");
 
-  // CLEANUP: handled by TearDown()
+  //===>>> CLEANUP <<<===
+  UT_PHASE_CLEANUP("handled by TearDown");
+  // handled by TearDown()
 }
