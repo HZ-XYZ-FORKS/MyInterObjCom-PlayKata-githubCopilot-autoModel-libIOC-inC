@@ -1,10 +1,65 @@
 # Re-architect IOC into Explicit L0-L3 Layers
 
-> **Story ID:** US-4 | **State:** todo | **Priority:** P1
+> **Story ID:** US-4 | **State:** doing-open | **Priority:** P1
 > **Source:** `.catdd/spec/analyzedNews/20260624-reArchDesign-Issue.md`
 > **CaTDD Class:** P1 Design
 > **Primary Category:** Capability
 > **Created:** 2026-07-04
+
+---
+
+## Active Work Status
+
+- Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
+- Next recommended command: `SPEC_takeArchDesign`.
+
+---
+
+## Mutual Intent Contract (SPEC_clearStoryIntent)
+
+### Developer Intent
+
+- Re-architect IOC into explicit L0-L3 layers with strict dependency direction.
+- Keep extension growth isolated (new protocol/platform variants should not force L2/L3 churn).
+- Preserve already validated US-1 service/link behavior during migration.
+
+### CodeAgent Intent
+
+- Produce planning/design artifacts first (before implementation) that define layer ownership and dependency rules.
+- Use migration slices that preserve behavior evidence after each slice.
+- Avoid changing public IOC interface semantics unless a later story explicitly authorizes it.
+
+### In Scope (Intent-Cleared)
+
+- Define and document L0/L1/L2/L3 responsibilities and allowed dependency edges.
+- Decide first-pass dependency-check method for boundary enforcement.
+- Prepare migration-plan-ready inputs for architecture/design commands.
+
+### Out of Scope (Intent-Cleared)
+
+- Full protocol matrix implementation (FIFO/TCP/UDP/HTTP) in this story.
+- Full cross-platform porting execution in this story.
+- Non-design implementation expansion beyond what is required for migration planning.
+
+### Success Signal
+
+- A reviewable architecture/design baseline exists with explicit layer map + dependency direction rules.
+- Forbidden dependency jumps are checkable by an agreed mechanism.
+- US-1 baseline behavior remains the regression guardrail for migration slices.
+
+### Assumptions
+
+- `Include/IOC/*.h` semantic compatibility is preserved unless a future story changes the contract.
+- This command clears intent only; design-path selection is delegated to `SPEC_makePlan`.
+
+### Open Questions (Non-Blocking for Planning)
+
+1. Decision: require both artifacts for first-pass layer mapping evidence (ownership table + dependency diagram).
+2. Decision: use manual review checklist first, then add scripted dependency scan as the next hardening step.
+
+### Review Result
+
+- `CLEARED` with the open questions above tracked as planning decisions.
 
 ---
 
@@ -166,7 +221,7 @@ flowchart TD
 | 1 | Which artifact should be mandatory for initial layer mapping: README_ArchDesign.md table, diagram-only, or both? | model gap | open |
 | 2 | Which dependency-check mechanism should be used first: manual review checklist or scripted dependency scan? | model gap | open |
 
-**Gate:** This story is **READY** for `SPEC_openUserStory` because open questions are non-blocking to starting architecture-design planning and can be resolved during `SPEC_takeArchDesign`.
+**Gate:** This story is **OPENED** and **READY** for `SPEC_takeArchDesign`; planning decisions are recorded and can be refined during architecture design and review.
 
 ---
 

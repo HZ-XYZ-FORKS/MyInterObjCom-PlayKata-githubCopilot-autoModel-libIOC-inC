@@ -10,7 +10,7 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | --- | --- | --- | --- | --- |
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 | US-3 | Refine Interface Behavior Edge Coverage for UT_US1_Service_Edge | todo | `.catdd/spec/analyzedNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md` | `.catdd/spec/todoUS/20260704-UT_US1_Service_Edge-InterfaceBehaviorEdge-UserStory.md` |
-| US-4 | Re-architect IOC into Explicit L0-L3 Layers | todo | `.catdd/spec/analyzedNews/20260624-reArchDesign-Issue.md` | `.catdd/spec/todoUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md` |
+| US-4 | Re-architect IOC into Explicit L0-L3 Layers | doing | `.catdd/spec/analyzedNews/20260624-reArchDesign-Issue.md` | `.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md` |
 
 ### DONE Stories
 
@@ -46,7 +46,7 @@ US-4: As a maintainer of IOC architecture,
 ## Lifecycle Links
 
 - Pending input: `.catdd/spec/pendingNews/`
-- Active story: none (US-1 closed)
+- Active story: `.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
 - Todo story: `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md`
 - Done story: `.catdd/spec/doneUS/`
 
