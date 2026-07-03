@@ -167,6 +167,20 @@ IOC_Result_T IOC_offlineService(IOC_SrvID_T SrvID) {
   return IOC_RESULT_SUCCESS;
 }
 
+IOC_Result_T IOC_getSrvState(IOC_SrvID_T SrvID, IOC_SrvState_T *pState) {
+  if (!pState || SrvID == IOC_INVALID_SRV_ID) {
+    return IOC_RESULT_INVALID_PARAM;
+  }
+
+  IOC_ServiceSlot_T *service = IOC__findServiceById(SrvID);
+  if (!service) {
+    return IOC_RESULT_NOT_EXIST_SERVICE;
+  }
+
+  *pState = IOC_SrvStateOnline;
+  return IOC_RESULT_SUCCESS;
+}
+
 IOC_Result_T IOC_acceptClient(IOC_SrvID_T SrvID, IOC_LinkID_pT pLinkID,
                               const IOC_Options_pT pOption) {
   (void)pOption;
