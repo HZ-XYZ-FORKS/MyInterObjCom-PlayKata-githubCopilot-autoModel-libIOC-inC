@@ -11,7 +11,10 @@
 ## Active Work Status
 
 - Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
-- Next recommended command: `SPEC_takeArchDesign`.
+- Architecture baseline created: `README_ArchDesign.md` via `SPEC_takeArchDesign`.
+- Architecture review result: `PASS` after re-gate `SPEC_reviewArchDesign`.
+- Architecture revision applied: `README_ArchDesign.md` updated via `SPEC_updateArchDesign`.
+- Next recommended command: `SPEC_takeDetailDesign`.
 
 ---
 
@@ -97,9 +100,9 @@ flowchart TD
  A[L3 IOC Interface] --> B[L2 IOC Core]
  B --> C[L1 IOC Protocol]
  C --> D[L0 Platform]
+ B --> D
  A -. forbidden .-> C
  A -. forbidden .-> D
- B -. forbidden .-> D
 ```
 
 ### Model Gap Analysis
@@ -117,10 +120,10 @@ flowchart TD
 
 ### Scenario 1: Layer Contract Is Defined and Enforced
 
-**Rule:** L3 may depend only on L2; L2 may depend only on L1; L1 may depend only on L0.
+**Rule:** L3 may depend only on L2; L2 may depend on L1 and L0 (POSIX); L1 may depend on L0.
 **Given** IOC architecture documentation and source ownership map
 **When** each module/file is classified into one of L0-L3
-**Then** all dependency edges follow L3->L2->L1->L0, with forbidden direct jumps flagged
+**Then** dependency edges must satisfy: L3->L2 only, L2->L1/L0 allowed, L1->L0 allowed, and L2 protocol behavior must be invoked through ProtoObject ProtoMethods whose corresponding behavior is defined by L0
 
 | Concrete Examples | Counter-Examples |
 |---|---|
@@ -163,7 +166,7 @@ flowchart TD
 | ID | Rule | Type | Implied Functional Requirement |
 |---|---|---|---|
 | BR-1 | IOC architecture must separate Platform, Protocol, Core, and Interface concerns. | Constraint | Design artifacts shall define explicit L0-L3 ownership and dependency direction. |
-| BR-2 | Higher layers cannot bypass lower-adjacent layers. | Constraint | Build/review checks shall detect forbidden dependencies (L3->L1/L0, L2->L0). |
+| BR-2 | L3 cannot bypass L2; L2 can access L0 (POSIX) and L1, but protocol behavior from L2 must go through ProtoObject ProtoMethods backed by L0-defined behavior. | Constraint | Build/review checks shall detect forbidden dependencies (L3->L1/L0), and detect any L2 protocol call path that bypasses ProtoObject ProtoMethods. |
 | BR-3 | Extending protocol/platform support should not force public interface churn. | Action Enabler | Adapter integration shall preserve L3 public API signatures by default. |
 | BR-4 | Refactor must preserve existing validated behavior. | Constraint | Regression evidence shall include existing US-1 baseline checks. |
 
@@ -218,10 +221,10 @@ flowchart TD
 
 | # | Question | Raised By | Status |
 |---|---|---|---|
-| 1 | Which artifact should be mandatory for initial layer mapping: README_ArchDesign.md table, diagram-only, or both? | model gap | open |
-| 2 | Which dependency-check mechanism should be used first: manual review checklist or scripted dependency scan? | model gap | open |
+| 1 | Which artifact should be mandatory for initial layer mapping: README_ArchDesign.md table, diagram-only, or both? | model gap | resolved: both table and diagram required |
+| 2 | Which dependency-check mechanism should be used first: manual review checklist or scripted dependency scan? | model gap | resolved: manual checklist first, scripted scan hardening next |
 
-**Gate:** This story is **OPENED** and **READY** for `SPEC_takeArchDesign`; planning decisions are recorded and can be refined during architecture design and review.
+**Gate:** Architecture review is **PASS**; this story is ready for `SPEC_takeDetailDesign`.
 
 ---
 
