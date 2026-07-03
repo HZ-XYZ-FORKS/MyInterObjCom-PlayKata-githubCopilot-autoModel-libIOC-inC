@@ -8,22 +8,21 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 
 | Story ID | Title | State | Source | Trace Link |
 | --- | --- | --- | --- | --- |
-| US-1 | Establish IOC Link Between Service and Client | doing | `.catdd/spec/analyzedNews/20260617-EstablishedLink-Feature.md` | `.catdd/spec/doingUS/20260618-EstablishedLink-UserStory.md` |
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 
 ### DONE Stories
 
 | Story ID | Title | Closed On | Evidence | Trace Link |
 | --- | --- | --- | --- | --- |
-| - | - | - | - | - |
+| US-1 | Establish IOC Link Between Service and Client | 2026-07-03 | commit `512e010`; CTest UT_US1_Service_* PASS | `.catdd/spec/doneUS/20260618-EstablishedLink-UserStory.md` |
 
 ## Active Story
 
 ```text
-US-1: As a developer integrating IOC Service and Client applications,
-      I want IOC to establish a bidirectional link pair (AcptLinkID <-> ConnLinkID)
-      from service-online to client-connect,
-      So that both endpoints can reliably start DAT/EVT/CMD messaging on valid link IDs.
+US-2: As a concurrent IOC API consumer,
+      I want duplicate or interleaved IOC_connectService attempts against the same context
+      to behave deterministically under contention,
+      So that link establishment avoids duplicate links, lost requests, and deadlocks.
 ```
 
 ## Acceptance Criteria Ledger
@@ -37,7 +36,7 @@ US-1: As a developer integrating IOC Service and Client applications,
 ## Lifecycle Links
 
 - Pending input: `.catdd/spec/pendingNews/`
-- Active story: `.catdd/spec/doingUS/20260618-EstablishedLink-UserStory.md`
+- Active story: none (US-1 closed)
 - Todo story: `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md`
 - Done story: `.catdd/spec/doneUS/`
 

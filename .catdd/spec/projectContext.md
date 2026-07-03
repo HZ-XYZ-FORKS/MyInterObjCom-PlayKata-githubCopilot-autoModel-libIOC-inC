@@ -76,3 +76,8 @@
 - Which compilers and C standard should be mandatory (e.g., gcc/clang, C11/C17)?
 - Which target environments must be supported first (desktop, embedded, both)?
 - Should API compatibility policy be strict source compatibility, ABI compatibility, or both?
+
+## Lifecycle Snapshot
+
+- 2026-07-03: US-1 (`.catdd/spec/doneUS/20260618-EstablishedLink-UserStory.md`) is closed and moved from doing to done.
+- Next execution-lock follow-up after US-1 closure: run `SPEC_analyzeIssue` for `.catdd/spec/pendingNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md`.

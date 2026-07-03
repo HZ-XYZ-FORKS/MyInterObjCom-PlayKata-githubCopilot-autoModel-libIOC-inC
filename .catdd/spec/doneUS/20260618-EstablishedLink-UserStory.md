@@ -1,16 +1,17 @@
 # Establish IOC Link Between Service and Client
 
-> **Story ID:** US-1 | **State:** doing-open | **Priority:** P1
+> **Story ID:** US-1 | **State:** done-closed | **Priority:** P1
 > **Source:** `.catdd/spec/analyzedNews/20260617-EstablishedLink-Feature.md`
 > **Created:** 2026-06-19
+> **Closed:** 2026-07-03
 
 ---
 
 ## Active Work Status
 
-- Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
-- Next recommended command: `SPEC_commitWorks`.
-- Paired task artifact: `.catdd/spec/doingUS/20260618-TASKs.md`.
+- Current status: closed and moved to `.catdd/spec/doneUS/` via `SPEC_closeUserStory`.
+- Next recommended command: `SPEC_analyzeIssue`.
+- Paired task artifact: `.catdd/spec/doneUS/20260618-TASKs.md`.
 - Requirement artifacts updated by `SPEC_updateUserStory`:
   - `README_UserStories.md`
   - `README_UserGuide.md`
@@ -48,7 +49,7 @@
 - P1 State and Capability skeletons are included using `README_StateDesign.md` and `README_DetailDesign.md` as design sources.
 - Concurrency and P2 quality categories are explicitly deferred with rationale due to missing design surfaces and US-2 ownership.
 
-**Next recommended command:** `SPEC_commitWorks`
+**Next recommended command:** `SPEC_analyzeIssue`
 
 ---
 
@@ -80,7 +81,7 @@
 | Field | Agreement |
 |---|---|
 | Developer intent | Clear story intent first, then run `SPEC_makePlan` for this active story. Deliver the P0 functional Established Link scope as currently defined in US-1. |
-| CodeAgent intent | Keep execution constrained to US-1 in `doingUS`, preserve current acceptance/boundary decisions, and route planning through `SPEC_makePlan` before design or implementation. |
+| CodeAgent intent | Keep execution constrained to US-1, preserve current acceptance/boundary decisions, and route planning through `SPEC_makePlan` before design or implementation. |
 | In-scope work | Service/client link establishment flow: `IOC_onlineService` -> `IOC_connectService` -> `IOC_acceptClient` (manual path) -> `IOC_offlineService` effects, including timeout semantics already captured in this story. |
 | Out-of-scope work | Reconnection strategy, P1/P2 follow-up slices (including concurrency design story US-2), and payload-level DAT/EVT/CMD behavior beyond link establishment scope. |
 | Success signal | Story intent remains stable and unambiguous, with planning ready to produce explicit next SPEC steps and task artifact via `SPEC_makePlan`. |
