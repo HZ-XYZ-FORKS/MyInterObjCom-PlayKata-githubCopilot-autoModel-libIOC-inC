@@ -4,9 +4,11 @@
 
 - imported_by: SPEC_importIssue
 - imported_on: 2026-06-24
+- analyzed_by: SPEC_analyzeIssue
+- analyzed_on: 2026-07-04
 - source_type: developer-reported problem
 - classification: issue, refactor, architecture
-- status: pending-analysis
+- status: analyzed
 
 ## Issue Summary
 
@@ -32,5 +34,7 @@ Introduce clear module boundaries and dependency direction for L0/L1/L2/L3 so pl
 ## Trace
 
 - project_context: .catdd/spec/projectContext.md
-- related_active_story: .catdd/spec/doingUS/20260618-EstablishedLink-UserStory.md
-- notes: Imported as raw pending issue only; no user story or acceptance criteria generated in this step.
+- related_closed_story: .catdd/spec/doneUS/20260618-EstablishedLink-UserStory.md
+- generated_todo_story: .catdd/spec/todoUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md
+- project_story_ledger: README_UserStories.md
+- notes: Analyzed issue archived from pendingNews; repair-oriented todo story generated and linked.

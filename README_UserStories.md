@@ -10,6 +10,7 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | --- | --- | --- | --- | --- |
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 | US-3 | Refine Interface Behavior Edge Coverage for UT_US1_Service_Edge | todo | `.catdd/spec/analyzedNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md` | `.catdd/spec/todoUS/20260704-UT_US1_Service_Edge-InterfaceBehaviorEdge-UserStory.md` |
+| US-4 | Re-architect IOC into Explicit L0-L3 Layers | todo | `.catdd/spec/analyzedNews/20260624-reArchDesign-Issue.md` | `.catdd/spec/todoUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md` |
 
 ### DONE Stories
 
@@ -28,6 +29,10 @@ US-2: As a concurrent IOC API consumer,
 US-3: As a developer maintaining IOC link-establishment tests,
       I want UT_US1_Service_Edge to prioritize interface behavior edge scenarios while excluding argument-edge permutations,
       So that edge verification remains focused and behavior-traceable.
+
+US-4: As a maintainer of IOC architecture,
+      I want IOC to be restructured into explicit L0-L3 layers with clear dependency direction,
+      So that platform/protocol growth remains isolated from core and interface contracts.
 ```
 
 ## Acceptance Criteria Ledger
