@@ -6,7 +6,8 @@
 #include <thread>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// UT_US1_Service_Fault.cxx - CaTDD Implementation for IOC Link Establishment (Fault)
+// UT_US1_Service_Fault.cxx - CaTDD Implementation for IOC Link Establishment
+// (Fault)
 //
 // PURPOSE:
 //   Test-driven implementation of P0 Functional / Fault category for US-1:
@@ -19,12 +20,14 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//======>BEGIN OF OVERVIEW OF THIS UNIT TESTING FILE===============================================
+//======>BEGIN OF OVERVIEW OF THIS UNIT TESTING
+//FILE===============================================
 /**
  * @brief
  *   [WHAT] This file verifies IOC link-establishment fault behaviors.
  *   [WHERE] in the IOC Service API module.
- *   [WHY] to ensure graceful failure when services transition offline or resources exhaust.
+ *   [WHY] to ensure graceful failure when services transition offline or
+ * resources exhaust.
  *
  * SCOPE:
  *   - In scope: pending connect resolution during service offline transition.
@@ -36,10 +39,12 @@
  *     UT_US1_Service_Misuse.cxx, UT_US1_Service_State.cxx.
  *   - Production code: Source/IOC_SrvAPI.c.
  */
-//======>END OF OVERVIEW OF THIS UNIT TESTING FILE=================================================
+//======>END OF OVERVIEW OF THIS UNIT TESTING
+//FILE=================================================
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//======>BEGIN OF USER STORY DESIGN================================================================
+//======>BEGIN OF USER STORY
+//DESIGN================================================================
 /**
  * [@US-1] Establish IOC Link Between Service and Client
  *
@@ -47,37 +52,42 @@
  *   - Fault-path determinism for pending connect during offline transition.
  *   - Fault-path determinism for runtime allocation/resource-pressure failures.
  */
-//======>END OF USER STORY DESIGN==================================================================
+//======>END OF USER STORY
+//DESIGN==================================================================
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//======>BEGIN OF ACCEPTANCE CRITERIA DESIGN=======================================================
+//======>BEGIN OF ACCEPTANCE CRITERIA
+//DESIGN=======================================================
 /**
  * [@US-1] Establish IOC Link Between Service and Client
  *
  * AC-1: Auto-accept establishment succeeds with compatible usage.
- * AC-2: Failure conditions resolve deterministically without leaked usable links.
+ * AC-2: Failure conditions resolve deterministically without leaked usable
+ * links.
  */
-//=======>END OF ACCEPTANCE CRITERIA DESIGN========================================================
+//=======>END OF ACCEPTANCE CRITERIA
+//DESIGN========================================================
 
 namespace {
 class US1_FaultTest : public ::testing::Test {
 protected:
-	IOC_SrvID_T srvID_ = IOC_INVALID_SRV_ID;
-	IOC_LinkID_T clientConnLinkID_ = IOC_INVALID_LINK_ID;
+  IOC_SrvID_T srvID_ = IOC_INVALID_SRV_ID;
+  IOC_LinkID_T clientConnLinkID_ = IOC_INVALID_LINK_ID;
 
-	void TearDown() override {
-		if (clientConnLinkID_ != IOC_INVALID_LINK_ID) {
-			IOC_closeLink(clientConnLinkID_);
-		}
-		if (srvID_ != IOC_INVALID_SRV_ID) {
-			IOC_offlineService(srvID_);
-		}
-	}
+  void TearDown() override {
+    if (clientConnLinkID_ != IOC_INVALID_LINK_ID) {
+      IOC_closeLink(clientConnLinkID_);
+    }
+    if (srvID_ != IOC_INVALID_SRV_ID) {
+      IOC_offlineService(srvID_);
+    }
+  }
 };
 } // namespace
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-//======>BEGIN OF TEST CASES DESIGN================================================================
+//======>BEGIN OF TEST CASES
+//DESIGN================================================================
 /**
  * SUT: IOC Service/Link establishment behavior
  * APIs: IOC_connectService, IOC_offlineService
@@ -95,13 +105,14 @@ protected:
  * verifyConnect_byRuntimeFailureDuringConnect_expectGracefulFailure
  * @[Status]: GREEN
  */
-//======>END OF TEST CASES DESIGN==================================================================
-TEST_F(US1_FaultTest,
-  TC_P0_F1_verifyPendingAccept_byServiceOfflineTransition_expectResolvedFailure) {
+//======>END OF TEST CASES
+//DESIGN==================================================================
+TEST_F(
+    US1_FaultTest,
+    TC_P0_F1_verifyPendingAccept_byServiceOfflineTransition_expectResolvedFailure) {
   //===>>> SETUP <<<===
-  UT_PHASE_SETUP(
-	  "TC_P0_F1_verifyPendingAccept_byServiceOfflineTransition_"
-	  "expectResolvedFailure");
+  UT_PHASE_SETUP("TC_P0_F1_verifyPendingAccept_byServiceOfflineTransition_"
+                 "expectResolvedFailure");
 
   IOC_SrvArgs_T srvArgs;
   IOC_Helper_initSrvArgs(&srvArgs);
@@ -116,9 +127,9 @@ TEST_F(US1_FaultTest,
 
   IOC_Result_T result = IOC_onlineService(&srvID_, &srvArgs);
   ASSERT_EQ(result, IOC_RESULT_SUCCESS)
-	  << "Service online should succeed for fault pending-offline scenario";
+      << "Service online should succeed for fault pending-offline scenario";
   ASSERT_NE(srvID_, IOC_INVALID_SRV_ID)
-	  << "Service ID must be valid before pending connect transition";
+      << "Service ID must be valid before pending connect transition";
 
   IOC_ConnArgs_T connArgs;
   IOC_Helper_initConnArgs(&connArgs);
@@ -133,9 +144,10 @@ TEST_F(US1_FaultTest,
 
   //===>>> BEHAVIOR <<<===
   UT_PHASE_BEHAVIOR("start pending manual-accept connect, then offline service "
-					"before accept");
+                    "before accept");
   std::thread connectThread([&]() {
-	connectResult = IOC_connectService(&clientConnLinkID_, &connArgs, &connectOpt);
+    connectResult =
+        IOC_connectService(&clientConnLinkID_, &connArgs, &connectOpt);
   });
 
   // Give connect a short window to enter pending wait state.
@@ -143,7 +155,7 @@ TEST_F(US1_FaultTest,
 
   result = IOC_offlineService(srvID_);
   ASSERT_EQ(result, IOC_RESULT_SUCCESS)
-	  << "Service offline should succeed during pending manual-accept connect";
+      << "Service offline should succeed during pending manual-accept connect";
   srvID_ = IOC_INVALID_SRV_ID;
 
   connectThread.join();
@@ -152,24 +164,24 @@ TEST_F(US1_FaultTest,
 
   //===>>> VERIFY <<<===
   UT_PHASE_VERIFY(
-	  "pending connect resolves as failure and link is cleaned after offline");
+      "pending connect resolves as failure and link is cleaned after offline");
   VERIFY_KEYPOINT_NE(connectResult, IOC_RESULT_SUCCESS,
-					 "Pending connect must not succeed after service offlines "
-					 "before manual accept");
+                     "Pending connect must not succeed after service offlines "
+                     "before manual accept");
   VERIFY_KEYPOINT_EQ(closeResult, IOC_RESULT_NOT_EXIST_LINK,
-					 "Pending link should be cleaned up by offline transition");
+                     "Pending link should be cleaned up by offline transition");
   clientConnLinkID_ = IOC_INVALID_LINK_ID;
 
   //===>>> CLEANUP <<<===
   UT_PHASE_CLEANUP("handled by fixture TearDown");
 }
 
-TEST_F(US1_FaultTest,
-       TC_P0_F2_verifyConnect_byRuntimeFailureDuringConnect_expectGracefulFailure) {
+TEST_F(
+    US1_FaultTest,
+    TC_P0_F2_verifyConnect_byRuntimeFailureDuringConnect_expectGracefulFailure) {
   //===>>> SETUP <<<===
-  UT_PHASE_SETUP(
-      "TC_P0_F2_verifyConnect_byRuntimeFailureDuringConnect_"
-      "expectGracefulFailure");
+  UT_PHASE_SETUP("TC_P0_F2_verifyConnect_byRuntimeFailureDuringConnect_"
+                 "expectGracefulFailure");
 
   IOC_SrvArgs_T srvArgs;
   IOC_Helper_initSrvArgs(&srvArgs);

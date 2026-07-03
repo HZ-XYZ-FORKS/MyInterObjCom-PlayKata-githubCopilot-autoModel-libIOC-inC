@@ -9,14 +9,14 @@
 ## Active Work Status
 
 - Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
-- Next recommended command: `SPEC_implUnitTests`.
+- Next recommended command: `SPEC_commitWorks`.
 - Paired task artifact: `.catdd/spec/doingUS/20260618-TASKs.md`.
 - Requirement artifacts updated by `SPEC_updateUserStory`:
- 	- `README_UserStories.md`
- 	- `README_UserGuide.md`
+  - `README_UserStories.md`
+  - `README_UserGuide.md`
 - Detail design artifacts updated by `SPEC_takeDetailDesign`:
- 	- `README_DetailDesign.md`
- 	- `README_StateDesign.md`
+  - `README_DetailDesign.md`
+  - `README_StateDesign.md`
 
 ### Detail Design Review Result
 
@@ -48,7 +48,7 @@
 - P1 State and Capability skeletons are included using `README_StateDesign.md` and `README_DetailDesign.md` as design sources.
 - Concurrency and P2 quality categories are explicitly deferred with rationale due to missing design surfaces and US-2 ownership.
 
-**Next recommended command:** `SPEC_implUnitTests`
+**Next recommended command:** `SPEC_commitWorks`
 
 ---
 
