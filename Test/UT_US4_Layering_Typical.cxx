@@ -3,16 +3,21 @@
 // Scenarios
 //
 // PURPOSE:
-//   Design-only P0 Functional / Typical skeleton for US-4 layered architecture
-//   behavior. This file intentionally contains no executable test bodies.
+//   P0 Functional / Typical verification for US-4 layered architecture
+//   behavior. TC-P0-T1 is implemented; remaining TCs stay as skeleton design.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include "IOC/IOC.h"
 #include "_UT_IOC_Common.h"
 
+#include <cctype>
+#include <fstream>
+#include <string>
+#include <vector>
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF OVERVIEW OF THIS UNIT TESTING
-//FILE===============================================
+// FILE===============================================
 /**
  * @brief
  *   [WHAT] This file designs typical (valid core) verification skeletons for
@@ -50,11 +55,11 @@
  * @[Template]: .catdd/methodPrompts/CaTDD_designAndImplTemplate.cxx
  */
 //======>END OF OVERVIEW OF THIS UNIT TESTING
-//FILE=================================================
+// FILE=================================================
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF ACCEPTANCE CRITERIA
-//DESIGN=======================================================
+// DESIGN=======================================================
 /**
  * [@US-4] Re-architect IOC into Explicit L0-L3 Layers
  *
@@ -70,11 +75,11 @@
  *    THEN ProtoMethods dispatch maps to L0 implementation without bypass.
  */
 //======>END OF ACCEPTANCE CRITERIA
-//DESIGN=========================================================
+// DESIGN=========================================================
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //======>BEGIN OF TEST CASES
-//DESIGN================================================================
+// DESIGN================================================================
 /**
  * TC-P0-T1
  * verifyLayerContract_byValidOwnershipAndDependencyMap_expectAllowedEdgesOnly
@@ -87,7 +92,7 @@
  * only.
  *   @[UseWhen]: Ownership table and dependency graph are both present.
  *   @[AvoidWhen]: Boundary-limits, misuse, or injected-failure scenarios.
- *   @[Status]: TODO
+ *   @[Status]: GREEN
  *
  * TC-P0-T2 verifyProtoDispatch_byBoundServiceLinkObject_expectMappedL0Operation
  *   @[Class]: P0 Functional / ValidFunc
@@ -102,4 +107,117 @@
  *   @[Status]: TODO
  */
 //======>END OF TEST CASES
-//DESIGN==================================================================
+// DESIGN==================================================================
+
+namespace {
+
+std::string _UT_US4_loadTextFileFromCandidates(
+    const std::vector<std::string> &candidatePaths) {
+  for (const auto &path : candidatePaths) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+      continue;
+    }
+
+    std::string text;
+    std::string line;
+    while (std::getline(file, line)) {
+      text.append(line);
+      text.push_back('\n');
+    }
+    return text;
+  }
+
+  return {};
+}
+
+bool _UT_US4_containsAllTokens(const std::string &text,
+                               const std::vector<std::string> &tokens) {
+  for (const auto &token : tokens) {
+    if (text.find(token) == std::string::npos) {
+      return false;
+    }
+  }
+  return true;
+}
+
+std::string _UT_US4_normalizeForPolicyScan(const std::string &text) {
+  std::string normalized;
+  normalized.reserve(text.size());
+
+  for (unsigned char ch : text) {
+    if (std::isalnum(ch) != 0) {
+      normalized.push_back(static_cast<char>(std::tolower(ch)));
+    }
+  }
+
+  return normalized;
+}
+
+} // namespace
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// TC-P0-T1:
+// verifyLayerContract_byValidOwnershipAndDependencyMap_expectAllowedEdgesOnly
+// @[Status]: GREEN
+///////////////////////////////////////////////////////////////////////////////////////////////////
+TEST(
+    US4_Layering_TypicalTest,
+    TC_P0_T1_verifyLayerContract_byValidOwnershipAndDependencyMap_expectAllowedEdgesOnly) {
+  //===>>> SETUP <<<===
+  UT_PHASE_SETUP(
+      "TC_P0_T1_verifyLayerContract_byValidOwnershipAndDependencyMap_"
+      "expectAllowedEdgesOnly");
+
+  const std::vector<std::string> readmeCandidates = {
+      "README_ArchDesign.md", "../README_ArchDesign.md",
+      "../../README_ArchDesign.md", "../../../README_ArchDesign.md"};
+
+  //===>>> BEHAVIOR <<<===
+  UT_PHASE_BEHAVIOR("load architecture evidence and evaluate allowed/forbidden "
+                    "dependency policy consistency markers");
+
+  const std::string archText =
+      _UT_US4_loadTextFileFromCandidates(readmeCandidates);
+  const std::string normalizedArchText =
+      _UT_US4_normalizeForPolicyScan(archText);
+
+  const std::vector<std::string> requiredArtifacts = {
+      "## Layer Ownership Mapping (Mandatory Table Artifact)",
+      "| Artifact | Assigned Layer | Responsibility | Notes |",
+      "## Dependency Direction Rules",
+      "## Dependency Graph (Mandatory Diagram Artifact)"};
+
+  const std::vector<std::string> allowedEdgeFacts = {"l3l2", "l2l1", "l2l0",
+                                                     "l1l0"};
+
+  const std::vector<std::string> forbiddenEdgeFacts = {"l3l1", "l3l0",
+                                                       "l0l1l2l3"};
+
+  //===>>> VERIFY <<<===
+  UT_PHASE_VERIFY("architecture documentation contains mandatory artifacts and "
+                  "internally consistent layer-edge policy facts");
+
+  VERIFY_KEYPOINT_TRUE(!archText.empty(),
+                       "README_ArchDesign.md must be readable from the test "
+                       "execution location");
+
+  VERIFY_KEYPOINT_TRUE(_UT_US4_containsAllTokens(archText, requiredArtifacts),
+                       "Architecture doc must include ownership table, "
+                       "dependency-rule section, and dependency graph section");
+
+  VERIFY_KEYPOINT_TRUE(
+      _UT_US4_containsAllTokens(normalizedArchText, allowedEdgeFacts),
+      "Architecture policy facts must include allowed edges: "
+      "L3->L2, L2->L1, L2->L0, L1->L0");
+
+  VERIFY_KEYPOINT_TRUE(
+      _UT_US4_containsAllTokens(normalizedArchText, forbiddenEdgeFacts),
+      "Architecture policy facts must include forbidden edges: "
+      "L3->L1, L3->L0, and upward dependency example "
+      "L0->L1/L2/L3");
+
+  //===>>> CLEANUP <<<===
+  UT_PHASE_CLEANUP("no runtime objects allocated in this documentation policy "
+                   "verification test");
+}

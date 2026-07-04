@@ -22,6 +22,11 @@
 - Requirement ledger revision applied: `README_UserStories.md` updated via `SPEC_updateUserStory`.
 - Unit-test design result: `DONE` for P0 Functional skeleton scope via `SPEC_designUnitTests`.
 - Functional skeleton review result: `PASS` with non-blocking clarifications via `UT_reviewFuncTestsSkeleton`.
+- Next-TC selection result: `SELECTED TC-P0-T1` via `UT_tellMeNextImplTest`.
+- Test implementation result: `DONE` for `TC-P0-T1` via `UT_implTestCase`.
+- Implementation review result: `REVISE` for `TC-P0-T1` via `UT_reviewImplTestCase`.
+- Implementation revision result: `DONE` for doc-consistency intent via `UT_implTestCase` retry.
+- Implementation re-review result: `PASS` for `TC-P0-T1` via `UT_reviewImplTestCase`.
 - Next recommended command: `UT_tellMeNextImplTest`.
 
 ---
@@ -232,7 +237,7 @@ flowchart TD
 | 1 | Which artifact should be mandatory for initial layer mapping: README_ArchDesign.md table, diagram-only, or both? | model gap | resolved: both table and diagram required |
 | 2 | Which dependency-check mechanism should be used first: manual review checklist or scripted dependency scan? | model gap | resolved: manual checklist first, scripted scan hardening next |
 
-**Gate:** P0 Functional skeleton review is passed; this story is ready for `UT_tellMeNextImplTest` before `UT_implTestCase`.
+**Gate:** First implementation TC is review-passed; this story is ready for `UT_tellMeNextImplTest` to pick the next TC.
 
 ---
 
