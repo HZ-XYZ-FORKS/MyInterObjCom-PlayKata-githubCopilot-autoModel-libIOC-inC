@@ -161,7 +161,7 @@ Forbidden:
 
 Protocol behavior constraint:
 
-- When L2 triggers protocol behavior, it must call ProtoMethods on a ProtoObject; those corresponding ProtoMethods behavior definitions are backed by L0 implementations.
+- When L2 triggers IOC interface behavior, it must call ProtoMethods through an L1 Service Object or Link Object (for example: `ProtoMethods.OpOnlineService(pSrvObj, pSrvArgs, pOptions)` or `ProtoMethods.OpSendDAT(pLinkObj, pDataDesc, pOption)`); these ProtoMethods entries map the IOC interface behavior onto the corresponding L0 implementations.
 - L2 must not bypass ProtoObject ProtoMethods for protocol-specific behavior.
 
 ## Dependency Graph (Mandatory Diagram Artifact)
@@ -194,7 +194,7 @@ flowchart TD
 ## Data Flow
 
 ```text
-IOC API call (L3) -> lifecycle and policy core (L2) -> ProtoObject ProtoMethods invocation (L2->L1 contract) -> behavior execution backed by L0 primitives (POSIX/platform) -> result and state transition reported back to L3.
+IOC API call (L3) -> lifecycle and policy core (L2) -> ProtoMethods invocation on an L1 Service/Link object -> L0 implementation mapping dispatch -> behavior execution backed by L0 primitives (POSIX/platform) -> result and state transition reported back to L3.
 ```
 
 ## Quality Attribute Scenarios (ASRs)
