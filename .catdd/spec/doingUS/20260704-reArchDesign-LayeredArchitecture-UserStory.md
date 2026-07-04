@@ -20,7 +20,9 @@
 - User story review result: `PASS` after re-gate `SPEC_reviewUserStory`.
 - User story review result reaffirmed: `PASS` after IOC-interface-to-ProtoMethods wording clarification.
 - Requirement ledger revision applied: `README_UserStories.md` updated via `SPEC_updateUserStory`.
-- Next recommended command: `SPEC_designUnitTests`.
+- Unit-test design result: `DONE` for P0 Functional skeleton scope via `SPEC_designUnitTests`.
+- Functional skeleton review result: `PASS` with non-blocking clarifications via `UT_reviewFuncTestsSkeleton`.
+- Next recommended command: `UT_tellMeNextImplTest`.
 
 ---
 
@@ -230,7 +232,7 @@ flowchart TD
 | 1 | Which artifact should be mandatory for initial layer mapping: README_ArchDesign.md table, diagram-only, or both? | model gap | resolved: both table and diagram required |
 | 2 | Which dependency-check mechanism should be used first: manual review checklist or scripted dependency scan? | model gap | resolved: manual checklist first, scripted scan hardening next |
 
-**Gate:** Requirement, architecture, and detail-design readiness are aligned; this story is ready for `SPEC_designUnitTests`.
+**Gate:** P0 Functional skeleton review is passed; this story is ready for `UT_tellMeNextImplTest` before `UT_implTestCase`.
 
 ---
 

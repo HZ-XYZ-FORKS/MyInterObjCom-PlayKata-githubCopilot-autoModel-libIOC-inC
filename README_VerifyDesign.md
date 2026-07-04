@@ -117,3 +117,80 @@ For US-1, UnitTesting and ModuleTesting are both needed but start from UnitTesti
 - Every AC maps to at least one TC.
 - Every listed TC has file target and initial status marker.
 - SUT is explicitly declared in the target test-file overview.
+
+---
+
+## US-4 Verification Design Addendum
+
+This addendum is created by SPEC_designUnitTests for US-4.
+
+### Story and Design Inputs
+
+- Story: US-4 Re-architect IOC into Explicit L0-L3 Layers
+- Active story artifact: [.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md](.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md)
+- Architecture design: [README_ArchDesign.md](README_ArchDesign.md)
+- Detail design: [README_DetailDesign.md](README_DetailDesign.md)
+- State design: [README_StateDesign.md](README_StateDesign.md)
+- Target test files:
+  - [Test/UT_US4_Layering_Typical.cxx](Test/UT_US4_Layering_Typical.cxx)
+  - [Test/UT_US4_Layering_Edge.cxx](Test/UT_US4_Layering_Edge.cxx)
+  - [Test/UT_US4_Layering_Misuse.cxx](Test/UT_US4_Layering_Misuse.cxx)
+  - [Test/UT_US4_Layering_Fault.cxx](Test/UT_US4_Layering_Fault.cxx)
+
+### Flow-Coupling Decision Record
+
+- Selected route: P0-FuncTestsFlow only for this step.
+- P0 category decision:
+  - Typical: required.
+  - Edge: required.
+  - Misuse: required.
+  - Fault: required.
+- P1 promotion decision: not entered in this command.
+- P2 promotion decision: not entered in this command.
+- UT command contracts inspected:
+  - `.catdd/slashCommands/commands/P0-FuncTestsFlow/UT_designFuncTestsSkeleton.md`
+- Recommended review command before implementation:
+  - `UT_reviewFuncTestsSkeleton`
+
+### Source-Command and Template Provenance
+
+- Orchestrator: `SPEC_designUnitTests`
+- P0 design source command: `UT_designFuncTestsSkeleton`
+- Language template source: `.catdd/methodPrompts/CaTDD_designAndImplTemplate.cxx`
+
+### US/AC/TC Traceability (US-4 P0)
+
+| US | AC | TC | Category | Test File | Status |
+| --- | --- | --- | --- | --- | --- |
+| US-4 | AC-4.1 | TC-P0-T1 verifyLayerContract_byValidOwnershipAndDependencyMap_expectAllowedEdgesOnly | Typical | Test/UT_US4_Layering_Typical.cxx | TODO |
+| US-4 | AC-4.2 | TC-P0-T2 verifyProtoDispatch_byBoundServiceLinkObject_expectMappedL0Operation | Typical | Test/UT_US4_Layering_Typical.cxx | TODO |
+| US-4 | AC-4.1 | TC-P0-E1 verifyDependencyPolicy_byL2ToL0AndL2ToL1Transitions_expectExplicitlyAllowed | Edge | Test/UT_US4_Layering_Edge.cxx | TODO |
+| US-4 | AC-4.2 | TC-P0-E2 verifyProtoMethodSet_byFirstMigrationSliceMinimum_expectOnlineAcceptCloseReady | Edge | Test/UT_US4_Layering_Edge.cxx | TODO |
+| US-4 | AC-4.1 | TC-P0-M1 verifyDependencyGuards_byForbiddenL3ToL0DirectAccess_expectViolationReported | Misuse | Test/UT_US4_Layering_Misuse.cxx | TODO |
+| US-4 | AC-4.2 | TC-P0-M2 verifyProtocolPath_byL2BypassOfServiceLinkProtoMethods_expectViolationReported | Misuse | Test/UT_US4_Layering_Misuse.cxx | TODO |
+| US-4 | AC-4.2 | TC-P0-F1 verifyProtoRouting_byUnboundProtoMethods_expectDeterministicFailureAndNoBypassFallback | Fault | Test/UT_US4_Layering_Fault.cxx | TODO |
+| US-4 | AC-4.3 | TC-P0-F2 verifyMigrationSafety_byUS1RegressionFailureSignal_expectSliceRejectedForPromotion | Fault | Test/UT_US4_Layering_Fault.cxx | TODO |
+
+### Parallel-Ready Implementation Checklist (US-4)
+
+- Slice A: Typical
+  - TCs: TC-P0-T1, TC-P0-T2
+  - Dependencies: ownership/dependency extraction helper; ProtoMethods binding probe hook
+  - Validation checkpoint: allowed edges only; no L2 protocol bypass path
+- Slice B: Edge
+  - TCs: TC-P0-E1, TC-P0-E2
+  - Dependencies: static-rule parser for dependency policy and first-slice ProtoMethods list
+  - Validation checkpoint: L2 boundary fan-out accepted and first-slice methods recognized
+- Slice C: Misuse
+  - TCs: TC-P0-M1, TC-P0-M2
+  - Dependencies: forbidden-edge detector and call-path inspection hook
+  - Validation checkpoint: violations are deterministic and traceable
+- Slice D: Fault
+  - TCs: TC-P0-F1, TC-P0-F2
+  - Dependencies: unbound-method simulation and regression-suite status bridge
+  - Validation checkpoint: deterministic fault signaling and migration promotion block
+
+### Handoff Decision
+
+- `SPEC_implUnitTests` is not recommended yet.
+- Blocking next step: run `UT_reviewFuncTestsSkeleton` for US-4 P0 skeleton review.
