@@ -4,7 +4,7 @@ This architecture baseline is produced by `SPEC_takeArchDesign` for the active a
 
 ## Context
 
-- Story link: `.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
+- Story link: `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
 - Related overview: [README.md](README.md)
 - Related detail design: [README_DetailDesign.md](README_DetailDesign.md)
 - Related state design: [README_StateDesign.md](README_StateDesign.md)

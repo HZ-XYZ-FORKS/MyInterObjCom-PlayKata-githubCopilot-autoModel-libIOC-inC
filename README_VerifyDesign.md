@@ -127,7 +127,7 @@ This addendum is created by SPEC_designUnitTests for US-4.
 ### Story and Design Inputs
 
 - Story: US-4 Re-architect IOC into Explicit L0-L3 Layers
-- Active story artifact: [.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md](.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md)
+- Active story artifact: [.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md](.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md)
 - Architecture design: [README_ArchDesign.md](README_ArchDesign.md)
 - Detail design: [README_DetailDesign.md](README_DetailDesign.md)
 - State design: [README_StateDesign.md](README_StateDesign.md)

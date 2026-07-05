@@ -10,13 +10,13 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | --- | --- | --- | --- | --- |
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 | US-3 | Refine Interface Behavior Edge Coverage for UT_US1_Service_Edge | todo | `.catdd/spec/analyzedNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md` | `.catdd/spec/todoUS/20260704-UT_US1_Service_Edge-InterfaceBehaviorEdge-UserStory.md` |
-| US-4 | Re-architect IOC into Explicit L0-L3 Layers | doing | `.catdd/spec/analyzedNews/20260624-reArchDesign-Issue.md` | `.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md` |
 
 ### DONE Stories
 
 | Story ID | Title | Closed On | Evidence | Trace Link |
 | --- | --- | --- | --- | --- |
 | US-1 | Establish IOC Link Between Service and Client | 2026-07-03 | commit `512e010`; CTest UT_US1_Service_* PASS | `.catdd/spec/doneUS/20260618-EstablishedLink-UserStory.md` |
+| US-4 | Re-architect IOC into Explicit L0-L3 Layers | 2026-07-05 | commit `8d34906`; accepted artifact-consistency verification summary for close gate | `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md` |
 
 ## Active Story
 
@@ -42,14 +42,14 @@ US-4: As a maintainer of IOC architecture,
 | AC-1 | US-1 | Service online with compatible usage | Client calls `IOC_connectService` in auto-accept path | IOC establishes valid link pair and returns success | reviewed | US-1 AS-1, TC seeds T1/E1/M1/M2/F2 |
 | AC-2 | US-1 | Service online in manual-accept mode with pending client | Service calls `IOC_acceptClient` | IOC finalizes link pair and messaging APIs become usable | reviewed | US-1 AS-2, TC seeds T2/E2/F1 |
 | AC-3 | US-1 | Service may have established links | Service calls `IOC_offlineService` | No new connect succeeds; keep/close behavior follows service flags | reviewed | US-1 AS-3, TC seeds E3/E4/F1 |
-| AC-4.1 | US-4 | IOC architecture documentation and source ownership map | Each module/file is classified into one of L0-L3 | Allowed and forbidden dependency directions are explicit and reviewable | drafted-reviewed | US-4 Scenario 1, README_ArchDesign layer ownership map + dependency graph, TC seed C1/C2 |
-| AC-4.2 | US-4 | L2 needs protocol behavior | Core calls protocol operation through bound L1 Service/Link object | ProtoMethods dispatch maps to L0 implementations without bypass | drafted-reviewed | US-4 Scenario 1, README_DetailDesign ProtoMethods minimum set, TC seed C2 |
-| AC-4.3 | US-4 | Incremental refactor slice is applied | US-1 regression suite runs after the slice | Existing US-1 behavior remains passing and traceable | drafted-reviewed | US-4 Scenario 3, README_DetailDesign lightweight implementation plan + README_StateDesign migration state model, TC seed C3 |
+| AC-4.1 | US-4 | IOC architecture documentation and source ownership map | Each module/file is classified into one of L0-L3 | Allowed and forbidden dependency directions are explicit and reviewable | reviewed | US-4 Scenario 1, README_ArchDesign layer ownership map + dependency graph, TC seed C1/C2 |
+| AC-4.2 | US-4 | L2 needs protocol behavior | Core calls protocol operation through bound L1 Service/Link object | ProtoMethods dispatch maps to L0 implementations without bypass | reviewed | US-4 Scenario 1, README_DetailDesign ProtoMethods minimum set, TC seed C2 |
+| AC-4.3 | US-4 | Incremental refactor slice is applied | US-1 regression suite runs after the slice | Existing US-1 behavior remains passing and traceable | reviewed | US-4 Scenario 3, README_DetailDesign lightweight implementation plan + README_StateDesign migration state model, TC seed C3 |
 
 ## Lifecycle Links
 
 - Pending input: `.catdd/spec/pendingNews/`
-- Active story: `.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
+- Active story: (none currently in `.catdd/spec/doingUS/`)
 - Todo story: `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md`
 - Done story: `.catdd/spec/doneUS/`
 

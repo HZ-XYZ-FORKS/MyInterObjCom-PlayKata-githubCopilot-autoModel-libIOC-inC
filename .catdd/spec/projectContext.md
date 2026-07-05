@@ -79,5 +79,7 @@
 
 ## Lifecycle Snapshot
 
+- 2026-07-05: US-4 (`.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`) was closed via `SPEC_closeUserStory` and lifecycle links were normalized from doingUS to doneUS.
+- 2026-07-05: In-flow major-impact sync applied after US-4 closure (`README_UserStories.md`, project-root README SPEC trace links, and doneUS artifacts synchronized).
 - 2026-07-03: US-1 (`.catdd/spec/doneUS/20260618-EstablishedLink-UserStory.md`) is closed and moved from doing to done.
-- Next execution-lock follow-up after US-1 closure: run `SPEC_analyzeIssue` for `.catdd/spec/pendingNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md`.
+- Next execution-lock follow-up after US-4 close transition: run `SPEC_commitWorks` to capture close-generated lifecycle sync changes.

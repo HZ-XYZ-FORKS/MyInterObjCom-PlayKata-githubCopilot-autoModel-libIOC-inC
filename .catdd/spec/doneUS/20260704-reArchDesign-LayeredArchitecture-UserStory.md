@@ -1,16 +1,17 @@
 # Re-architect IOC into Explicit L0-L3 Layers
 
-> **Story ID:** US-4 | **State:** doing-open | **Priority:** P1
+> **Story ID:** US-4 | **State:** done-closed | **Priority:** P1
 > **Source:** `.catdd/spec/analyzedNews/20260624-reArchDesign-Issue.md`
 > **CaTDD Class:** P1 Design
 > **Primary Category:** Capability
 > **Created:** 2026-07-04
+> **Closed:** 2026-07-05
 
 ---
 
 ## Active Work Status
 
-- Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
+- Current status: closed and moved to `.catdd/spec/doneUS/` via `SPEC_closeUserStory`.
 - Architecture baseline created: `README_ArchDesign.md` via `SPEC_takeArchDesign`.
 - Architecture review result: `PASS` after re-gate `SPEC_reviewArchDesign`.
 - Architecture revision applied: `README_ArchDesign.md` updated via `SPEC_updateArchDesign`.
@@ -51,7 +52,9 @@
 - Product-code implementation result: `DONE_NO_CODE_CHANGE` via `SPEC_implProductCodes`.
 - Product-code review result: `PASS` via `SPEC_reviewProductCodes`.
 - Commit result: `DONE` via `SPEC_commitWorks`.
-- Next recommended command: `SPEC_closeUserStory`.
+- Close result: `DONE` via `SPEC_closeUserStory`.
+- Project-context sync result: `DONE` via `SPEC_updateProjectContext` (major lifecycle impact).
+- Next recommended command: `SPEC_commitWorks` (close-generated checkpoint commit).
 
 ---
 
@@ -261,7 +264,7 @@ flowchart TD
 | 1 | Which artifact should be mandatory for initial layer mapping: README_ArchDesign.md table, diagram-only, or both? | model gap | resolved: both table and diagram required |
 | 2 | Which dependency-check mechanism should be used first: manual review checklist or scripted dependency scan? | model gap | resolved: manual checklist first, scripted scan hardening next |
 
-**Gate:** Commit checkpoint is completed; this story is ready for `SPEC_closeUserStory`.
+**Gate:** Story is closed in lifecycle artifacts; close-generated changes must be committed via `SPEC_commitWorks`.
 
 ---
 

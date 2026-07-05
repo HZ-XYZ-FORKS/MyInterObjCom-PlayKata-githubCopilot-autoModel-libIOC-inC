@@ -115,7 +115,7 @@ Detailed design for US-4 (Re-architect IOC into Explicit L0-L3 Layers) after arc
 ## Story Context
 
 - Story: US-4 Re-architect IOC into Explicit L0-L3 Layers
-- Source artifact: `.catdd/spec/doingUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
+- Source artifact: `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
 - Related architecture: [README_ArchDesign.md](README_ArchDesign.md)
 - Related user stories: [README_UserStories.md](README_UserStories.md)
 
