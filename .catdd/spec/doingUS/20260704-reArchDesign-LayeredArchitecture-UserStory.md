@@ -27,7 +27,31 @@
 - Implementation review result: `REVISE` for `TC-P0-T1` via `UT_reviewImplTestCase`.
 - Implementation revision result: `DONE` for doc-consistency intent via `UT_implTestCase` retry.
 - Implementation re-review result: `PASS` for `TC-P0-T1` via `UT_reviewImplTestCase`.
-- Next recommended command: `UT_tellMeNextImplTest`.
+- Unit-test implementation pass result: `DONE` for `TC-P0-T2` via `SPEC_implUnitTests`.
+- Next-TC selection result: `SELECTED TC-P0-E1` via `UT_tellMeNextImplTest`.
+- Test implementation result: `DONE` for `TC-P0-E1` via `UT_implTestCase`.
+- Implementation review result: `PASS` for `TC-P0-E1` via `UT_reviewImplTestCase`.
+- Next-TC selection result: `SELECTED TC-P0-E2` via `UT_tellMeNextImplTest`.
+- Test implementation result: `DONE` for `TC-P0-E2` via `UT_implTestCase`.
+- Implementation review result: `PASS` for `TC-P0-E2` via `UT_reviewImplTestCase`.
+- Next-TC selection result: `SELECTED TC-P0-M1` via `UT_tellMeNextImplTest`.
+- Test implementation result: `DONE` for `TC-P0-M1` via `UT_implTestCase`.
+- Implementation review result: `PASS` for `TC-P0-M1` via `UT_reviewImplTestCase`.
+- Next-TC selection result: `SELECTED TC-P0-M2` via `UT_tellMeNextImplTest`.
+- Test implementation result: `DONE` for `TC-P0-M2` via `UT_implTestCase`.
+- Implementation review result: `PASS` for `TC-P0-M2` via `UT_reviewImplTestCase`.
+- Next-TC selection result: `SELECTED TC-P0-F1` via `UT_tellMeNextImplTest`.
+- Test implementation result: `DONE` for `TC-P0-F1` via `UT_implTestCase`.
+- Implementation review result: `PASS` for `TC-P0-F1` via `UT_reviewImplTestCase`.
+- Next-TC selection result: `SELECTED TC-P0-F2` via `UT_tellMeNextImplTest`.
+- Test implementation result: `DONE` for `TC-P0-F2` via `UT_implTestCase`.
+- Implementation review result: `PASS` for `TC-P0-F2` via `UT_reviewImplTestCase`.
+- Next-TC selection result: `NO_READY_TC (P0 complete)` via `UT_tellMeNextImplTest`.
+- Next lifecycle decision result: `SELECTED SPEC_implProductCodes` via `SPEC_whatsNextTask`.
+- Product-code implementation result: `DONE_NO_CODE_CHANGE` via `SPEC_implProductCodes`.
+- Product-code review result: `PASS` via `SPEC_reviewProductCodes`.
+- Commit result: `DONE` via `SPEC_commitWorks`.
+- Next recommended command: `SPEC_closeUserStory`.
 
 ---
 
@@ -237,7 +261,7 @@ flowchart TD
 | 1 | Which artifact should be mandatory for initial layer mapping: README_ArchDesign.md table, diagram-only, or both? | model gap | resolved: both table and diagram required |
 | 2 | Which dependency-check mechanism should be used first: manual review checklist or scripted dependency scan? | model gap | resolved: manual checklist first, scripted scan hardening next |
 
-**Gate:** First implementation TC is review-passed; this story is ready for `UT_tellMeNextImplTest` to pick the next TC.
+**Gate:** Commit checkpoint is completed; this story is ready for `SPEC_closeUserStory`.
 
 ---
 

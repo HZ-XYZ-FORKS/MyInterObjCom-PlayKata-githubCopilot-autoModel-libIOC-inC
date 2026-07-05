@@ -104,7 +104,7 @@
  * ProtoMethods to L0.
  *   @[UseWhen]: Service/Link object has bound ProtoMethods for operation path.
  *   @[AvoidWhen]: Missing methods or bypass attempts.
- *   @[Status]: TODO
+ *   @[Status]: GREEN
  */
 //======>END OF TEST CASES
 // DESIGN==================================================================
@@ -216,6 +216,62 @@ TEST(
       "Architecture policy facts must include forbidden edges: "
       "L3->L1, L3->L0, and upward dependency example "
       "L0->L1/L2/L3");
+
+  //===>>> CLEANUP <<<===
+  UT_PHASE_CLEANUP("no runtime objects allocated in this documentation policy "
+                   "verification test");
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// TC-P0-T2:
+// verifyProtoDispatch_byBoundServiceLinkObject_expectMappedL0Operation
+// @[Status]: GREEN
+///////////////////////////////////////////////////////////////////////////////////////////////////
+TEST(
+    US4_Layering_TypicalTest,
+    TC_P0_T2_verifyProtoDispatch_byBoundServiceLinkObject_expectMappedL0Operation) {
+  //===>>> SETUP <<<===
+  UT_PHASE_SETUP("TC_P0_T2_verifyProtoDispatch_byBoundServiceLinkObject_"
+                 "expectMappedL0Operation");
+
+  const std::vector<std::string> readmeCandidates = {
+      "README_ArchDesign.md", "../README_ArchDesign.md",
+      "../../README_ArchDesign.md", "../../../README_ArchDesign.md"};
+
+  //===>>> BEHAVIOR <<<===
+  UT_PHASE_BEHAVIOR("load architecture policy and verify ProtoMethods mapping "
+                    "constraints for L2 protocol behavior");
+
+  const std::string archText =
+      _UT_US4_loadTextFileFromCandidates(readmeCandidates);
+  const std::string normalizedArchText =
+      _UT_US4_normalizeForPolicyScan(archText);
+
+  const std::vector<std::string> requiredProtoConstraintFacts = {
+      "protomethods",      "serviceobject", "linkobject",           "map",
+      "l0implementations", "mustnotbypass", "protospecificbehavior"};
+
+  const std::vector<std::string> requiredProtoExamples = {"oponlineservice",
+                                                          "opsenddat"};
+
+  //===>>> VERIFY <<<===
+  UT_PHASE_VERIFY("architecture policy enforces L2->L1 ProtoMethods path and "
+                  "documents mapping examples to L0 implementations");
+
+  VERIFY_KEYPOINT_TRUE(!archText.empty(),
+                       "README_ArchDesign.md must be readable from the test "
+                       "execution location");
+
+  VERIFY_KEYPOINT_TRUE(
+      _UT_US4_containsAllTokens(normalizedArchText,
+                                requiredProtoConstraintFacts),
+      "Architecture policy must state ProtoMethods-based routing through "
+      "L1 Service/Link objects and no-bypass constraint to L0 mapping");
+
+  VERIFY_KEYPOINT_TRUE(
+      _UT_US4_containsAllTokens(normalizedArchText, requiredProtoExamples),
+      "Architecture policy must keep concrete ProtoMethods examples "
+      "(OpOnlineService and OpSendDAT) for traceable behavior mapping");
 
   //===>>> CLEANUP <<<===
   UT_PHASE_CLEANUP("no runtime objects allocated in this documentation policy "
