@@ -54,8 +54,8 @@ flowchart TD
 
 | # | Gap Found | Question |
 |---|---|---|
-| 1 | First implementation slice boundaries are not explicitly defined in this issue text. | Which exact source files/modules are in-scope for the first reArchImpl slice? |
-| 2 | Regression gate is referenced conceptually but not operationally defined for this slice. | Which concrete test suites and pass criteria are mandatory before slice promotion? |
+| 1 | First implementation slice boundaries were initially implicit. | Resolved: first slice is IOC service/link lifecycle APIs in `Include/IOC/IOC_SrvAPI.h` and their implementation path in `Source/IOC_SrvAPI.c`. |
+| 2 | Regression gate was initially conceptual. | Resolved: run US-1 service regression executables (`UT_US1_Service_Typical`, `UT_US1_Service_Edge`, `UT_US1_Service_Misuse`, `UT_US1_Service_Fault`, `UT_US1_Service_State`, `UT_US1_Service_Capability`) with all tests passing before slice promotion. |
 
 ---
 
@@ -72,7 +72,7 @@ flowchart TD
 
 | Concrete Examples | Counter-Examples |
 |---|---|
-| Slice states touched L2/L1 files, dependency constraints, and exclusion list | "Implement layered architecture" with no file/module boundary |
+| First slice targets `IOC_onlineService`, `IOC_offlineService`, `IOC_acceptClient`, `IOC_connectService`, `IOC_closeLink` API path in `IOC_SrvAPI` | "Implement layered architecture" with no API/module boundary |
 
 **Open Questions:** None.
 
@@ -107,8 +107,17 @@ flowchart TD
 
 **In scope:**
 
-- Define and approve the first implementation slice that operationalizes US-4 layered design.
-- Define deterministic regression gate expectations for promoting this first slice.
+- Implement-first slice is constrained to IOC service/link lifecycle API path:
+ 	- Public API surface: `Include/IOC/IOC_SrvAPI.h`
+ 	- Primary implementation path: `Source/IOC_SrvAPI.c`
+ 	- First API set: `IOC_onlineService`, `IOC_offlineService`, `IOC_acceptClient`, `IOC_connectService`, `IOC_closeLink`
+- Apply and verify deterministic regression gates before slice promotion:
+ 	- `UT_US1_Service_Typical`
+ 	- `UT_US1_Service_Edge`
+ 	- `UT_US1_Service_Misuse`
+ 	- `UT_US1_Service_Fault`
+ 	- `UT_US1_Service_State`
+ 	- `UT_US1_Service_Capability`
 
 **Non-goals:**
 
@@ -130,11 +139,11 @@ flowchart TD
 
 | # | Question | Raised By | Status |
 |---|---|---|---|
-| 1 | Which exact first-slice modules/files are mandatory for `reArchImpl-LayeredArch`? | model gap | open |
-| 2 | Which exact regression gate set is mandatory for first-slice promotion? | model gap | open |
-| 3 | Should this story first run a planning command to convert US-4 design outputs into an implementation task artifact before opening execution? | lifecycle guard | open |
+| 1 | Which exact first-slice modules/files are mandatory for `reArchImpl-LayeredArch`? | model gap | answered: `Include/IOC/IOC_SrvAPI.h` + `Source/IOC_SrvAPI.c` for service/link lifecycle API path |
+| 2 | Which exact regression gate set is mandatory for first-slice promotion? | model gap | answered: all US-1 service regression suites listed in Scope must pass |
+| 3 | Should this story first run a planning command to convert US-4 design outputs into an implementation task artifact before opening execution? | lifecycle guard | answered: yes, follow `SPEC_openUserStory` then `SPEC_makePlan` before implementation commands |
 
-**Gate:** This story is **NOT READY** for `SPEC_openUserStory` until blocking acceptance questions are answered.
+**Gate:** This story is **READY** for `SPEC_openUserStory`; next run `SPEC_makePlan` immediately after opening.
 
 ---
 
