@@ -2,8 +2,11 @@
 
 > Imported by: `SPEC_importIssue`
 > Imported on: 2026-07-04
+> analyzed_by: `SPEC_analyzeIssue`
+> analyzed_on: 2026-07-05
 > Import mode: `inline`
 > Labels: `issue`, `clarification`, `design`, `state-model`
+> status: `analyzed`
 
 ## Source Type
 
@@ -22,5 +25,8 @@ Developer-reported issue / clarification note.
 
 ## Trace Notes
 
-- Imported only; no user-story analysis performed in this command.
-- Expected follow-up command if refinement is needed: `SPEC_analyzeIssue`
+- project_context: `.catdd/spec/projectContext.md`
+- generated_todo_story: `.catdd/spec/todoUS/20260705-StateDesign-SrvID-LinkID-SubState-UserStory.md`
+- project_story_ledger: `README_UserStories.md`
+- related_closed_story: `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
+- notes: Issue analyzed and archived from pendingNews; repair-oriented todo story generated with open blocking acceptance questions.
