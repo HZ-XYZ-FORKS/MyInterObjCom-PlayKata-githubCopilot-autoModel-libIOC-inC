@@ -11,7 +11,7 @@
 
 - Current status: closed and moved to `.catdd/spec/doneUS/` via `SPEC_closeUserStory`.
 - Next recommended command: `SPEC_analyzeIssue`.
-- Paired task artifact: `.catdd/spec/doneUS/20260618-TASKs.md`.
+- Paired task artifact: `.catdd/spec/doneUS/20260618-EstablishedLink-UserStory-Tasks.md`.
 - Requirement artifacts updated by `SPEC_updateUserStory`:
   - `README_UserStories.md`
   - `README_UserGuide.md`
