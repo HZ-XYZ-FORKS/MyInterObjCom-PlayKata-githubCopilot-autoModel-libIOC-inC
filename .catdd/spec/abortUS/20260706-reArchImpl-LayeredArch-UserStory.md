@@ -1,6 +1,6 @@
 # Implement Layered Architecture Slice After US-4 Design Closure
 
-> **Story ID:** US-6 | **State:** doing-open | **Priority:** P1
+> **Story ID:** US-6 | **State:** aborted | **Priority:** P1
 > **Source:** `.catdd/spec/analyzedNews/20260706-reArchImpl-LayeredArch-Issue.md`
 > **Parent Story:** `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
 > **CaTDD Class:** P1 Design
@@ -11,9 +11,61 @@
 
 ## Active Work Status
 
-- Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
+- Current status: aborted from `.catdd/spec/doingUS/` via `SPEC_abortUserStory`.
 - Entry gate status: `READY` confirmed from initial acceptance questions.
-- Next recommended command: `SPEC_makePlan`.
+- Requirement sync: `SPEC_updateUserStory` completed for `README_UserStories.md` and `README_UserGuide.md`.
+- Requirement review: `SPEC_reviewUserStory` PASSED for requirement clarity, AC traceability, and lifecycle consistency.
+- Detail-design update: `SPEC_updateDetailDesign` completed for US-6 first-slice path in `README_DetailDesign.md` and `README_StateDesign.md`.
+- Detail-design review: `SPEC_reviewDetailDesign` PASSED for API/state ownership clarity and US/AC-to-testability readiness.
+- Requirement review (post-detail recheck): `SPEC_reviewUserStory` REVISE due requirement-ledger drift found after design updates.
+- Requirement-sync correction: `SPEC_updateUserStory` completed for AC status maturity and traceability-note alignment.
+- Requirement review (post-correction): `SPEC_reviewUserStory` PASSED after requirement-ledger correction.
+- Next recommended command: `SPEC_analyzeAbortedUserStory`.
+
+### SPEC_abortUserStory Result (2026-07-07)
+
+- Abort outcome: `APPLIED`
+- Abort reason: Source implementation does not yet materialize the planned L0-L3 split (ServiceObject/LinkObject/ProtoMethods/protocol-layer implementation), so continuing this story in place risks hiding scope and execution gaps.
+- Preserved evidence: requirement, design, and review history retained in this aborted artifact and paired tasks artifact.
+- Follow-up intent: not yet declared by developer; default recommendation is to analyze aborted evidence first.
+
+### SPEC_reviewUserStory Result (2026-07-07, Initial)
+
+- Review outcome: `PASS`
+- Requirement ledger consistency: `README_UserStories.md` TODO/DOING state and AC-6.1/AC-6.2 entries are aligned with active story state.
+- Usage-guide consistency: `README_UserGuide.md` contains first-slice guidance aligned to US-6 requirement scope and promotion gate.
+- Transfer decision: requirement-oriented stage is complete; continue as design-oriented follow-up detail revision for implementation-readiness.
+
+### SPEC_reviewDetailDesign Result (2026-07-07)
+
+- Review outcome: `PASS`
+- Boundary gate: US-6 detail updates stay within approved US-4 layered ownership direction and avoid new L3->L0 or L2 protocol-bypass paths.
+- API/state gate: first-slice API-to-core mapping and runtime substate transitions are explicit for `IOC_onlineService`, `IOC_connectService`, `IOC_acceptClient`, `IOC_offlineService`, and `IOC_closeLink`.
+- Constraint gate: promotion criteria and risk notes explicitly bind to required US-1 regression suites.
+- Testability gate: AC-6.1/AC-6.2 are now directly translatable to CaTDD US/AC/TC skeleton design for the first implementation slice.
+
+### SPEC_reviewUserStory Recheck Result (2026-07-07)
+
+- Review outcome: `REVISE`
+- Finding 1: `README_UserStories.md` retains stale traceability notes (for example, saying detail design is to be created) even though US-6 detail/state design updates now exist.
+- Finding 2: AC-6 status remains `drafted` after design-level readiness passed, causing requirement-ledger maturity lag.
+- Finding 3: Story final-review gate is therefore not satisfied yet in the paired tasks artifact.
+- Transfer decision: run a focused requirement-sync correction via `SPEC_updateUserStory` before any downstream implementation-oriented steps.
+
+### SPEC_updateUserStory Correction Result (2026-07-07)
+
+- Correction outcome: `APPLIED`
+- Corrected `README_UserStories.md` AC-6.1/AC-6.2 status from `drafted` to `reviewed`.
+- Corrected `README_UserStories.md` traceability notes to reflect existing US-6 detail/state design artifacts.
+- Aligned `README_UserGuide.md` US-6 section with reviewed first-slice requirement status.
+
+### SPEC_reviewUserStory Result (Post-Correction, 2026-07-07)
+
+- Review outcome: `PASS`
+- Requirement ledger consistency: `README_UserStories.md` DOING state, AC-6.1/AC-6.2 status, and traceability notes are consistent with active lifecycle artifacts.
+- Usage-guide consistency: `README_UserGuide.md` US-6 first-slice guidance remains aligned with AC-6 requirement intent.
+- Design transfer consistency: `README_DetailDesign.md` and `README_StateDesign.md` references are now coherent with requirement surfaces.
+- Transfer decision: requirement-correction stage is complete; use `SPEC_commitWorks` as checkpoint before next lifecycle routing.
 
 ---
 
@@ -60,7 +112,7 @@
 ### Review Result
 
 - `CLEARED`
-- Next command: `SPEC_makePlan`
+- Historical next command at clear-intent stage: `SPEC_makePlan`
 
 ---
 
@@ -198,7 +250,7 @@ flowchart TD
 | 2 | Which exact regression gate set is mandatory for first-slice promotion? | model gap | answered: all US-1 service regression suites listed in Scope must pass |
 | 3 | Should this story first run a planning command to convert US-4 design outputs into an implementation task artifact before opening execution? | lifecycle guard | answered: yes, follow `SPEC_openUserStory` then `SPEC_makePlan` before implementation commands |
 
-**Gate:** Story is already opened and intent-cleared; run `SPEC_makePlan` next.
+**Gate (historical at intent-clearing stage):** Story is already opened and intent-cleared; run `SPEC_makePlan` next.
 
 ---
 
