@@ -1,11 +1,66 @@
 # Implement Layered Architecture Slice After US-4 Design Closure
 
-> **Story ID:** US-6 | **State:** todo | **Priority:** P1
+> **Story ID:** US-6 | **State:** doing-open | **Priority:** P1
 > **Source:** `.catdd/spec/analyzedNews/20260706-reArchImpl-LayeredArch-Issue.md`
 > **Parent Story:** `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
 > **CaTDD Class:** P1 Design
 > **Primary Category:** Capability
 > **Created:** 2026-07-06
+
+---
+
+## Active Work Status
+
+- Current status: opened in `.catdd/spec/doingUS/` via `SPEC_openUserStory`.
+- Entry gate status: `READY` confirmed from initial acceptance questions.
+- Next recommended command: `SPEC_makePlan`.
+
+---
+
+## Mutual Intent Contract (SPEC_clearStoryIntent)
+
+### Developer Intent
+
+- Start reArch implementation from IOC service/link lifecycle APIs first.
+- Keep first implementation slice constrained to `IOC_SrvAPI` path and do not widen scope to all layers at once.
+- Require deterministic regression evidence before promoting the slice.
+
+### CodeAgent Intent
+
+- Preserve US-4 design decisions while converting them into an implementation-ready first slice.
+- Keep scope explicit: `Include/IOC/IOC_SrvAPI.h` and `Source/IOC_SrvAPI.c` first, then validate via named US-1 service regression suites.
+- Route immediately to planning so lifecycle order remains intact before implementation commands.
+
+### In Scope (Intent-Cleared)
+
+- First-slice boundary definition for `IOC_onlineService`, `IOC_offlineService`, `IOC_acceptClient`, `IOC_connectService`, and `IOC_closeLink` path.
+- Regression gate declaration and pass criteria for `UT_US1_Service_Typical`, `UT_US1_Service_Edge`, `UT_US1_Service_Misuse`, `UT_US1_Service_Fault`, `UT_US1_Service_State`, and `UT_US1_Service_Capability`.
+
+### Out of Scope (Intent-Cleared)
+
+- Full multi-slice layered rearchitecture rollout in this first slice.
+- Contract-breaking API semantics beyond the closed US-4 baseline.
+- Non-IOC_SrvAPI implementation areas until first-slice gates are satisfied.
+
+### Success Signal
+
+- The first-slice implementation plan is explicit and reviewable.
+- Required US-1 regression suites are declared as mandatory promotion gates and pass.
+- The story advances through planning without lifecycle-step skipping.
+
+### Assumptions
+
+- Existing IOC public API semantics remain compatible unless a later story explicitly changes the contract.
+- US-1 regression executables are available as slice-promotion evidence in this repository flow.
+
+### Open Questions (Non-Blocking)
+
+1. Should follow-up slice #2 prioritize protocol-object extraction (L1 seam) or core dependency hardening (L2 boundary guards) first?
+
+### Review Result
+
+- `CLEARED`
+- Next command: `SPEC_makePlan`
 
 ---
 
@@ -108,16 +163,16 @@ flowchart TD
 **In scope:**
 
 - Implement-first slice is constrained to IOC service/link lifecycle API path:
- 	- Public API surface: `Include/IOC/IOC_SrvAPI.h`
- 	- Primary implementation path: `Source/IOC_SrvAPI.c`
- 	- First API set: `IOC_onlineService`, `IOC_offlineService`, `IOC_acceptClient`, `IOC_connectService`, `IOC_closeLink`
+  - Public API surface: `Include/IOC/IOC_SrvAPI.h`
+  - Primary implementation path: `Source/IOC_SrvAPI.c`
+  - First API set: `IOC_onlineService`, `IOC_offlineService`, `IOC_acceptClient`, `IOC_connectService`, `IOC_closeLink`
 - Apply and verify deterministic regression gates before slice promotion:
- 	- `UT_US1_Service_Typical`
- 	- `UT_US1_Service_Edge`
- 	- `UT_US1_Service_Misuse`
- 	- `UT_US1_Service_Fault`
- 	- `UT_US1_Service_State`
- 	- `UT_US1_Service_Capability`
+  - `UT_US1_Service_Typical`
+  - `UT_US1_Service_Edge`
+  - `UT_US1_Service_Misuse`
+  - `UT_US1_Service_Fault`
+  - `UT_US1_Service_State`
+  - `UT_US1_Service_Capability`
 
 **Non-goals:**
 
@@ -143,7 +198,7 @@ flowchart TD
 | 2 | Which exact regression gate set is mandatory for first-slice promotion? | model gap | answered: all US-1 service regression suites listed in Scope must pass |
 | 3 | Should this story first run a planning command to convert US-4 design outputs into an implementation task artifact before opening execution? | lifecycle guard | answered: yes, follow `SPEC_openUserStory` then `SPEC_makePlan` before implementation commands |
 
-**Gate:** This story is **READY** for `SPEC_openUserStory`; next run `SPEC_makePlan` immediately after opening.
+**Gate:** Story is already opened and intent-cleared; run `SPEC_makePlan` next.
 
 ---
 
