@@ -11,6 +11,7 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 | US-3 | Refine Interface Behavior Edge Coverage for UT_US1_Service_Edge | todo | `.catdd/spec/analyzedNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md` | `.catdd/spec/todoUS/20260704-UT_US1_Service_Edge-InterfaceBehaviorEdge-UserStory.md` |
 | US-6 | Implement Layered Architecture Slice After US-4 Design Closure | doing | `.catdd/spec/analyzedNews/20260706-reArchImpl-LayeredArch-Issue.md` | `.catdd/spec/doingUS/20260706-reArchImpl-LayeredArch-UserStory.md` |
+| US-7 | Rewrite README_UserGuide for Developers Building IOC-Based Apps | todo | `.catdd/spec/analyzedNews/20260707-reWrite-README_UserGuide-fromUser_whoWillUseIOC_toDevNewApps-Issue.md` | `.catdd/spec/todoUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md` |
 
 ### DONE Stories
 
