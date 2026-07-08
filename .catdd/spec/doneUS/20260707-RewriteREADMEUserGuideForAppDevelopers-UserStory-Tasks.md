@@ -1,6 +1,6 @@
 # TASKs for US-7 Rewrite README_UserGuide for Developers Building IOC-Based Apps
 
-> **Active Story:** `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
+> **Closed Story:** `.catdd/spec/doneUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
 > **Story ID:** `US-7`
 > **Planning Command:** `SPEC_makePlan`
 > **Plan Date:** 2026-07-09
@@ -67,7 +67,10 @@ Reasoning:
   - Rejected now: this story is requirement-oriented documentation work and does not route to unit-test design.
 
 - [x] `SPEC_commitWorks`
-  - Selected now: requirement-oriented-only story branch is ready for closure checkpoint.
+  - Completed: committed requirement-oriented story artifacts at `13c50b2`.
+
+- [x] `SPEC_closeUserStory`
+  - Completed: moved story and paired tasks artifacts from `doingUS` to `doneUS` and synchronized `README_UserStories.md`.
 
 ---
 
@@ -79,12 +82,15 @@ Rationale:
 
 - Requirement review gate is now PASS with consistent story/ledger state and AC traceability.
 - `README_UserStories.md` and `README_UserGuide.md` remain aligned to US-7 requirement intent.
-- The smallest correct next step is closure checkpoint commit for requirement-only work.
+- Commit checkpoint is complete for requirement-only work.
+- Story closure transition is applied.
+- Close generated lifecycle/meta file changes that are not covered by pre-close commit `13c50b2`.
+- The smallest correct next step is close-checkpoint `SPEC_commitWorks`.
 
 Expected checks in next step:
 
-- Capture the requirement-review-approved artifacts in commit scope.
-- Preserve lifecycle traceability so close step can move story cleanly to done.
+- Commit close-generated lifecycle/meta file changes.
+- Preserve traceability for the done story location.
 
 ---
 
@@ -99,7 +105,7 @@ Decision is applied and no longer blocks closure.
 
 ## Requirement Trace
 
-- Active story: `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
+- Closed story: `.catdd/spec/doneUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
 - Requirement source: `.catdd/spec/analyzedNews/20260707-reWrite-README_UserGuide-fromUser_whoWillUseIOC_toDevNewApps-Issue.md`
 - Project story ledger: `README_UserStories.md`
 - Project context: `.catdd/spec/projectContext.md`

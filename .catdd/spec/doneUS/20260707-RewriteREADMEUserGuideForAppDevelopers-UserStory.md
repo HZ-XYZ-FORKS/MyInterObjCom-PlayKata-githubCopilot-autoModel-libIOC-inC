@@ -1,6 +1,6 @@
 # Rewrite README_UserGuide for Developers Building IOC-Based Apps
 
-> **Story ID:** US-7 | **State:** doing | **Priority:** P3
+> **Story ID:** US-7 | **State:** done | **Priority:** P3
 > **Source:** `.catdd/spec/analyzedNews/20260707-reWrite-README_UserGuide-fromUser_whoWillUseIOC_toDevNewApps-Issue.md`
 > **CaTDD Class:** P3 Addons
 > **Primary Category:** DemoExample
@@ -10,7 +10,7 @@
 
 ## Active Work Status
 
-- Current status: opened from `.catdd/spec/todoUS/` via `SPEC_openUserStory`.
+- Current status: closed to `.catdd/spec/doneUS/` via `SPEC_closeUserStory`.
 - Entry gate status: `READY` (no blocking Initial Acceptance Questions).
 - Planning status: `SPEC_makePlan` completed and paired tasks artifact exists.
 - Next recommended command: `SPEC_commitWorks`.
@@ -91,6 +91,35 @@
 - Transfer decision:
   - This is requirement-oriented-only work; route to lifecycle closure checkpoint.
 - Next recommended command: `SPEC_commitWorks`
+
+---
+
+## Commit Result (SPEC_commitWorks)
+
+- Commit outcome: `APPLIED`
+- Commit id: `13c50b2`
+- Commit scope:
+  - `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md` (moved from `todoUS`)
+  - `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory-Tasks.md`
+  - `README_UserStories.md`
+  - `README_UserGuide.md`
+- Next recommended command: `SPEC_closeUserStory`
+
+---
+
+## Close Result (SPEC_closeUserStory)
+
+- Close outcome: `APPLIED`
+- Story artifact moved:
+  - from `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
+  - to `.catdd/spec/doneUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
+- Paired tasks artifact moved:
+  - from `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory-Tasks.md`
+  - to `.catdd/spec/doneUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory-Tasks.md`
+- `README_UserStories.md` synchronized to DONE state for US-7 and lifecycle links normalized.
+- Project-context sync policy: major lifecycle impact detected; in-flow project-context lifecycle snapshot was updated.
+- Close-commit checkpoint: `close_commit_required = yes`
+- Next command: `SPEC_commitWorks`
 
 ---
 

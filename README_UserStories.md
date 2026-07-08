@@ -10,7 +10,6 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | --- | --- | --- | --- | --- |
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 | US-3 | Refine Interface Behavior Edge Coverage for UT_US1_Service_Edge | todo | `.catdd/spec/analyzedNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md` | `.catdd/spec/todoUS/20260704-UT_US1_Service_Edge-InterfaceBehaviorEdge-UserStory.md` |
-| US-7 | Rewrite README_UserGuide for Developers Building IOC-Based Apps | doing | `.catdd/spec/analyzedNews/20260707-reWrite-README_UserGuide-fromUser_whoWillUseIOC_toDevNewApps-Issue.md` | `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md` |
 
 ### ABORTED Stories
 
@@ -24,14 +23,12 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | --- | --- | --- | --- | --- |
 | US-1 | Establish IOC Link Between Service and Client | 2026-07-03 | commit `512e010`; CTest UT_US1_Service_* PASS | `.catdd/spec/doneUS/20260618-EstablishedLink-UserStory.md` |
 | US-4 | Re-architect IOC into Explicit L0-L3 Layers | 2026-07-05 | commit `8d34906`; accepted artifact-consistency verification summary for close gate | `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md` |
+| US-7 | Rewrite README_UserGuide for Developers Building IOC-Based Apps | 2026-07-09 | commit `13c50b2`; `SPEC_reviewUserStory` PASS; close transition applied | `.catdd/spec/doneUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md` |
 
 ## Active Story
 
 ```text
-US-7: As a developer building a new application with IOC,
-      I want README_UserGuide.md rewritten around build/run onboarding,
-      IOC API integration, and usage scenarios,
-      So that I can use IOC correctly without reading implementation source.
+No active doing-story at this moment.
 ```
 
 ## Acceptance Criteria Ledger
@@ -52,7 +49,7 @@ US-7: As a developer building a new application with IOC,
 ## Lifecycle Links
 
 - Pending input: `.catdd/spec/pendingNews/`
-- Active story: `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
+- Active story: none
 - Todo story: `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md`
 - Done story: `.catdd/spec/doneUS/`
 
