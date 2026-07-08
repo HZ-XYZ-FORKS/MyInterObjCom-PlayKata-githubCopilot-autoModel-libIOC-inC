@@ -1,10 +1,96 @@
 # Rewrite README_UserGuide for Developers Building IOC-Based Apps
 
-> **Story ID:** US-7 | **State:** todo | **Priority:** P3
+> **Story ID:** US-7 | **State:** doing | **Priority:** P3
 > **Source:** `.catdd/spec/analyzedNews/20260707-reWrite-README_UserGuide-fromUser_whoWillUseIOC_toDevNewApps-Issue.md`
 > **CaTDD Class:** P3 Addons
 > **Primary Category:** DemoExample
 > **Created:** 2026-07-07
+
+---
+
+## Active Work Status
+
+- Current status: opened from `.catdd/spec/todoUS/` via `SPEC_openUserStory`.
+- Entry gate status: `READY` (no blocking Initial Acceptance Questions).
+- Planning status: `SPEC_makePlan` completed and paired tasks artifact exists.
+- Next recommended command: `SPEC_commitWorks`.
+
+---
+
+## Mutual Intent Contract (SPEC_clearStoryIntent)
+
+### Developer Intent
+
+- Rewrite `README_UserGuide.md` for app developers who build new IOC-based applications.
+- Keep the guide centered on three journeys: build/run onboarding, API integration flow, and usage scenarios.
+- Ensure a reader can use IOC correctly without reading implementation source files.
+
+### CodeAgent Intent
+
+- Execute a usage-first rewrite that preserves current public API semantics and existing design-document boundaries.
+- Keep claims traceable to `Include/IOC/*.h` and `Doc/IOC_UsageScenarios.md`.
+- Route directly into planning so the next command can choose requirement/design/implementation orientation explicitly.
+
+### In Scope (Intent-Cleared)
+
+- Restructure and rewrite `README_UserGuide.md` to support first-time IOC app developers.
+- Explain service/link integration sequence at usage level (`IOC_onlineService`, `IOC_connectService`, `IOC_acceptClient`, `IOC_offlineService`).
+- Summarize DAT/EVT/CMD role semantics and point to deeper references.
+- Link to build/run guidance, public headers, scenario docs, and design docs where appropriate.
+
+### Out of Scope (Intent-Cleared)
+
+- Changing IOC API contracts or implementation behavior.
+- Defining a new canonical build/toolchain policy not already established in project context.
+- Rewriting `README_ArchDesign.md`, `README_DetailDesign.md`, or `README_StateDesign.md`.
+
+### Success Signal
+
+- A developer can follow `README_UserGuide.md` and identify how to build/run, which APIs to integrate first, and where scenario-level behavior is defined, without reading `Source/*.c`.
+
+### Assumptions
+
+- Current build/run references may be linked from existing project docs while canonical toolchain policy remains open.
+- Usage guidance remains aligned with current public headers and documented IOC usage scenarios.
+
+### Open Questions (Non-Blocking)
+
+1. Should this rewrite include a compact quickstart code snippet, or remain reference-oriented with links only?
+     - answered: include a compact quickstart snippet in `README_UserGuide.md`.
+
+### Review Result
+
+- `CLEARED`
+- Next recommended command: `SPEC_makePlan`
+
+---
+
+## Requirement Update Result (SPEC_updateUserStory)
+
+- Update outcome: `APPLIED`
+- Updated project requirement ledger in `README_UserStories.md`:
+  - US-7 synchronized to `doing` with `doingUS` trace link.
+  - US-6 reconciled into aborted-state trace section.
+  - Added AC-7.1 to AC-7.4 ledger rows with initial `drafted` trace status.
+- Updated paired usage guide in `README_UserGuide.md`:
+  - Rewritten for app-developer onboarding, service/link API integration flow, and DAT/EVT/CMD usage semantics.
+  - Preserved cross-document boundaries by linking architecture/detail/state decisions to design docs.
+- Next recommended command: `SPEC_reviewUserStory`
+
+---
+
+## User Story Review Result (SPEC_reviewUserStory)
+
+- Review outcome: `PASS`
+- Requirement ledger consistency:
+  - `README_UserStories.md` lifecycle state is consistent with active artifacts (`US-7` in doing, `US-6` in aborted).
+  - AC trace/status for US-7 (`AC-7.1` to `AC-7.4`) is present and reviewable.
+- Usage-guide consistency:
+  - `README_UserGuide.md` covers onboarding, API integration flow, and DAT/EVT/CMD usage semantics.
+  - Guide remains usage-facing and routes internal design concerns to architecture/detail/state docs.
+- Transfer decision:
+  - This is requirement-oriented-only work; route to lifecycle closure checkpoint.
+- Next recommended command: `SPEC_commitWorks`
 
 ---
 

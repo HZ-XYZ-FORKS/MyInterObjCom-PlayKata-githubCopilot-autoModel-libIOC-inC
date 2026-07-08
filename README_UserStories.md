@@ -10,8 +10,13 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | --- | --- | --- | --- | --- |
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 | US-3 | Refine Interface Behavior Edge Coverage for UT_US1_Service_Edge | todo | `.catdd/spec/analyzedNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md` | `.catdd/spec/todoUS/20260704-UT_US1_Service_Edge-InterfaceBehaviorEdge-UserStory.md` |
-| US-6 | Implement Layered Architecture Slice After US-4 Design Closure | doing | `.catdd/spec/analyzedNews/20260706-reArchImpl-LayeredArch-Issue.md` | `.catdd/spec/doingUS/20260706-reArchImpl-LayeredArch-UserStory.md` |
-| US-7 | Rewrite README_UserGuide for Developers Building IOC-Based Apps | todo | `.catdd/spec/analyzedNews/20260707-reWrite-README_UserGuide-fromUser_whoWillUseIOC_toDevNewApps-Issue.md` | `.catdd/spec/todoUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md` |
+| US-7 | Rewrite README_UserGuide for Developers Building IOC-Based Apps | doing | `.catdd/spec/analyzedNews/20260707-reWrite-README_UserGuide-fromUser_whoWillUseIOC_toDevNewApps-Issue.md` | `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md` |
+
+### ABORTED Stories
+
+| Story ID | Title | State | Source | Trace Link |
+| --- | --- | --- | --- | --- |
+| US-6 | Implement Layered Architecture Slice After US-4 Design Closure | aborted | `.catdd/spec/analyzedNews/20260706-reArchImpl-LayeredArch-Issue.md` | `.catdd/spec/abortUS/20260706-reArchImpl-LayeredArch-UserStory.md` |
 
 ### DONE Stories
 
@@ -23,18 +28,10 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 ## Active Story
 
 ```text
-US-2: As a concurrent IOC API consumer,
-      I want duplicate or interleaved IOC_connectService attempts against the same context
-      to behave deterministically under contention,
-      So that link establishment avoids duplicate links, lost requests, and deadlocks.
-
-US-3: As a developer maintaining IOC link-establishment tests,
-      I want UT_US1_Service_Edge to prioritize interface behavior edge scenarios while excluding argument-edge permutations,
-      So that edge verification remains focused and behavior-traceable.
-
-US-4: As a maintainer of IOC architecture,
-      I want IOC to be restructured into explicit L0-L3 layers with clear dependency direction,
-      So that platform/protocol growth remains isolated from core and interface contracts.
+US-7: As a developer building a new application with IOC,
+      I want README_UserGuide.md rewritten around build/run onboarding,
+      IOC API integration, and usage scenarios,
+      So that I can use IOC correctly without reading implementation source.
 ```
 
 ## Acceptance Criteria Ledger
@@ -47,11 +44,15 @@ US-4: As a maintainer of IOC architecture,
 | AC-4.1 | US-4 | IOC architecture documentation and source ownership map | Each module/file is classified into one of L0-L3 | Allowed and forbidden dependency directions are explicit and reviewable | reviewed | US-4 Scenario 1, README_ArchDesign layer ownership map + dependency graph, TC seed C1/C2 |
 | AC-4.2 | US-4 | L2 needs protocol behavior | Core calls protocol operation through bound L1 Service/Link object | ProtoMethods dispatch maps to L0 implementations without bypass | reviewed | US-4 Scenario 1, README_DetailDesign ProtoMethods minimum set, TC seed C2 |
 | AC-4.3 | US-4 | Incremental refactor slice is applied | US-1 regression suite runs after the slice | Existing US-1 behavior remains passing and traceable | reviewed | US-4 Scenario 3, README_DetailDesign lightweight implementation plan + README_StateDesign migration state model, TC seed C3 |
+| AC-7.1 | US-7 | Developer opens the user guide without reading source | They follow setup/first-use guidance | They can identify build/run entry, public headers, and scenario references | reviewed | US-7 Scenario 1, README_UserGuide onboarding section |
+| AC-7.2 | US-7 | Developer wants IOC service/link integration steps | They read API integration guidance | They understand online/connect/accept/offline sequence at usage level | reviewed | US-7 Scenario 2, README_UserGuide API integration section |
+| AC-7.3 | US-7 | Developer has service/link usage context | They read DAT/EVT/CMD guidance | They can distinguish semantics and find deeper scenario references | reviewed | US-7 Scenario 3, README_UserGuide usage scenarios section |
+| AC-7.4 | US-7 | Guide content touches lifecycle or design constraints | Internal details would be needed | Guide links to design docs instead of redefining internals | reviewed | US-7 Scenario 4, README_UserGuide cross-doc boundary section |
 
 ## Lifecycle Links
 
 - Pending input: `.catdd/spec/pendingNews/`
-- Active story: `.catdd/spec/doingUS/20260706-reArchImpl-LayeredArch-UserStory.md`
+- Active story: `.catdd/spec/doingUS/20260707-RewriteREADMEUserGuideForAppDevelopers-UserStory.md`
 - Todo story: `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md`
 - Done story: `.catdd/spec/doneUS/`
 
