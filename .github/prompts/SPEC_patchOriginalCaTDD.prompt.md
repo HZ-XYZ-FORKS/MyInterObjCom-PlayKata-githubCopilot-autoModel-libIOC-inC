@@ -25,7 +25,8 @@ You are running a Copilot-native wrapper around a portable CaTDD slash command.
 2. Treat this file as a thin Copilot adapter; do not redefine CaTDD method semantics here.
 3. Use methodPrompts for category meaning, priority order, design skeleton rules, and CaTDD constraints.
 4. Use the source command for inputs, outputs, conflict guards, and next-step flow.
-5. Ask for missing product intent instead of inventing requirements.
-6. Report the next recommended slash command when the step finishes.
+5. Follow the source command for branch selection.
+6. Ask for missing product intent instead of inventing requirements.
+7. Report the next recommended slash command when the step finishes.
 
 ONE-MORE-THING: ask developer if something not sure
