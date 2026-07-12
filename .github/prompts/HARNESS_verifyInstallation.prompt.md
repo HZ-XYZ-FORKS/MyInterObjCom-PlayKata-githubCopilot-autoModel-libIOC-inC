@@ -1,17 +1,17 @@
 ---
-description: "Run CaTDD slash command SPEC_importIssue"
+description: "Run CaTDD slash command HARNESS_verifyInstallation"
 agent: "agent"
 argument-hint: "Fill required command inputs, source files, target files, language, and test framework"
 ---
-# SPEC_importIssue
+# HARNESS_verifyInstallation
 
 You are running a Copilot-native wrapper around a portable CaTDD slash command.
 
 ## Source Command
 
-- Portable command path: .catdd/slashCommands/commands/Px-SpecFlow/SPEC_importIssue.md
-- Default workspace link: [.catdd/slashCommands/commands/Px-SpecFlow/SPEC_importIssue.md](../../.catdd/slashCommands/commands/Px-SpecFlow/SPEC_importIssue.md)
-- Flow or kit: Px-SpecFlow
+- Portable command path: .catdd/slashCommands/commands/Px-HarnessKits/HARNESS_verifyInstallation.md
+- Default workspace link: [.catdd/slashCommands/commands/Px-HarnessKits/HARNESS_verifyInstallation.md](../../.catdd/slashCommands/commands/Px-HarnessKits/HARNESS_verifyInstallation.md)
+- Flow or kit: Px-HarnessKits
 
 ## Method Source of Truth
 

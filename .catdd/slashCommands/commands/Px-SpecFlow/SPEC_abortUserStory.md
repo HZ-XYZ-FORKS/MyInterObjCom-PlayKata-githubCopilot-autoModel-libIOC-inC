@@ -23,7 +23,7 @@ Abort an active user story when continuing it in place would hide a scope, assum
 
 ## Method References
 
-- [../../flows/Px-SpecFlow.md](../../flows/Px-SpecFlow.md)
+- [Px-SpecFlow](../../flows/Px-SpecFlow.md)
 
 ## Output Contract
 
