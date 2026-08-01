@@ -10,6 +10,7 @@ Project-level ledger for user-story lifecycle state (TODO/DOING/DONE) and accept
 | --- | --- | --- | --- | --- |
 | US-2 | Establish IOC Link Concurrency Safety | todo | `.catdd/spec/todoUS/20260618-EstablishedLink-UserStory.md` | `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md` |
 | US-3 | Refine Interface Behavior Edge Coverage for UT_US1_Service_Edge | todo | `.catdd/spec/analyzedNews/20260703-UT_US1_Service_Edge-interfaceBehaviorEdge-Issue.md` | `.catdd/spec/todoUS/20260704-UT_US1_Service_Edge-InterfaceBehaviorEdge-UserStory.md` |
+| US-8 | Synchronize Layered Architecture Across Arch, Detail Design, and Source Implementation | todo | `.catdd/spec/analyzedNews/20260709-sync-ArchDesign2DetailDesign2SrcImpl-Issue.md` | `.catdd/spec/todoUS/20260709-sync-ArchDesign2DetailDesign2SrcImpl-UserStory.md` |
 
 ### ABORTED Stories
 
@@ -51,6 +52,7 @@ No active doing-story at this moment.
 - Pending input: `.catdd/spec/pendingNews/`
 - Active story: none
 - Todo story: `.catdd/spec/todoUS/20260621-EstablishedLink-ConcurrencyDesignStory.md`
+- Todo story: `.catdd/spec/todoUS/20260709-sync-ArchDesign2DetailDesign2SrcImpl-UserStory.md`
 - Done story: `.catdd/spec/doneUS/`
 
 ## Sync Rules
