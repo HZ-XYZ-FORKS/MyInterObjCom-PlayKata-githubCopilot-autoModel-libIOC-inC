@@ -7,7 +7,7 @@ Use this prompt when designing P1 Design-oriented tests for designed capacity, l
 Capability is the second P1 Design category.
 
 ```text
-P1 Design = State -> Capability -> Concurrency
+P1 Design = State -> Capability -> Interaction -> Concurrency
 ```
 
 Capability proves that the implementation matches the intended capacity contract.
@@ -24,6 +24,7 @@ Capability proves that the implementation matches the intended capacity contract
 - The scenario is a simple edge value around one input parameter; use Edge.
 - The concern is speed, latency, or throughput; use Performance.
 - The concern is repeated stability after many cycles; use Robust.
+- The concern is collaborator sequence or handoff design; use Interaction.
 - The concern is simultaneous access and race conditions; use Concurrency.
 
 ## Design Focus
@@ -32,6 +33,16 @@ Capability proves that the implementation matches the intended capacity contract
 - Test exact limit behavior: below limit, at limit, above limit.
 - Distinguish "maximum supported" from "fast enough".
 - Capture whether exceeding capacity is an error, backpressure, queueing, rejection, or degradation.
+
+## TestPointsInMind
+
+When this category applies, consider test points such as:
+
+- The promised minimum, default, configured, documented maximum, and discovered maximum ability from the design source.
+- Below-limit, at-limit, and one-over-limit behavior, especially when accepted work and rejected excess must be distinguishable.
+- Per-scope capacity boundaries: per user, per tenant, per process, per queue, per file, per service, or per configured resource pool.
+- Over-capacity policy: reject, backpressure, queue, evict, degrade, split, paginate, or require explicit configuration.
+- Capacity reset or release behavior after cleanup so the test proves the limit is reusable, not only reached once.
 
 ## Design Skeleton
 

@@ -4,10 +4,10 @@ Use this prompt when designing P1 Design-oriented tests for thread safety, synch
 
 ## Position
 
-Concurrency is the third P1 Design category by default, but it can be promoted when thread safety is architectural core.
+Concurrency is the fourth P1 Design category by default, but it can be promoted when thread safety is architectural core.
 
 ```text
-P1 Design = State -> Capability -> Concurrency
+P1 Design = State -> Capability -> Interaction -> Concurrency
 ```
 
 Concurrency proves that correct behavior survives simultaneous access and interleaving.
@@ -22,6 +22,7 @@ Concurrency proves that correct behavior survives simultaneous access and interl
 ## Do Not Use When
 
 - The operation is single-threaded and only uses many items; use Capability or Performance as appropriate.
+- The concern is collaboration order or handoff without simultaneous access; use Interaction.
 - The concern is throughput under load rather than correctness under interleaving; use Performance.
 - The concern is lifecycle transitions without simultaneous access; use State.
 - The scenario cannot be made deterministic enough to diagnose failures; first improve observability or fixtures.
@@ -32,6 +33,16 @@ Concurrency proves that correct behavior survives simultaneous access and interl
 - Define the interleaving or contention pattern being verified.
 - Prefer deterministic barriers/latches over arbitrary sleeps.
 - Verify correctness invariants: all work processed once, no lost update, no corruption, no deadlock, stable final state.
+
+## TestPointsInMind
+
+When this category applies, consider test points such as:
+
+- Multiple actors start from a controlled barrier and operate on one named shared resource or synchronization boundary.
+- Interleavings preserve required invariants: no lost update, duplicate delivery, corrupted state, out-of-order commit, deadlock, or livelock.
+- Concurrent lifecycle pressure: shutdown while work is in flight, cancel during wait, register while dispatching, or close while readers exist.
+- Contention around ownership transfer, lock ordering, idempotency, atomic compare/update, queue pop, cache write, or callback dispatch.
+- Tool-backed evidence when available: deterministic scheduler, sanitizer, race detector, timeout guard, or bounded repeated run.
 
 ## Design Skeleton
 

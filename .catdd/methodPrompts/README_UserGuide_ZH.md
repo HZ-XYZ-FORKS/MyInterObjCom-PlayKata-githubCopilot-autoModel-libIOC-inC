@@ -59,17 +59,28 @@ methodPrompts/
   README_UserGuide.md
   README_UserGuide_ZH.md
   CaTDD_methodPrompt.md
+  CaTDD_methodPrompt-categorySemantics.md
+  CaTDD_methodPrompt-testPointDiscovery.md
+  CaTDD_methodPrompt-workflow.md
+  CaTDD_methodPrompt-testStructure.md
+  CaTDD_methodPrompt-fileNaming.md
+  CaTDD_methodPrompt-agentWorkflow.md
+  CaTDD_methodPrompt-troubleshooting.md
+  CaTDD_methodPrompt-examples.md
   CaTDD_methodPrompt4Cat-Typical.md
   CaTDD_methodPrompt4Cat-Edge.md
   CaTDD_methodPrompt4Cat-Misuse.md
   CaTDD_methodPrompt4Cat-Fault.md
   CaTDD_methodPrompt4Cat-State.md
   CaTDD_methodPrompt4Cat-Capability.md
+  CaTDD_methodPrompt4Cat-Interaction.md
   CaTDD_methodPrompt4Cat-Concurrency.md
   CaTDD_methodPrompt4Cat-Performance.md
   CaTDD_methodPrompt4Cat-Robust.md
   CaTDD_methodPrompt4Cat-Compatibility.md
   CaTDD_methodPrompt4Cat-Configuration.md
+  CaTDD_methodPrompt4Cat-Diagnosis.md
+  CaTDD_methodPrompt4Cat-Security.md
   CaTDD_methodPrompt4Cat-DemoExample.md
   CaTDD_designAndImplTemplate.cxx
 ```
@@ -93,15 +104,17 @@ methodPrompts/
 开始编写 CaTDD 测试文件时，按以下流程执行。
 
 1. 阅读 `README.md`，选择相关方法提示词。
-2. 阅读 `CaTDD_methodPrompt.md`，了解完整方法契约。
-3. 复制 `CaTDD_designAndImplTemplate.cxx`，或把其中的分区结构适配到你的语言。
-4. 捕获 Stage-0 自由草稿：场景、示例、风险与开放问题。
-5. 根据下面的优先级顺序，将草稿归类。
-6. 在实现代码之前，把 US/AC/TC 注释写进测试文件。
-7. 为下一个 TC 生成或编写一个失败测试。
-8. 只实现让该 TC 通过所需的最小生产代码。
-9. 更新 TC 状态标记，并保持注释与行为同步。
-10. 每次只推进一个 TC，持续重复。
+2. 阅读 `CaTDD_methodPrompt.md`，把它作为主入口。
+3. 阅读需要的 `CaTDD_methodPrompt-*.md` 子主题，获取详细方法指导。
+4. 复制 `CaTDD_designAndImplTemplate.cxx`，或把其中的分区结构适配到你的语言。
+5. 捕获 Stage-0 自由草稿：场景、示例、风险与开放问题。
+6. 使用 `CaTDD_methodPrompt-testPointDiscovery.md` 映射 rules、examples、questions 与 quadrant blind spots，再锁定 TCs。
+7. 根据下面的优先级顺序，将草稿归类。
+8. 在实现代码之前，把 US/AC/TC 注释写进测试文件。
+9. 为下一个 TC 生成或编写一个失败测试。
+10. 只实现让该 TC 通过所需的最小生产代码。
+11. 更新 TC 状态标记，并保持注释与行为同步。
+12. 每次只推进一个 TC，持续重复。
 
 ## Usage Example
 
@@ -110,24 +123,28 @@ methodPrompts/
 ```bash
 mkdir -p Test
 # C++ target
-cp methodPrompts/CaTDD_designAndImplTemplate.cxx Test/UT_YourFeature_Typical.cxx
+cp methodPrompts/CaTDD_designAndImplTemplate.cxx Test/test_your_feature_funcValidTypical.cxx
 # TypeScript target
-cp methodPrompts/CaTDD_designAndImplTemplate.ts Test/UT_YourFeature_Typical.ts
+cp methodPrompts/CaTDD_designAndImplTemplate.ts Test/test_your_feature_funcValidTypical.ts
 ```
 
-类别专属测试文件使用 `UT_<Feature>_<Category>.<ext>`，例如 `UT_YourFeature_Typical.cxx`、`UT_YourFeature_Typical.ts` 或 `UT_YourFeature_Edge.ts`。
+类别专属测试文件使用 `test_{feature}_{category}.<ext>`，例如 `test_your_feature_funcValidTypical.cxx`、`test_your_feature_funcValidTypical.ts` 或 `test_your_feature_funcInvalidMisuse.py`。`{feature}` 应来自模块接口的 usage scenarios，`{category}` 使用 `CaTDD_methodPrompt.md` 中的 CaTDD category filename tokens。
+
+每个 `{feature}` 应创建或保留所有 CaTDD category 文件；若某个 category 没有适用 test points，在该文件中标记 `@[NoTestPoints]: <reason>`，不要静默省略。
+
+每个 test point 都应放在匹配其 verification lens 的 category 中。P0 证明外部 contract，P1 证明内部 design model，P2 证明 operating envelope，P3 证明 learning surface。风险可以让某个 category 提前执行，但不能重命名该 category。若某个 category 缺少 source-of-truth artifact，应询问缺失的设计，或标记 `@[NoTestPoints]: <reason>`。
 
 然后让 CodeAgent 执行，或手工使用方法提示词：
 
 ```text
 Read methodPrompts/README_UserGuide_ZH.md and methodPrompts/CaTDD_methodPrompt.md.
-Use methodPrompts/CaTDD_methodPrompt4Cat-Typical.md to fill the Typical skeleton in Test/UT_YourFeature_Typical.cxx or Test/UT_YourFeature_Typical.ts.
+Use methodPrompts/CaTDD_methodPrompt4Cat-Typical.md to fill the Typical skeleton in Test/test_your_feature_funcValidTypical.cxx or Test/test_your_feature_funcValidTypical.ts.
 Preserve US/AC/TC traceability and leave unclear product intent as questions.
 ```
 
 预期结果：
 
-- `Test/UT_YourFeature_Typical.cxx` 或 `Test/UT_YourFeature_Typical.ts` 包含 OVERVIEW 分区。
+- `Test/test_your_feature_funcValidTypical.cxx` 或 `Test/test_your_feature_funcValidTypical.ts` 包含 OVERVIEW 分区。
 - 它包含带有 US/AC/TC 注释的 UNIT TESTING DESIGN 分区。
 - 它包含可进入 Red-Green TDD 的 UNIT TESTING IMPLEMENTATION 分区。
 - 它包含所选 TC 的 TODO/TRACKING 状态标记。
@@ -139,26 +156,37 @@ Preserve US/AC/TC traceability and leave unclear product intent as questions.
 | 优先级 | 类 | 分类 | 目的 |
 | --- | --- | --- | --- |
 | P0 | P0 Functional | Typical -> Edge -> Misuse -> Fault | 证明合法行为正确工作，非法行为优雅失败。 |
-| P1 | P1 Design | State -> Capability -> Concurrency | 证明生命周期、容量与线程安全等设计行为。 |
-| P2 | P2 Quality | Performance -> Robust -> Compatibility -> Configuration | 证明质量属性与环境变化。 |
+| P1 | P1 Design | State -> Capability -> Interaction -> Concurrency | 证明生命周期、容量、协作者交互与线程安全等设计行为。 |
+| P2 | P2 Quality | Performance -> Robust -> Compatibility -> Configuration -> Diagnosis -> Security | 证明质量属性、环境变化、诊断证据与保护属性。 |
 | P3 | P3 Addons | Demo/Example | 证明面向文档、示例与入门的流程。 |
 
 ## 方法提示词地图
 
 | 需求 | 使用 |
 | --- | --- |
-| 学习完整方法契约 | `CaTDD_methodPrompt.md` |
+| 从主方法入口开始 | `CaTDD_methodPrompt.md` |
+| 归类 test points 并保持 category identity 稳定 | `CaTDD_methodPrompt-categorySemantics.md` |
+| 用 Example Mapping 与 quadrant balance check 发现 source-backed test points | `CaTDD_methodPrompt-testPointDiscovery.md` |
+| 执行 Stage-0、Stage-1、RED/GREEN 与质量门禁 | `CaTDD_methodPrompt-workflow.md` |
+| 构建 US/AC/TC 注释、覆盖矩阵和 tracking blocks | `CaTDD_methodPrompt-testStructure.md` |
+| 使用标准 `test_{feature}_{category}.<ext>` 命名 | `CaTDD_methodPrompt-fileNaming.md` |
+| 指导 CodeAgent 执行 checkpoints | `CaTDD_methodPrompt-agentWorkflow.md` |
+| 从设计、测试或分类阻塞中恢复 | `CaTDD_methodPrompt-troubleshooting.md` |
+| 查看具体 category placement 示例 | `CaTDD_methodPrompt-examples.md` |
 | 设计核心 happy-path 行为 | `CaTDD_methodPrompt4Cat-Typical.md` |
 | 设计合法边缘场景、极限值和边界值 | `CaTDD_methodPrompt4Cat-Edge.md` |
 | 设计非法调用者行为或错误 API 使用 | `CaTDD_methodPrompt4Cat-Misuse.md` |
 | 设计依赖、资源或环境故障处理 | `CaTDD_methodPrompt4Cat-Fault.md` |
 | 设计生命周期和有限状态机验证 | `CaTDD_methodPrompt4Cat-State.md` |
 | 设计容量和最大能力验证 | `CaTDD_methodPrompt4Cat-Capability.md` |
+| 设计协作者顺序、编排或交接验证 | `CaTDD_methodPrompt4Cat-Interaction.md` |
 | 设计线程安全或竞态条件验证 | `CaTDD_methodPrompt4Cat-Concurrency.md` |
 | 设计延迟、吞吐量或资源使用检查 | `CaTDD_methodPrompt4Cat-Performance.md` |
 | 设计压力、重复、长稳或稳定性检查 | `CaTDD_methodPrompt4Cat-Robust.md` |
 | 设计跨平台、版本或集成检查 | `CaTDD_methodPrompt4Cat-Compatibility.md` |
 | 设计功能开关、配置或环境变化 | `CaTDD_methodPrompt4Cat-Configuration.md` |
+| 设计可观测性、诊断证据或故障可解释性 | `CaTDD_methodPrompt4Cat-Diagnosis.md` |
+| 设计 threat model 或 policy 下的保护属性检查 | `CaTDD_methodPrompt4Cat-Security.md` |
 | 设计面向文档的演示和示例 | `CaTDD_methodPrompt4Cat-DemoExample.md` |
 | 从完整骨架开始编写 C++ 测试文件 | `CaTDD_designAndImplTemplate.cxx` |
 

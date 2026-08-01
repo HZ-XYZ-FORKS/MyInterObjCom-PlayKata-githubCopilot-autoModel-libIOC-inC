@@ -59,17 +59,28 @@ methodPrompts/
   README_UserGuide.md
   README_UserGuide_ZH.md
   CaTDD_methodPrompt.md
+  CaTDD_methodPrompt-categorySemantics.md
+  CaTDD_methodPrompt-testPointDiscovery.md
+  CaTDD_methodPrompt-workflow.md
+  CaTDD_methodPrompt-testStructure.md
+  CaTDD_methodPrompt-fileNaming.md
+  CaTDD_methodPrompt-agentWorkflow.md
+  CaTDD_methodPrompt-troubleshooting.md
+  CaTDD_methodPrompt-examples.md
   CaTDD_methodPrompt4Cat-Typical.md
   CaTDD_methodPrompt4Cat-Edge.md
   CaTDD_methodPrompt4Cat-Misuse.md
   CaTDD_methodPrompt4Cat-Fault.md
   CaTDD_methodPrompt4Cat-State.md
   CaTDD_methodPrompt4Cat-Capability.md
+  CaTDD_methodPrompt4Cat-Interaction.md
   CaTDD_methodPrompt4Cat-Concurrency.md
   CaTDD_methodPrompt4Cat-Performance.md
   CaTDD_methodPrompt4Cat-Robust.md
   CaTDD_methodPrompt4Cat-Compatibility.md
   CaTDD_methodPrompt4Cat-Configuration.md
+  CaTDD_methodPrompt4Cat-Diagnosis.md
+  CaTDD_methodPrompt4Cat-Security.md
   CaTDD_methodPrompt4Cat-DemoExample.md
   CaTDD_designAndImplTemplate.cxx
 ```
@@ -93,15 +104,17 @@ This file exists so users do not need the repo-level guide, slide deck, installe
 Follow this workflow when starting a CaTDD test file.
 
 1. Read `README.md` to choose the relevant method prompt.
-2. Read `CaTDD_methodPrompt.md` for the full method contract.
-3. Copy `CaTDD_designAndImplTemplate.cxx` or adapt its section structure to your language.
-4. Capture Stage-0 free drafts: scenarios, examples, risks, and open questions.
-5. Classify drafts into categories using the priority order below.
-6. Write US/AC/TC comments inside the test file before implementing code.
-7. Generate or write one failing test for the next TC.
-8. Implement only enough production code to pass that TC.
-9. Update TC status markers and keep the comments synchronized with behavior.
-10. Repeat one TC at a time.
+2. Read `CaTDD_methodPrompt.md` as the main method entry.
+3. Read the needed `CaTDD_methodPrompt-*.md` subtopic for detailed guidance.
+4. Copy `CaTDD_designAndImplTemplate.cxx` or adapt its section structure to your language.
+5. Capture Stage-0 free drafts: scenarios, examples, risks, and open questions.
+6. Use `CaTDD_methodPrompt-testPointDiscovery.md` to map rules, examples, questions, and quadrant blind spots before locking TCs.
+7. Classify drafts into categories using the priority order below.
+8. Write US/AC/TC comments inside the test file before implementing code.
+9. Generate or write one failing test for the next TC.
+10. Implement only enough production code to pass that TC.
+11. Update TC status markers and keep the comments synchronized with behavior.
+12. Repeat one TC at a time.
 
 ## Usage Example
 
@@ -110,24 +123,28 @@ Run these commands from a target project that contains `methodPrompts/`:
 ```bash
 mkdir -p Test
 # C++ target
-cp methodPrompts/CaTDD_designAndImplTemplate.cxx Test/UT_YourFeature_Typical.cxx
+cp methodPrompts/CaTDD_designAndImplTemplate.cxx Test/test_your_feature_funcValidTypical.cxx
 # TypeScript target
-cp methodPrompts/CaTDD_designAndImplTemplate.ts Test/UT_YourFeature_Typical.ts
+cp methodPrompts/CaTDD_designAndImplTemplate.ts Test/test_your_feature_funcValidTypical.ts
 ```
 
-Use `UT_<Feature>_<Category>.<ext>` for category-specific files, such as `UT_YourFeature_Typical.cxx`, `UT_YourFeature_Typical.ts`, or `UT_YourFeature_Edge.ts`.
+Use `test_{feature}_{category}.<ext>` for category-specific files, such as `test_your_feature_funcValidTypical.cxx`, `test_your_feature_funcValidTypical.ts`, or `test_your_feature_funcInvalidMisuse.py`. Choose `{feature}` from the module interface's usage scenarios and use the CaTDD category filename tokens from `CaTDD_methodPrompt.md`.
+
+For each `{feature}`, create or preserve all CaTDD category files. If a category has no applicable test points, mark that file with `@[NoTestPoints]: <reason>` instead of silently omitting it.
+
+Keep each test point in the category that matches its verification lens. P0 proves the external contract, P1 proves the internal design model, P2 proves the operating envelope, and P3 proves the learning surface. Risk may move a category earlier in execution order, but it does not rename the category. If a category lacks a source-of-truth artifact, ask for the missing design or mark `@[NoTestPoints]: <reason>`.
 
 Then ask your CodeAgent or use the method prompts manually:
 
 ```text
 Read methodPrompts/README_UserGuide.md and methodPrompts/CaTDD_methodPrompt.md.
-Use methodPrompts/CaTDD_methodPrompt4Cat-Typical.md to fill the Typical skeleton in Test/UT_YourFeature_Typical.cxx or Test/UT_YourFeature_Typical.ts.
+Use methodPrompts/CaTDD_methodPrompt4Cat-Typical.md to fill the Typical skeleton in Test/test_your_feature_funcValidTypical.cxx or Test/test_your_feature_funcValidTypical.ts.
 Preserve US/AC/TC traceability and leave unclear product intent as questions.
 ```
 
 Expected result:
 
-- `Test/UT_YourFeature_Typical.cxx` or `Test/UT_YourFeature_Typical.ts` has an OVERVIEW section.
+- `Test/test_your_feature_funcValidTypical.cxx` or `Test/test_your_feature_funcValidTypical.ts` has an OVERVIEW section.
 - It has a UNIT TESTING DESIGN section with US/AC/TC comments.
 - It has a UNIT TESTING IMPLEMENTATION section ready for Red-Green TDD.
 - It has TODO/TRACKING status markers for the selected TCs.
@@ -139,26 +156,37 @@ Use this default priority order unless project risk says otherwise.
 | Priority | Class | Categories | Purpose |
 | --- | --- | --- | --- |
 | P0 | P0 Functional | Typical -> Edge -> Misuse -> Fault | Prove valid behavior works and invalid behavior fails well. |
-| P1 | P1 Design | State -> Capability -> Concurrency | Prove lifecycle, capacity, and thread-safety design behavior. |
-| P2 | P2 Quality | Performance -> Robust -> Compatibility -> Configuration | Prove quality attributes and environment variation. |
+| P1 | P1 Design | State -> Capability -> Interaction -> Concurrency | Prove lifecycle, capacity, collaborator interaction, and thread-safety design behavior. |
+| P2 | P2 Quality | Performance -> Robust -> Compatibility -> Configuration -> Diagnosis -> Security | Prove quality attributes, environment variation, diagnostic evidence, and protection properties. |
 | P3 | P3 Addons | Demo/Example | Prove documentation-oriented examples and onboarding flows. |
 
 ## Method Prompt Map
 
 | Need | Use |
 | --- | --- |
-| Learn the full method contract | `CaTDD_methodPrompt.md` |
+| Start from the main method entry | `CaTDD_methodPrompt.md` |
+| Classify test points and keep category identity stable | `CaTDD_methodPrompt-categorySemantics.md` |
+| Discover source-backed test points with Example Mapping and quadrant balance checks | `CaTDD_methodPrompt-testPointDiscovery.md` |
+| Follow Stage-0, Stage-1, RED/GREEN, and quality gates | `CaTDD_methodPrompt-workflow.md` |
+| Build US/AC/TC comments, coverage matrices, and tracking blocks | `CaTDD_methodPrompt-testStructure.md` |
+| Apply canonical `test_{feature}_{category}.<ext>` naming | `CaTDD_methodPrompt-fileNaming.md` |
+| Guide CodeAgent execution checkpoints | `CaTDD_methodPrompt-agentWorkflow.md` |
+| Recover from design, test, or category blockers | `CaTDD_methodPrompt-troubleshooting.md` |
+| Review concrete category placement examples | `CaTDD_methodPrompt-examples.md` |
 | Design core happy-path behavior | `CaTDD_methodPrompt4Cat-Typical.md` |
 | Design valid edge cases, limits, and boundary values | `CaTDD_methodPrompt4Cat-Edge.md` |
 | Design invalid caller behavior or wrong API usage | `CaTDD_methodPrompt4Cat-Misuse.md` |
 | Design dependency, resource, or environment failure handling | `CaTDD_methodPrompt4Cat-Fault.md` |
 | Design lifecycle and finite-state-machine verification | `CaTDD_methodPrompt4Cat-State.md` |
 | Design capacity and maximum ability verification | `CaTDD_methodPrompt4Cat-Capability.md` |
+| Design collaborator sequence, orchestration, or handoff verification | `CaTDD_methodPrompt4Cat-Interaction.md` |
 | Design thread-safety or race-condition verification | `CaTDD_methodPrompt4Cat-Concurrency.md` |
 | Design latency, throughput, or resource-use checks | `CaTDD_methodPrompt4Cat-Performance.md` |
 | Design stress, repetition, soak, or stability checks | `CaTDD_methodPrompt4Cat-Robust.md` |
 | Design cross-platform, version, or integration checks | `CaTDD_methodPrompt4Cat-Compatibility.md` |
 | Design feature-flag, configuration, or environment variation | `CaTDD_methodPrompt4Cat-Configuration.md` |
+| Design observability, diagnostic evidence, or failure explainability | `CaTDD_methodPrompt4Cat-Diagnosis.md` |
+| Design protection-property checks under a threat model or policy | `CaTDD_methodPrompt4Cat-Security.md` |
 | Design documentation-oriented demos and examples | `CaTDD_methodPrompt4Cat-DemoExample.md` |
 | Start a C++ test file from a complete skeleton | `CaTDD_designAndImplTemplate.cxx` |
 

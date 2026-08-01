@@ -10,7 +10,7 @@ This README is the WHAT / WHY entry point for the method layer. For HOW, WHO, WH
 
 It defines the stable CaTDD method contract:
 
-- Master method specification for comment-alive verification design.
+- Main method entry and subtopic specifications for comment-alive verification design.
 - Category-specific method prompts for P0/P1/P2/P3 test design priorities.
 - Standalone user guides for people and CodeAgents who use only this directory.
 - A C++ implementation template that demonstrates the method shape without making C++ a method requirement.
@@ -39,8 +39,8 @@ CaTDD method prompts support two design stages:
 Default classification order:
 
 - P0 Functional: Typical -> Edge -> Misuse -> Fault
-- P1 Design: State -> Capability -> Concurrency
-- P2 Quality: Performance -> Robust -> Compatibility -> Configuration
+- P1 Design: State -> Capability -> Interaction -> Concurrency
+- P2 Quality: Performance -> Robust -> Compatibility -> Configuration -> Diagnosis -> Security
 - P3 Addons: Demo/Example
 
 ## Mandatory traceability constraints
@@ -53,6 +53,7 @@ Default classification order:
 ## Typical contents
 
 - Master method specification (`CaTDD_methodPrompt.md`)
+- Method subtopic prompts (`CaTDD_methodPrompt-*.md`)
 - Category-specific method prompts (`CaTDD_methodPrompt4Cat-*.md`)
 - Standalone user guides (`README_UserGuide.md`, `README_UserGuide_ZH.md`)
 - Implementation template (`CaTDD_designAndImplTemplate.cxx`)

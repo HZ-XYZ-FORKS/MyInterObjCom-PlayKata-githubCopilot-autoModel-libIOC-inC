@@ -7,7 +7,7 @@ Use this prompt when designing P2 Quality tests for stability under stress, repe
 Robust belongs to P2 Quality-oriented testing.
 
 ```text
-P2 Quality = Performance -> Robust -> Compatibility -> Configuration
+P2 Quality = Performance -> Robust -> Compatibility -> Configuration -> Diagnosis -> Security
 ```
 
 Robust proves that the system remains stable after repeated or sustained use.
@@ -23,6 +23,16 @@ Robust proves that the system remains stable after repeated or sustained use.
 - The scenario is one injected external failure; use Fault.
 - The scenario is a latency/throughput target; use Performance.
 - The scenario is a maximum designed amount; use Capability.
+
+## TestPointsInMind
+
+When this category applies, consider test points such as:
+
+- Repeated operation cycles that should preserve the same invariant after many runs, not just once.
+- Long-running or soak behavior with explicit duration, count, resource churn, reconnect cycles, restart cycles, or cleanup cycles.
+- Stability under mixed valid use: alternating modes, repeated open/close, start/stop loops, enqueue/dequeue churn, or recover-and-continue flows.
+- Leak and residue checks: memory, handles, temp files, subscriptions, timers, threads, queues, or global state return to baseline.
+- Failure triage evidence that makes a late-cycle failure diagnosable without requiring huge unstructured logs.
 
 ## Design Skeleton
 

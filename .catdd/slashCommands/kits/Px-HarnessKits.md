@@ -15,13 +15,16 @@ P0/P1/P2 flows = category-specific test design and implementation flows
 Px HarnessKits = operational tool-point commands for CaTDD harness maintenance
 ```
 
-`HARNESS_*` commands own operational tasks such as patch-back, installation verification, installation diagnosis, run artifact collection, policy checks, and harness repair gates. They may support SpecFlow, but they do not replace `SPEC_*` lifecycle commands.
+`HARNESS_*` commands own operational tasks such as patch-back, installation verification, installation diagnosis, run artifact collection, policy checks, and harness evolution. They may support SpecFlow, but they do not replace `SPEC_*` lifecycle commands.
+
+`HARNESS_evolveHarness` applies the Test-Time Harness Evolution (TTHE) insight ([Nie et al., arXiv:2607.08124](https://arxiv.org/abs/2607.08124)): the executable harness around a frozen model is itself the adaptation state, and it can be evolved during evaluation using only unlabeled execution traces. The command implements the three TTHE operators -- **Observe**, **Propose**, **Judge** -- while keeping CaTDD method semantics and model weights untouched.
 
 ## Developer Stories
 
 - As a Developer, when an installed project proves a CaTDD method or slash-command improvement, I want to patch that improvement back to the original CaTDD source safely so that the reusable method evolves without copying unrelated project code.
 - As a Developer, before trusting an installed CaTDD target project, I want a tool-point command that verifies installed assets, generated wrappers, and source-of-truth links so that installation problems are caught before daily use.
 - As a Developer, when an installed CaTDD target project misworks, I want a tool-point command that diagnoses the failed installation surface and recommends repair without creating a fake product user story.
+- As a Developer, when I finish a task and start a new session, I want a tool-point command that captures important session context — lifecycle state, key files, decisions, environment facts — so the next CodeAgent session can resume without re-investigation.
 
 ## Command Families
 
@@ -30,8 +33,10 @@ Px HarnessKits = operational tool-point commands for CaTDD harness maintenance
 | Source patch-back | Move effective installed-project CaTDD improvements back to source with allowlists and safety gates. | [HARNESS_patchCaTDDSource](../commands/Px-HarnessKits/HARNESS_patchCaTDDSource.md) |
 | Installation verification | Prove an installed CaTDD target project has complete `.catdd` assets, native wrappers, rules, skills, and source-of-truth links before use. | [HARNESS_verifyInstallation](../commands/Px-HarnessKits/HARNESS_verifyInstallation.md) |
 | Installation diagnosis | Investigate a failed or misworking installed CaTDD target project and recommend safe repair from verification evidence. | [HARNESS_diagnoseInstallation](../commands/Px-HarnessKits/HARNESS_diagnoseInstallation.md) |
+| Session handoff | Capture and preserve important session context — lifecycle state, key files, decisions, environment facts — when finishing a task and starting a new session. | [HARNESS_newTaskSession](../commands/Px-HarnessKits/HARNESS_newTaskSession.md) |
 | Run diagnosis | Future commands for collecting run artifacts and diagnosing non-installation harness/test failures. | Future `HARNESS_collectRunArtifacts`, `HARNESS_diagnoseFailure` |
 | Guard and policy | Future commands for checking execution isolation, policy compliance, and destructive-operation guards. | Future `HARNESS_checkPolicy` |
+| Harness evolution | Evolve the executable harness at test time from execution traces using a propose-and-judge population loop. | [HARNESS_evolveHarness](../commands/Px-HarnessKits/HARNESS_evolveHarness.md) |
 | Harness repair | Future commands for proposing and validating harness patches with regression gates. | Future `HARNESS_proposePatch`, `HARNESS_validatePatch` |
 
 ## Seed Flow
@@ -42,6 +47,12 @@ flowchart LR
     Inspect --> Diff["Allowlisted source diff"]
     Diff --> Review["Developer review"]
     Review --> Commit["Commit to CaTDD source repo"]
+
+    Traces["Execution traces / run artifacts"] --> Propose["HARNESS_evolveHarness"]
+    Propose --> Judge["Proxy-signal judge"]
+    Judge --> Winner["Selected harness candidate"]
+    Winner --> Preview["dry_run preview"]
+    Winner --> EvolveCommit["Commit to non-default branch"]
 ```
 
 ## Command Sequence
@@ -49,6 +60,8 @@ flowchart LR
 1. Use [../commands/Px-HarnessKits/HARNESS_patchCaTDDSource.md](../commands/Px-HarnessKits/HARNESS_patchCaTDDSource.md) when an installed project has effective CaTDD meta-file improvements that should be patched back to the original CaTDD repository on a non-default branch.
 2. Use [../commands/Px-HarnessKits/HARNESS_verifyInstallation.md](../commands/Px-HarnessKits/HARNESS_verifyInstallation.md) before trusting a fresh install, after installing into a real target project, or before releasing installer/generator changes.
 3. Use [../commands/Px-HarnessKits/HARNESS_diagnoseInstallation.md](../commands/Px-HarnessKits/HARNESS_diagnoseInstallation.md) only after verification fails or an installed target project misworks.
+4. Use [../commands/Px-HarnessKits/HARNESS_newTaskSession.md](../commands/Px-HarnessKits/HARNESS_newTaskSession.md) at the end of a task session to capture and preserve important context before starting a new session.
+4. Use [../commands/Px-HarnessKits/HARNESS_evolveHarness.md](../commands/Px-HarnessKits/HARNESS_evolveHarness.md) when repeated execution traces reveal a harness bug, wrapper drift, installer fragility, or verification failure pattern that can be fixed without changing CaTDD method semantics or product requirements. Default to `dry_run=true` first.
 
 ## Conflict Guard
 

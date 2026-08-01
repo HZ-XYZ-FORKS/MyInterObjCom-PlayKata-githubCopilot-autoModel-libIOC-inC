@@ -182,6 +182,7 @@ bash scripts/test_installCaTDD4Cline.sh
 | 将已安装项目中的 CaTDD 改进 patch 回源仓库 | [commands/Px-HarnessKits/HARNESS_patchCaTDDSource.md](commands/Px-HarnessKits/HARNESS_patchCaTDDSource.md) |
 | 在信任目标项目命令前验证 CaTDD 安装 | [commands/Px-HarnessKits/HARNESS_verifyInstallation.md](commands/Px-HarnessKits/HARNESS_verifyInstallation.md) |
 | 诊断失败或异常工作的 CaTDD 安装 | [commands/Px-HarnessKits/HARNESS_diagnoseInstallation.md](commands/Px-HarnessKits/HARNESS_diagnoseInstallation.md) |
+| 在开始新任务会话前捕获当前会话上下文 | [commands/Px-HarnessKits/HARNESS_newTaskSession.md](commands/Px-HarnessKits/HARNESS_newTaskSession.md) |
 | 告诉我当前 SpecCoding 下一步该做什么 | [commands/Px-SpecFlow/SPEC_whatsNextTask.md](commands/Px-SpecFlow/SPEC_whatsNextTask.md) |
 | 为已打开的 user story 规划下一条 SPEC 步骤 | [commands/Px-SpecFlow/SPEC_makePlan.md](commands/Px-SpecFlow/SPEC_makePlan.md) |
 | 导入已有结构化 User Story 或 AC 切片 | [commands/Px-SpecFlow/SPEC_importUserStory.md](commands/Px-SpecFlow/SPEC_importUserStory.md) |
@@ -204,6 +205,8 @@ bash scripts/test_installCaTDD4Cline.sh
 | 从已有骨架中选择下一个测试用例 | [commands/P0-FuncTestsFlow/UT_tellMeNextImplTest.md](commands/P0-FuncTestsFlow/UT_tellMeNextImplTest.md) |
 | 实现已选择的测试用例 | [commands/P0-FuncTestsFlow/UT_implTestCase.md](commands/P0-FuncTestsFlow/UT_implTestCase.md) |
 | 审查已实现的测试用例 | [commands/P0-FuncTestsFlow/UT_reviewImplTestCase.md](commands/P0-FuncTestsFlow/UT_reviewImplTestCase.md) |
+| 在不改变行为的前提下重构一个 GREEN 测试用例 | [commands/P0-FuncTestsFlow/UT_refactTestCase.md](commands/P0-FuncTestsFlow/UT_refactTestCase.md) |
+| 编排当前 story 范围内的 unit-test 重构 | [commands/Px-SpecFlow/SPEC_refactUnitTests.md](commands/Px-SpecFlow/SPEC_refactUnitTests.md) |
 
 ## 质量检查清单
 
