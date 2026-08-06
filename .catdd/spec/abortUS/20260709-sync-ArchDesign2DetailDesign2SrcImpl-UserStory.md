@@ -1,11 +1,43 @@
 # Synchronize Layered Architecture Across Arch, Detail Design, and Source Implementation
 
-> **Story ID:** US-8 | **State:** todo | **Priority:** P1
+> **Story ID:** US-8 | **State:** aborted | **Priority:** P1
 > **Source:** `.catdd/spec/analyzedNews/20260709-sync-ArchDesign2DetailDesign2SrcImpl-Issue.md`
 > **Related Closed Story:** `.catdd/spec/doneUS/20260704-reArchDesign-LayeredArchitecture-UserStory.md`
 > **CaTDD Class:** P1 Design
 > **Primary Category:** Capability
 > **Created:** 2026-08-02
+> **Opened On:** 2026-08-02 by `SPEC_openUserStory`
+> **Aborted On:** 2026-08-07 by `SPEC_abortUserStory`
+
+---
+
+## Active Work Status
+
+- Lifecycle state: aborted
+- Open checkpoint: moved from `.catdd/spec/todoUS/` to `.catdd/spec/doingUS/` by `SPEC_openUserStory`
+- Abort checkpoint: moved from `.catdd/spec/doingUS/` to `.catdd/spec/abortUS/` by `SPEC_abortUserStory`
+- Branch checkpoint: dedicated branch created and switched: `spec/us8-sync-arch-detail-srcimpl` (2026-08-02)
+
+---
+
+## Abort Decision Record
+
+- primary_gap_type: implementation-gap
+- problem_summary: codeAgent misunderstand my refactor architecture design purpose
+- evidence_refs:
+  - UT_UT8*
+- unsafe_if_continue: totally misunderstand my purpose
+- followup_intent: undecided
+
+### Follow-up Intent Note
+
+- Developer follow-up intent is currently undecided.
+- Per command guard default, evidence-first follow-up should start from `SPEC_analyzeAbortedUserStory` unless developer later chooses `SPEC_importIssue`.
+
+### Unresolved Questions
+
+- Which exact US-8 TC set should be rewritten first to align strictly with refined architecture implementation behavior?
+- Should README-driven checks be fully removed from US-8 UT files or moved into a separate governance-only suite?
 
 ---
 
